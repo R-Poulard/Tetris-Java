@@ -177,7 +177,19 @@ Quand tout est fait, elle peut ne contenir qu'une ligne unique pour lancer le je
 Si besoin, vous pouvez l'étoffer (par exemple si vous voulez laisser la possibilité de faire autre chose que le lancement graphique du jeu).
 
 
+### Aller plus loin...
 
+Vous avez un jeu tétris qui fonctionne avec tous les fonctionnements de base ? Vous pouvez continuer !
+
+* Une interface graphique plus sophistiquée : musique, son, animations, images, etc.
+
+* une intelligence artificielle : que ce soit en mode non graphique (simule une partie et sauvegarde le résultat) ou bien qui simule une partie graphique (et ça bouge tout seul !)
+
+* d'autres mode de jeu (le [tetris wiki](https://tetris.wiki/)) peut vous servir d'inspiration
+
+* un mode multijoueur !! (celui-là ous obligera sans doute à faire évoluer le model : comment tirer parti de qui a déjà été fait et garder le mode utin joueur en plus du mode 2 joueurs ?)
+
+Vous voyez, vous avez BEAUCOUP de possibilités.
 
 
 
