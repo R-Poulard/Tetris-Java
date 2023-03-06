@@ -108,7 +108,7 @@ class SimpleGameManagerPlayerTest {
 		simpleManager.loadNewGame();
 		GamePlayer player = simpleManager.getPlayer();
 		simpleManager.startPlayer();
-		assertTrue(player.oneStepFallDown());
+		assertTrue(player.performAction(TetrisAction.DOWN));
 		TetrisGridView gridView = player.getGridView();
 		assertTrue(gridView.hasTetromino());
 		assertEquals(gridView.getTetromino(), TetrominoShape.ISHAPE.getTetromino(0));
@@ -123,7 +123,7 @@ class SimpleGameManagerPlayerTest {
 		simpleManager.setTetrominoProvider(TetrominoProvider.listTetrominoProvider(Arrays.asList(TetrominoShape.ISHAPE.getTetromino(0))));
 		simpleManager.loadNewGame();
 		GamePlayer player = simpleManager.getPlayer();
-		assertThrows(IllegalStateException.class, () -> player.oneStepFallDown());
+		assertThrows(IllegalStateException.class, () -> player.performAction(TetrisAction.DOWN));
 		simpleManager.startPlayer();
 		
 	}
@@ -138,7 +138,7 @@ class SimpleGameManagerPlayerTest {
 		GamePlayer player = simpleManager.getPlayer();
 		simpleManager.startPlayer();
 		simpleManager.pausePlayer();
-		assertThrows(IllegalStateException.class, () -> player.oneStepFallDown());
+		assertThrows(IllegalStateException.class, () -> player.performAction(TetrisAction.DOWN));
 		
 	}
 	
@@ -241,9 +241,9 @@ class SimpleGameManagerPlayerTest {
 		TetrisGridView gridView = player.getGridView();
 		int col = gridView.getCoordinates().getCol();
 		for(int i = 0; i < GameManager.DEFAULT_LINES - 2; i++) {
-			assertTrue(player.oneStepFallDown());
+			assertTrue(player.performAction(TetrisAction.DOWN));
 		}
-		assertFalse(player.oneStepFallDown());
+		assertFalse(player.performAction(TetrisAction.DOWN));
 		assertEquals(gridView.gridCell(GameManager.DEFAULT_LINES - 1, col), TetrisCell.I);
 		assertEquals(gridView.gridCell(GameManager.DEFAULT_LINES - 1, col + 1), TetrisCell.I);
 		assertEquals(gridView.gridCell(GameManager.DEFAULT_LINES - 1, col + 2), TetrisCell.I);
@@ -263,9 +263,9 @@ class SimpleGameManagerPlayerTest {
 		simpleManager.startPlayer();
 		TetrisGridView gridView = player.getGridView();
 		for(int i = 0; i < GameManager.DEFAULT_LINES - 2; i++) {
-			assertTrue(player.oneStepFallDown());
+			assertTrue(player.performAction(TetrisAction.DOWN));
 		}
-		assertFalse(player.oneStepFallDown());
+		assertFalse(player.performAction(TetrisAction.DOWN));
 		/* the tetromino should have been merged and the next tetromino placed */
 		assertEquals(gridView.getTetromino(), TetrominoShape.JSHAPE.getTetromino(0));
 		assertEquals(gridView.getCoordinates().getLine(), 0);
@@ -327,7 +327,7 @@ class SimpleGameManagerPlayerTest {
 		simpleManager.loadNewGame();
 		GamePlayer player = simpleManager.getPlayer();
 		simpleManager.startPlayer();
-		assertTrue(player.oneStepFallDown());
+		assertTrue(player.performAction(TetrisAction.DOWN));
 		assertTrue(player.performAction(TetrisAction.HARD_DROP));
 		assertEquals(player.getScore(), (GameManager.DEFAULT_LINES - 3) * 2);
 	}
@@ -341,10 +341,10 @@ class SimpleGameManagerPlayerTest {
 		GamePlayer player = simpleManager.getPlayer();
 		simpleManager.startPlayer();
 		assertTrue(player.performAction(TetrisAction.START_SOFT_DROP));
-		assertTrue(player.oneStepFallDown());
-		assertTrue(player.oneStepFallDown());
+		assertTrue(player.performAction(TetrisAction.DOWN));
+		assertTrue(player.performAction(TetrisAction.DOWN));
 		assertTrue(player.performAction(TetrisAction.END_SOFT_DROP));
-		assertTrue(player.oneStepFallDown());
+		assertTrue(player.performAction(TetrisAction.DOWN));
 		assertEquals(player.getScore(), 2);
 	}
 	
@@ -373,7 +373,7 @@ class SimpleGameManagerPlayerTest {
 		simpleManager.loadNewGame();
 		GamePlayer player = simpleManager.getPlayer();
 		simpleManager.startPlayer();
-		assertTrue(player.oneStepFallDown());
+		assertTrue(player.performAction(TetrisAction.DOWN));
 		assertTrue(player.performAction(TetrisAction.HOLD));
 		// we test that the held tetromino is the previous one
 		assertEquals(player.getHeldTetromino(), TetrominoShape.ISHAPE.getTetromino(0));
@@ -394,7 +394,7 @@ class SimpleGameManagerPlayerTest {
 		simpleManager.loadNewGame();
 		GamePlayer player = simpleManager.getPlayer();
 		simpleManager.startPlayer();
-		assertTrue(player.oneStepFallDown());
+		assertTrue(player.performAction(TetrisAction.DOWN));
 		assertTrue(player.performAction(TetrisAction.HOLD));
 		// we hard drop the new tetromino
 		assertTrue(player.performAction(TetrisAction.HARD_DROP));
@@ -419,7 +419,7 @@ class SimpleGameManagerPlayerTest {
 		simpleManager.loadNewGame();
 		GamePlayer player = simpleManager.getPlayer();
 		simpleManager.startPlayer();
-		assertTrue(player.oneStepFallDown());
+		assertTrue(player.performAction(TetrisAction.DOWN));
 		assertTrue(player.performAction(TetrisAction.HOLD));
 		// we cannot re-hold the tetromino
 		assertFalse(player.performAction(TetrisAction.HOLD));
@@ -497,7 +497,7 @@ class SimpleGameManagerPlayerTest {
 		assertTrue(player.isOver());
 		assertFalse(player.isActive());
 		assertThrows(IllegalStateException.class, () -> player.performAction(TetrisAction.HARD_DROP));
-		assertThrows(IllegalStateException.class, () -> player.oneStepFallDown());
+		assertThrows(IllegalStateException.class, () -> player.performAction(TetrisAction.DOWN));
 	}
 	
 	@Test
@@ -515,7 +515,7 @@ class SimpleGameManagerPlayerTest {
 		assertTrue(player.isOver());
 		assertFalse(player.isActive());
 		assertThrows(IllegalStateException.class, () -> player.performAction(TetrisAction.HARD_DROP));
-		assertThrows(IllegalStateException.class, () -> player.oneStepFallDown());
+		assertThrows(IllegalStateException.class, () -> player.performAction(TetrisAction.DOWN));
 	}
 	
 	@Test
@@ -606,7 +606,7 @@ class SimpleGameManagerPlayerTest {
 		simpleManager.startPlayer();
 		GamePlayer player = simpleManager.getPlayer();
 		player.performAction(TetrisAction.HARD_DROP);
-		player.oneStepFallDown();
+		player.performAction(TetrisAction.DOWN);
 		player.performAction(TetrisAction.MOVE_LEFT);
 		Tetromino tet = player.getGridView().getTetromino();
 		TetrisCoordinates coordinates = player.getGridView().getCoordinates();

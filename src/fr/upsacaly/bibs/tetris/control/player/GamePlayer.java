@@ -100,16 +100,7 @@ public interface GamePlayer {
 	 * @return true if the action has been successfully performed
 	 */
 	public boolean performAction(TetrisAction action);
-	
-	/**
-	 * The current tetromino falls down one step. 
-	 * 
-	 * If the player is not active (pause or over), it throws an IllegalStateException
-	 * 
-	 * If it cannot fall down: it is merged to the grid. The grid is packed and a new tetromino is put in the game
-	 * @return
-	 */
-	public boolean oneStepFallDown();
+
 	
 	/**
 	 * Return the held tetromino (saved for later)

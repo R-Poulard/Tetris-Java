@@ -326,16 +326,19 @@ class MarathonScoreComputerTest {
 		grid.setCoordinates(new TetrisCoordinates(0,0));
 		scoreComputer.registerBeforeAction(TetrisAction.START_SOFT_DROP, grid.getView());
 		scoreComputer.registerAfterAction(grid.getView());
+		scoreComputer.registerBeforeAction(TetrisAction.DOWN, grid.getView());
 		grid.tryMove(TetrisCoordinates.DOWN);
-		scoreComputer.registerAfterGoingDown(grid.getView());
+		scoreComputer.registerAfterAction(grid.getView());
 		assertEquals(scoreComputer.getScore(),1);
+		scoreComputer.registerBeforeAction(TetrisAction.DOWN, grid.getView());
 		grid.tryMove(TetrisCoordinates.DOWN);
-		scoreComputer.registerAfterGoingDown(grid.getView());
+		scoreComputer.registerAfterAction(grid.getView());
 		assertEquals(scoreComputer.getScore(),2);
 		scoreComputer.registerBeforeAction(TetrisAction.END_SOFT_DROP, grid.getView());
 		scoreComputer.registerAfterAction(grid.getView());
+		scoreComputer.registerBeforeAction(TetrisAction.DOWN, grid.getView());
 		grid.tryMove(TetrisCoordinates.DOWN);
-		scoreComputer.registerAfterGoingDown(grid.getView());
+		scoreComputer.registerAfterAction(grid.getView());
 		assertEquals(scoreComputer.getScore(),2);
 	}
 	

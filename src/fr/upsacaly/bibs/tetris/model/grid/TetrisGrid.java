@@ -33,7 +33,7 @@ public interface TetrisGrid extends TetrisGridView {
 	 * Return a view of self that cannot be used to modify the grid
 	 * @return
 	 */
-	public TetrisGridView getView();
+	public SynchronizedView getView();
 
 	/**
 	 * Copies the values of cells into the grid

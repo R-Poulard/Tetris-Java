@@ -1,7 +1,7 @@
 package fr.upsacaly.bibs.tetris;
 
 /**
- * List of possible player actions during a game
+ * List of possible actions during a game
  * 
  * @author Viviane Pons
  *
@@ -36,6 +36,10 @@ public enum TetrisAction {
 	 * Rotate the current tetromino to the left
 	 */
 	ROTATE_LEFT,
+	/*
+	 * Goes down one step
+	 */
+	DOWN,
 	/*
 	 * "hold" the current tetromino for later use
 	 * If a tetromino was already held, it replaces the current tetromino

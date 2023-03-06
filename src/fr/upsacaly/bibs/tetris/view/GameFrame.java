@@ -37,7 +37,7 @@ public interface GameFrame extends GameViewPanel {
 	public GamePanel getGamePanel();
 	
 	/**
-	 * Creates all the manager components needed for game managerment
+	 * Creates all the manager components needed for game management
 	 */
 	public void createManagerComponents();
 	

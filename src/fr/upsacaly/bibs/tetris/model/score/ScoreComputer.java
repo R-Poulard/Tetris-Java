@@ -92,12 +92,6 @@ public interface ScoreComputer {
 	 */
 	public void registerAfterAction(TetrisGridView gridView);
 	
-	/**
-	 * Update the score and internal state using the information
-	 * 
-	 * this is called each time the tetromino falls down by one unit "naturally"
-	 */
-	public void registerAfterGoingDown(TetrisGridView gridView);
 	
 	/**
 	 * Update the score and internal state using the information
