@@ -2,6 +2,11 @@
 
 Ce repo contient l'ensemble des fichiers nécessaires à la réalisation de votre projet de programmation.
 
+## Membres du groupes :
+
+* Nom Prénom
+* Nom Prénom
+
 ## Objectif et rendu
 
 ### Objectif
