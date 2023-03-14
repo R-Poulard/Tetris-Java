@@ -5,7 +5,7 @@ Ce repo contient l'ensemble des fichiers nécessaires à la réalisation de votr
 ## Membres du groupes :
 
 Poulard Rémi
-* Nom Prénom
+Gaya El Haber
 
 ## Objectif et rendu
 
