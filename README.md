@@ -4,7 +4,7 @@ Ce repo contient l'ensemble des fichiers nécessaires à la réalisation de votr
 
 ## Membres du groupes :
 
-* Nom Prénom
+Poulard Rémi
 * Nom Prénom
 
 ## Objectif et rendu
