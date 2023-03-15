@@ -92,7 +92,7 @@ class TetrominoTest {
 	void testGetShape() {
 		for(TetrominoShape shape : shapes) {
 			for(int i = 0; i < shape.getNumberOfRotations(); i++) {
-				assertEquals(shape.getTetromino(i).getShape(), shape);
+				assertEquals(shape.getTetromino(i).getShape(), shape);				
 			}
 		}
 	}
@@ -110,6 +110,7 @@ class TetrominoTest {
 	
 	@Test
 	void testRotateLeft() {
+		System.out.println("PRINTING-------------------");
 		assertTrue(testTetrominoCells(TetrominoShape.ISHAPE.getTetromino(0).rotateLeft(), IRotated));
 		for(TetrominoShape shape : shapes) {
 			for(int i = 1; i < shape.getNumberOfRotations(); i++) {

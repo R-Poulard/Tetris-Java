@@ -167,6 +167,9 @@ public interface TetrisGrid extends TetrisGridView {
 	 * @return an empty tetris grid with no tetromino
 	 */
 	public static TetrisGrid getEmptyGrid(int nblines, int nbcols) {
-		throw new UnsupportedOperationException("Not implemented");
+		if(nblines<=0 || nbcols<=0) {
+			throw new IllegalArgumentException("Diemnsion Invalide");
+		}
+		return new TetriseGrille(nblines,nbcols);	
 	}
 }
