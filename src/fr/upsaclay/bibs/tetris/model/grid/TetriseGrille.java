@@ -10,8 +10,8 @@ public class TetriseGrille implements TetrisGrid{
 	int lignes;
 	int colonnes;
 	TetrisCell[][] grille;
-	
-	
+	Tetromino tr;
+	TetrisCoordinates tr_coo;
 	
 	public TetriseGrille(int nblines, int nbcols) {
 		this.lignes=nblines;
@@ -60,30 +60,54 @@ public class TetriseGrille implements TetrisGrid{
 	@Override
 	public boolean hasTetromino() {
 		// TODO Auto-generated method stub
-		return false;
+		return tr!=null;
 	}
 
 	@Override
 	public Tetromino getTetromino() {
 		// TODO Auto-generated method stub
-		return null;
+		return tr;
 	}
 
 	@Override
 	public TetrisCoordinates getCoordinates() {
 		// TODO Auto-generated method stub
-		return null;
+		return tr_coo;
 	}
 
 	@Override
 	public TetrisCell visibleCell(int i, int j) {
 		// TODO Auto-generated method stub
-		return null;
+		if(tr_coo==null && tr!=null) {
+			throw new IllegalStateException();
+		}
+		System.out.println(tr_coo);
+		System.out.println(i+" "+j);
+
+		if(tr!=null && i>=tr_coo.getLine() && i<(tr_coo.getLine()+tr.getBoxSize()) && j>=tr_coo.getCol() && j<(tr_coo.getCol()+tr.getBoxSize())){
+			return (tr.cell(i-tr_coo.getLine(), j-tr_coo.getCol())!=TetrisCell.EMPTY)? tr.cell(i-tr_coo.getLine(), j-tr_coo.getCol()): this.gridCell(i, j);
+		}
+		return this.gridCell(i, j);
 	}
 
 	@Override
 	public boolean hasConflicts() {
 		// TODO Auto-generated method stub
+		if(tr==null) {
+			return false;
+		}
+		if(tr_coo==null) {
+			throw new IllegalStateException();
+		}
+		int l=tr_coo.getLine();
+		int c=tr_coo.getCol();
+		for(int i=0;i<tr.getBoxSize();i++) {
+			for(int y=0;y<tr.getBoxSize();y++) {
+				if(tr.cell(i, y)!=TetrisCell.EMPTY && this.gridCell(i+l, y+c)!=TetrisCell.EMPTY) {
+						return true;
+					}
+			}
+		}
 		return false;
 	}
 
@@ -149,11 +173,14 @@ public class TetriseGrille implements TetrisGrid{
 	@Override
 	public SynchronizedView getView() {
 		// TODO Auto-generated method stub
-		throw new ClassCastException("Not castable");
+		return new SynchronizedView(this);
 	}
 
 	@Override
 	public void initiateCells(TetrisCell[][] cells) {
+		if(this instanceof  TetrisGridView && !(this instanceof TetriseGrille)) {
+			throw new ClassCastException(" cast impossible de tetriscell a vue");
+		}
 		if(cells.length!=lignes || cells[0].length!=colonnes) {
 			throw new IllegalArgumentException("taille de la cellule non conforme");
 		}
@@ -166,20 +193,22 @@ public class TetriseGrille implements TetrisGrid{
 
 	@Override
 	public void setTetromino(Tetromino tetromino) {
-		// TODO Auto-generated method stub
-		
+		tr=tetromino;
+		tr_coo=null;
 	}
 
 	@Override
 	public void setCoordinates(TetrisCoordinates coordinates) {
 		// TODO Auto-generated method stub
-		
+		tr_coo=coordinates;
 	}
 
 	@Override
 	public void setAtStartingCoordinates() {
 		// TODO Auto-generated method stub
-		
+		if(tr!=null) {
+			tr_coo=new TetrisCoordinates(0, (this.numberOfCols()-tr.getBoxSize())/2);
+		}
 	}
 
 	@Override

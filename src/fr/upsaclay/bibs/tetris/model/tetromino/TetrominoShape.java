@@ -183,9 +183,9 @@ public enum TetrominoShape {
 	};
 	//I shape
 	mapping.put("ISHAPE0",new TetrominoImpl(I1,0,ISHAPE));
-	mapping.put("ISHAPE1",new TetrominoImpl(I1,1,ISHAPE));
+	mapping.put("ISHAPE1",new TetrominoImpl(I2,1,ISHAPE));
 	mapping.put("ISHAPE2",new TetrominoImpl(I1,2,ISHAPE));
-	mapping.put("ISHAPE3",new TetrominoImpl(I1,3,ISHAPE));
+	mapping.put("ISHAPE3",new TetrominoImpl(I2,3,ISHAPE));
 	//O shape
 	mapping.put("OSHAPE0",new TetrominoImpl(O1,0,OSHAPE));
 	//T shape

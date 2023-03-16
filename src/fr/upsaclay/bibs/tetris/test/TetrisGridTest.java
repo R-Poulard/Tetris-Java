@@ -623,6 +623,7 @@ class TetrisGridTest {
 		}
 		for(int i = 0; i < g.numberOfLines(); i++) {
 			for(int j = 0; j < g.numberOfCols(); j++) {
+				System.out.println("we wabt"+cells[i][j]);
 				if(g.visibleCell(i, j) != cells[i][j]) {
 					return false;
 				}
@@ -785,6 +786,7 @@ class TetrisGridTest {
 		grid.setTetromino(TetrominoShape.ISHAPE.getTetromino(3));
 		grid.setCoordinates(new TetrisCoordinates(0,0));
 		assertTrue(testEqualGrids(grid,smallGrid));
+		grid.printGrid(System.out);
 		assertTrue(testEqualVisibles(grid,smallGridWithIOnTop));
 	}
 	
@@ -796,6 +798,7 @@ class TetrisGridTest {
 		grid.setTetromino(TetrominoShape.JSHAPE.getTetromino(3));
 		grid.setCoordinates(new TetrisCoordinates(0,3));
 		assertTrue(testEqualGrids(grid,smallGrid));
+		grid.printGrid(System.out);
 		assertTrue(testEqualVisibles(grid,smallGridWithJRight));
 	}
 	
@@ -843,8 +846,10 @@ class TetrisGridTest {
 		grid.setTetromino(TetrominoShape.ISHAPE.getTetromino(3));
 		grid.setCoordinates(new TetrisCoordinates(0,0));
 		assertFalse(grid.hasConflicts());
+		
 		grid.setTetromino(TetrominoShape.JSHAPE.getTetromino(3));
 		grid.setCoordinates(new TetrisCoordinates(0,3));
+		System.out.println("debut des pb");
 		assertFalse(grid.hasConflicts());
 		grid.setTetromino(TetrominoShape.TSHAPE.getTetromino(2));
 		grid.setCoordinates(new TetrisCoordinates(5,1));
