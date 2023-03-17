@@ -110,7 +110,6 @@ class TetrominoTest {
 	
 	@Test
 	void testRotateLeft() {
-		System.out.println("PRINTING-------------------");
 		assertTrue(testTetrominoCells(TetrominoShape.ISHAPE.getTetromino(0).rotateLeft(), IRotated));
 		for(TetrominoShape shape : shapes) {
 			for(int i = 1; i < shape.getNumberOfRotations(); i++) {
@@ -172,7 +171,6 @@ class TetrominoTest {
 				Arrays.asList(TetrisCoordinates.RIGHT, new TetrisCoordinates(1,1), new TetrisCoordinates(-2,0), new TetrisCoordinates(-2,1)));
 		assertEquals(TetrominoShape.JSHAPE.getTetromino(3).wallKicksFromRight(), 
 				Arrays.asList(TetrisCoordinates.RIGHT, new TetrisCoordinates(-1,1), new TetrisCoordinates(2,0), new TetrisCoordinates(2,1)));
-
 		assertEquals(TetrominoShape.ISHAPE.getTetromino(0).wallKicksFromRight(), 
 				Arrays.asList(new TetrisCoordinates(0,1), new TetrisCoordinates(0,-2), new TetrisCoordinates(2,1), new TetrisCoordinates(-1,-2)));
 		assertEquals(TetrominoShape.ISHAPE.getTetromino(1).wallKicksFromRight(), 
@@ -195,7 +193,6 @@ class TetrominoTest {
 				Arrays.asList(TetrisCoordinates.LEFT, new TetrisCoordinates(-1,-1), new TetrisCoordinates(2,0), new TetrisCoordinates(2,-1)));
 		assertEquals(TetrominoShape.JSHAPE.getTetromino(2).wallKicksFromLeft(), 
 				Arrays.asList(TetrisCoordinates.LEFT, new TetrisCoordinates(1,-1), new TetrisCoordinates(-2,0), new TetrisCoordinates(-2,-1)));
-
 		assertEquals(TetrominoShape.ISHAPE.getTetromino(3).wallKicksFromLeft(), 
 				Arrays.asList(new TetrisCoordinates(0,-1), new TetrisCoordinates(0,2), new TetrisCoordinates(-2,-1), new TetrisCoordinates(1,2)));
 		assertEquals(TetrominoShape.ISHAPE.getTetromino(0).wallKicksFromLeft(), 

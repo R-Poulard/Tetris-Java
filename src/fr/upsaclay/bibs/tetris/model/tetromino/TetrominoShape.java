@@ -325,27 +325,44 @@ public enum TetrominoShape {
 			TetrisCoordinates t19=new TetrisCoordinates(-2,-2);
 			TetrisCoordinates t20=new TetrisCoordinates(-2,2);
 			
-			kick_map.put("G12",Arrays.asList(t1,t5,t17bis,t17));
-			kick_map.put("G23",Arrays.asList(t2,t14,t9bis,t10));
-			kick_map.put("G34",Arrays.asList(t2,t6,t17bis,t18));
-			kick_map.put("G41",Arrays.asList(t2,t13,t9bis,t9));
+			kick_map.put("G01",Arrays.asList(t1,t5,t17bis,t17));
+			kick_map.put("G12",Arrays.asList(t1,t13,t9bis,t9));
+			kick_map.put("G23",Arrays.asList(t2,t6,t17bis,t18));
+			kick_map.put("G30",Arrays.asList(t2,t14,t9bis,t10));
+			/*
+			kick_map.put("G21",(+1, 0) 	(+1,-1) 	( 0,+2) 	(+1,+2));
+			kick_map.put("G32",(-1, 0) 	(-1,+1) 	( 0,-2) 	(-1,-2));
+			kick_map.put("G43",(-1, 0) 	(-1,-1) 	( 0,+2) 	(-1,+2));
+			kick_map.put("G14",(+1, 0) 	(+1,+1) 	( 0,-2) 	(+1,-2));
 			
+			*/
+			kick_map.put("G10",Arrays.asList(t1,t13,t9bis,t9));
+			kick_map.put("G21",Arrays.asList(t1,t5,t17bis,t17));
+			kick_map.put("G32",Arrays.asList(t2,t14,t9bis,t10));
+			kick_map.put("G03",Arrays.asList(t2,t6,t17bis,t18));
 			
-			kick_map.put("G21",Arrays.asList());
-			kick_map.put("G32",Arrays.asList());
-			kick_map.put("G43",Arrays.asList());
-			kick_map.put("G14",Arrays.asList());
+			/*
+			kick_map.put("I12",(-2, 0) 	(+1, 0) 	(-2,-1) 	(+1,+2));
+			kick_map.put("I23",(-1, 0) 	(+2, 0) 	(-1,+2) 	(+2,-1));
+			kick_map.put("I34",(+2, 0) 	(-1, 0) 	(+2,+1) 	(-1,-2));
+			kick_map.put("I41",(+1, 0) 	(-2, 0) 	(+1,-2) 	(-2,+1));
+			*/
 			
-			kick_map.put("I12",Arrays.asList());
-			kick_map.put("I23",Arrays.asList());
-			kick_map.put("I34",Arrays.asList());
-			kick_map.put("I41",Arrays.asList());
+			kick_map.put("I01",Arrays.asList(t2,t3,t10,t15));
+			kick_map.put("I12",Arrays.asList(t3,t2,t7,t18));
+			kick_map.put("I23",Arrays.asList(t1,t4,t17,t8));
+			kick_map.put("I30",Arrays.asList(t4,t1,t16,t9));
 			
+			/*
+			kick_map.put("I21",(+2, 0) 	(-1, 0) 	(+2,+1) 	(-1,-2));
+			kick_map.put("I32",(+1, 0) 	(-2, 0) 	(+1,-2) 	(-2,+1));
+			kick_map.put("I43",(-2, 0) 	(+1, 0) 	(-2,-1) 	(+1,+2));
+			kick_map.put("I14",(-1, 0) 	(+2, 0) 	(-1,+2) 	(+2,-1));*/
 			
-			kick_map.put("I21",Arrays.asList());
-			kick_map.put("I32",Arrays.asList());
-			kick_map.put("I43",Arrays.asList());
-			kick_map.put("I14",Arrays.asList());
+			kick_map.put("I10",Arrays.asList(t2,t3,t10,t15));
+			kick_map.put("I21",Arrays.asList(t3,t2,t7,t18));
+			kick_map.put("I32",Arrays.asList(t1,t4,t17,t8));
+			kick_map.put("I03",Arrays.asList(t4,t1,t16,t9));
 			/*
 			//left kick
 			
@@ -424,10 +441,11 @@ public enum TetrominoShape {
 				return new ArrayList<TetrisCoordinates>();
 			case ISHAPE:
 				key="I";
+				break;
 			default:
 				key="G";
 			}
-			key=key+String.valueOf(rotation)+String.valueOf(rotation-1);
+			key=key+String.valueOf(rotation)+String.valueOf((((rotation+1 % 4) + 4) % 4));
 			return kick_map.get(key);	
 		}
 
@@ -440,10 +458,11 @@ public enum TetrominoShape {
 				return new ArrayList<TetrisCoordinates>();
 			case ISHAPE:
 				key="I";
+				break;
 			default:
 				key="G";
 			}
-			key=key+String.valueOf(rotation)+String.valueOf(rotation-1);
+			key=key+String.valueOf(rotation)+String.valueOf((((rotation-1 % 4) + 4) % 4));
 			return kick_map.get(key);	
 		}
 		

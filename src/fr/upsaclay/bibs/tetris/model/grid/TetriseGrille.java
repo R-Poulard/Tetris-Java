@@ -230,16 +230,52 @@ public class TetriseGrille implements TetrisGrid{
 		this.setCoordinates(new TetrisCoordinates(tr_coo.getLine()+dir.getLine(), tr_coo.getCol()+dir.getCol()));
 		return true;
 	}
-
+	
+	private boolean conflict(Tetromino new_tr,TetrisCoordinates newtr_coo) {
+		int line=tr_coo.getLine();
+		int col=tr_coo.getCol();
+		for(int i=0;i<new_tr.getBoxSize();i++) {
+			for(int y=0;y<new_tr.getBoxSize();y++) {				
+				if(new_tr.cell(i, y)!=TetrisCell.EMPTY && this.gridCell(line+i+newtr_coo.getLine(), col+y+newtr_coo.getCol())!=TetrisCell.EMPTY) {
+					return false;
+				}
+			}
+		}
+		tr=new_tr;
+		this.setCoordinates(new TetrisCoordinates(tr_coo.getLine()+newtr_coo.getLine(), tr_coo.getCol()+newtr_coo.getCol()));
+		return true;
+	}
 	@Override
 	public boolean tryRotateRight() {
-		// TODO Auto-generated method stub
+		if(tr_coo==null || tr==null) {
+			throw new IllegalStateException();
+		}
+		Tetromino tRight=tr.rotateRight();
+		if(conflict(tRight,new TetrisCoordinates(0,0))) {
+			return true;
+		}
+		for(TetrisCoordinates i: tRight.wallKicksFromRight()) {
+			if(conflict(tRight,i)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public boolean tryRotateLeft() {
-		// TODO Auto-generated method stub
+		if(tr_coo==null || tr==null) {
+			throw new IllegalStateException();
+		}
+		Tetromino tLeft=tr.rotateLeft();
+		if(conflict(tLeft,new TetrisCoordinates(0,0))) {
+			return true;
+		}
+		for(TetrisCoordinates i: tLeft.wallKicksFromLeft()) {
+			if(conflict(tLeft,i)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
