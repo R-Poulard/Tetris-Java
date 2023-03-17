@@ -92,23 +92,7 @@ public interface TetrominoProvider {
 	 * @return a random tetromino provider
 	 */
 	public static TetrominoProvider randomTetrominoProvider() {
-		Random r = new Random();
-		Tetromino bag[]= {
-				TetrominoShape.JSHAPE.getTetromino(r.nextInt((TetrominoShape.JSHAPE.getNumberOfRotations()) + 1)),
-				TetrominoShape.ISHAPE.getTetromino(r.nextInt((TetrominoShape.ISHAPE.getNumberOfRotations()) + 1)),
-				TetrominoShape.SSHAPE.getTetromino(r.nextInt((TetrominoShape.SSHAPE.getNumberOfRotations()) + 1)),
-				TetrominoShape.ZSHAPE.getTetromino(r.nextInt((TetrominoShape.ZSHAPE.getNumberOfRotations()) + 1)),
-				TetrominoShape.OSHAPE.getTetromino(r.nextInt((TetrominoShape.OSHAPE.getNumberOfRotations()) + 1)),
-				TetrominoShape.LSHAPE.getTetromino(r.nextInt((TetrominoShape.LSHAPE.getNumberOfRotations()) + 1)),
-				TetrominoShape.TSHAPE.getTetromino(r.nextInt((TetrominoShape.TSHAPE.getNumberOfRotations()) + 1)),
-		};
-		for(int i=6;i>=1;i--) {
-			int j= r.nextInt(i+1);
-			Tetromino t=bag[i];
-			bag[i]=bag[j];
-			bag[j]=t;
-		}
-		return new TetroProv(new ArrayList<Tetromino>(Arrays.asList(bag)));
+		return new TetroProvRandom();
 	}
 	
 	/**

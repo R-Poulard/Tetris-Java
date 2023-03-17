@@ -2,6 +2,7 @@ package fr.upsaclay.bibs.tetris.model.grid;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
@@ -214,7 +215,20 @@ public class TetriseGrille implements TetrisGrid{
 	@Override
 	public boolean tryMove(TetrisCoordinates dir) {
 		// TODO Auto-generated method stub
-		return false;
+		if(tr_coo==null || tr==null) {
+			throw new IllegalStateException();
+		}
+		int line=tr_coo.getLine();
+		int col=tr_coo.getCol();
+		for(int i=0;i<tr.getBoxSize();i++) {
+			for(int y=0;y<tr.getBoxSize();y++) {				
+				if(tr.cell(i, y)!=TetrisCell.EMPTY && this.gridCell(line+i+dir.getLine(), col+y+dir.getCol())!=TetrisCell.EMPTY) {
+					return false;
+				}
+			}
+		}
+		this.setCoordinates(new TetrisCoordinates(tr_coo.getLine()+dir.getLine(), tr_coo.getCol()+dir.getCol()));
+		return true;
 	}
 
 	@Override
@@ -232,19 +246,69 @@ public class TetriseGrille implements TetrisGrid{
 	@Override
 	public void merge() {
 		// TODO Auto-generated method stub
-		
+		if(tr!=null) {
+			if(tr_coo==null) {
+				throw new IllegalStateException("meging without coordinate");
+			}
+			int line=tr_coo.getLine();
+			int col=tr_coo.getCol();
+			for(int i=0;i<tr.getBoxSize();i++) {
+				for(int y=0;y<tr.getBoxSize();y++) {
+					if(tr.cell(i, y)!=TetrisCell.EMPTY) {
+						this.grille[line+i][col+y]=tr.cell(i, y);
+						}
+					}
+				}
+		tr=null;
+		}
+		tr_coo=null;
 	}
 
 	@Override
 	public void hardDrop() {
 		// TODO Auto-generated method stub
-		
+		while(this.tryMove(TetrisCoordinates.DOWN));
 	}
 
+	private boolean emptyLine(int nbLine) {
+		if(nbLine<0 || nbLine>=numberOfLines()) {
+			return false;
+		}
+		for(int y=numberOfCols()-1;y>=0;y--) {
+			if(this.gridCell(nbLine, y)!=TetrisCell.EMPTY) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	@Override
 	public List<Integer> pack() {
 		// TODO Auto-generated method stub
-		return null;
+		List<Integer> fulls=this.fullLines();		
+		for(int i=numberOfLines()-1;i>=0;i--) {
+			if(fulls.contains(i)) {
+				Arrays.fill(grille[i],TetrisCell.EMPTY);
+				continue;
+			}
+			else {
+				int compteur=i+1;
+				if(!emptyLine(compteur)) {
+					continue;
+				}
+				else {
+					while(emptyLine(compteur)) {
+						compteur++;
+					}
+					
+					grille[compteur-1]=grille[i];
+					TetrisCell[] nw=new TetrisCell[numberOfCols()];
+					Arrays.fill(nw,TetrisCell.EMPTY);
+					grille[i]=nw;
+				}
+			}	
+		}
+		return fulls;
 	}
 
 }

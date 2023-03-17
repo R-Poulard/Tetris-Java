@@ -106,6 +106,7 @@ public interface ScoreComputer {
 	public static ScoreComputer getScoreComputer(TetrisMode mode, int initialScore, int initialLevel, int initialLines) {
 		switch(mode) {
 		case MARATHON:
+			return new Scoring_marathon(initialScore, initialLevel, initialLines);
 		default:
 			throw new UnsupportedOperationException("Not implemented");
 		
