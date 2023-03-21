@@ -168,8 +168,10 @@ public interface GameManager {
 	 * @return a GameManager
 	 */
 	public static GameManager getGameManager(GameType type) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-	
-	
+		if(type==GameType.SIMPLE) {
+			return new SimpleGameManager();
+		}else {
+			return new VisualGameManager();
+		}
+	}	
 }
