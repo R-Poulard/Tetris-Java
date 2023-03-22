@@ -20,6 +20,7 @@ public class SimpleGamePlayer implements GamePlayer {
 	boolean active=false;
 	Tetromino held;
 	boolean soft_dropping=false;
+	boolean already_hold=false;
 	
 	public SimpleGamePlayer(PlayerType p,TetrisGrid grid, ScoreComputer scoreComputer, TetrominoProvider provider) {
 		this.p=p;
@@ -83,7 +84,7 @@ public class SimpleGamePlayer implements GamePlayer {
 	@Override
 	public boolean isOver() {
 		// TODO Auto-generated method stub
-		return grid.hasConflicts();
+		return grid.hasConflicts() || !pr.hasNext();
 	}
 
 	@Override
@@ -95,7 +96,8 @@ public class SimpleGamePlayer implements GamePlayer {
 	@Override
 	public boolean performAction(TetrisAction action) {
 		// TODO Auto-generated method stub
-		if(isOver() || !isActive()) {
+		if(!isActive()) {
+			
 			throw new IllegalStateException("Le joueur ne peux pas jouer");
 		}
 		try {
@@ -108,14 +110,19 @@ public class SimpleGamePlayer implements GamePlayer {
 				res=grid.tryMove(new_tr);
 				sc.registerAfterAction(grid);
 				if(res==false) {
+					this.already_hold=false;
 					grid.merge();
 					sc.registerMergePack(grid.pack(), grid);
-					try {
+					if(pr.hasNext()) {
 						grid.setTetromino(pr.next());
 						grid.setAtStartingCoordinates();
+						if(grid.hasConflicts()) {
+							pause();
+						}
 					}
-					catch(Exception e) {
+					else {
 						grid.setCoordinates(null);
+						pause();
 					}
 				}
 				break;
@@ -125,34 +132,45 @@ public class SimpleGamePlayer implements GamePlayer {
 			case HARD_DROP:
 				grid.hardDrop();
 				sc.registerAfterAction(grid);
+				this.already_hold=false;
 				grid.merge();
 				sc.registerMergePack(grid.pack(), grid);
-				try {
+				if(pr.hasNext()) {
 					grid.setTetromino(pr.next());
 					grid.setAtStartingCoordinates();
+					if(grid.hasConflicts()) {
+						pause();
+					}
 				}
-				catch(Exception e) {
+				else {
+					System.out.println("z");
 					grid.setCoordinates(null);
+					pause();
 				}
 				break;
 			case HOLD:
-				if(held!=grid.getTetromino()) {
+				if(held!=grid.getTetromino() && already_hold!=true) {
 					Tetromino t=getHeldTetromino();
 					if(t==grid.getTetromino()) {
 						return false;
 					}
 					held=grid.getTetromino();
 					if(held != null) {
+						already_hold=true;
 						if(t!=null) {
 							grid.setTetromino(t);
 							grid.setAtStartingCoordinates();
 						}else {
-							try {
+							if(pr.hasNext()) {
 								grid.setTetromino(pr.next());
 								grid.setAtStartingCoordinates();
+								if(grid.hasConflicts()) {
+									pause();
+								}
 							}
-							catch(Exception e) {
+							else{
 								grid.setCoordinates(null);
+								pause();
 							}
 						}
 						res=true;
