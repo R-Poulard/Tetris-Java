@@ -143,7 +143,6 @@ public class SimpleGamePlayer implements GamePlayer {
 					}
 				}
 				else {
-					System.out.println("z");
 					grid.setCoordinates(null);
 					pause();
 				}
