@@ -13,6 +13,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import javax.swing.*;
 import fr.upsaclay.bibs.tetris.control.manager.ManagerAction;
+import fr.upsaclay.bibs.tetris.model.grid.TetrisCell;
+import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
+import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoShape;
 
 public class GameFrameImpl extends JFrame implements GameFrame {
 
@@ -54,17 +57,17 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		pause_aux.add(boutton_pause_quit);
 		pause_aux.setOpaque(false);
 		pause.add(pause_aux);
-		pause.setBounds(100,50,200,200);
+		pause.setBounds(180,350,200,200);
 		this.add(pause);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	    this.setSize(screenSize.width/2, screenSize.height);  
 	    this.setVisible(true);  
 	    
 	    grille=new GamePanelImpl();
-	    grille.initialize();
 	    this.add(grille);
-	    grille.setBounds(5,5,grille.getParent().getWidth()*6/10,grille.getParent().getHeight()-15);
-	 
+	    grille.setBounds(0,0,grille.getParent().getWidth(),grille.getParent().getHeight());
+	    grille.initialize();
+	    
 	    menu=new JPanel();
 	    //BoxLayout box=new BoxLayout(menu,BoxLayout.Y_AXIS);
 	    //menu.setLayout(box);
@@ -211,6 +214,9 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	        public void run() {
 	        	GameFrameImpl mp=new GameFrameImpl();
 	            mp.initialize();
+	            mp.grille.updateHeldTetromino(TetrominoShape.ISHAPE.getTetromino(1));
+	            mp.grille.holded.display_tetromino();
+	            mp.drawGamePauseView();
 	        }
 	    });
 	}
@@ -231,18 +237,30 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	public void attachManagerActionListener(ActionListener listener) {
 		// TODO Auto-generated method stub
 		grille.setLoopAction(listener);
+		boutton_pause_resume.addActionListener(listener);
+		boutton_pause_quit.addActionListener(listener);
+		
+
+		end_menu.addActionListener(listener);
+		
+
+		player_mode1.addActionListener(listener);
+		player_mode2.addActionListener(listener);
+		game_mode1.addActionListener(listener);
+		boutton_menu_start.addActionListener(listener);
+		boutton_menu_quit.addActionListener(listener);
 	}
 
 	@Override
 	public void startGameKeyListener(KeyListener listener) {
 		// TODO Auto-generated method stub
-		
+		this.addKeyListener(listener);
 	}
 
 	@Override
 	public void stopGameKeyListener(KeyListener listener) {
 		// TODO Auto-generated method stub
-		
+		this.removeKeyListener(listener);
 	}
 
 	@Override
