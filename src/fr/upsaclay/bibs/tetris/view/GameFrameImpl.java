@@ -4,7 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
@@ -27,13 +30,15 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		ButtonGroup game_mode;
 		JRadioButton player_mode1,player_mode2;
 		JRadioButton game_mode1;
+		JButton boutton_menu_start;
+		JButton boutton_menu_quit;
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
 		this.setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBackground(Color.BLACK);
-		JPanel pause=new JPanel();
+		pause=new JPanel();
 		pause.setBackground(Color.LIGHT_GRAY);
 		pause.setLayout(new BoxLayout(pause,BoxLayout.Y_AXIS));
 		
@@ -55,40 +60,88 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    this.setSize(screenSize.width/2, screenSize.height);  
 	    this.setVisible(true);  
 	    
-	    GamePanelImpl grille=new GamePanelImpl();
+	    grille=new GamePanelImpl();
 	    grille.initialize();
 	    this.add(grille);
 	    grille.setBounds(5,5,grille.getParent().getWidth()*6/10,grille.getParent().getHeight()-15);
 	 
-	    JPanel menu=new JPanel();
-	    BoxLayout box=new BoxLayout(menu,BoxLayout.Y_AXIS);
-	    menu.setLayout(box);
+	    menu=new JPanel();
+	    //BoxLayout box=new BoxLayout(menu,BoxLayout.Y_AXIS);
+	    //menu.setLayout(box);
+	    menu.setLayout(new GridBagLayout());
+	    GridBagConstraints c=new GridBagConstraints();
+	    c.insets = new Insets(1, 1, 1, 1);
 	    this.add(menu);
-	    menu.setBounds(10,10,menu.getParent().getWidth(),menu.getParent().getHeight());
+	    menu.setBounds(0,this.getHeight()*2/10,this.getWidth(),this.getHeight()/2);
+	    menu.setBackground(Color.LIGHT_GRAY);
 	    JLabel tittle =new JLabel("Tetris (lame edition)");
+	    tittle.setHorizontalAlignment(JLabel.CENTER);
 	    JLabel game_mode_label =new JLabel("Mode de jeu:");
+	    game_mode_label.setHorizontalAlignment(JLabel.CENTER);
 	    JLabel player_mode_label =new JLabel("Mode du joueur:");
+	    player_mode_label.setHorizontalAlignment(JLabel.CENTER);
 	    player_mode=new ButtonGroup();
 	    player_mode1= new JRadioButton("IA (not chatGPT good)");
+	    player_mode1.setOpaque(false);
 	    player_mode2 = new JRadioButton("Human");
+	    player_mode2.setOpaque(false);
         player_mode.add(player_mode1);
         player_mode.add(player_mode2);
         player_mode.setSelected(player_mode1.getModel(), true);
         
         game_mode=new ButtonGroup();
 	    game_mode1=new JRadioButton("Marathon");
-	    player_mode.setSelected(game_mode1.getModel(), true);
+	    game_mode1.setOpaque(false);
+	    game_mode.setSelected(game_mode1.getModel(), true);
        
-	    menu.add(tittle);
-	    menu.add(player_mode_label);
-	    menu.add(player_mode1);
-	    menu.add(player_mode2);
-	    menu.add(game_mode_label);
-	    menu.add(game_mode1);
+	    boutton_menu_start=new JButton("START");
+	    boutton_menu_start.setOpaque(false);
+	    boutton_menu_quit=new JButton("QUIT");
+	    boutton_menu_quit.setOpaque(false);
 	    
-	    
-	    
-	    menu.setVisible(true);
+	    c.gridx=1;
+	    c.gridy=0;
+	    c.ipadx=100;
+	    c.ipady=100;
+
+	    menu.add(tittle,c);
+	    c.gridx=1;
+	    c.gridy=1;
+	    c.ipadx=20;
+	    c.ipady=20;
+
+	    menu.add(player_mode_label,c);
+	    c.gridx=0;
+	    c.gridy=2;
+	    c.ipadx=10;
+	    c.ipady=10;
+
+	    menu.add(player_mode1,c);
+	    c.gridx=2;
+	    c.gridy=2;
+	    c.ipadx=10;
+	    c.ipady=10;
+	    menu.add(player_mode2,c);
+	    c.gridx=1;
+	    c.gridy=3;
+	    c.ipadx=20;
+	    c.ipady=20;
+	    menu.add(game_mode_label,c);
+	    c.gridx=1;
+	    c.gridy=4;
+	    c.ipadx=10;
+	    c.ipady=10;
+	    menu.add(game_mode1,c);
+	    c.gridx=0;
+	    c.gridy=5;
+	    c.ipadx=30;
+	    c.ipady=30;
+	    menu.add(boutton_menu_start,c);
+	    c.gridx=2;
+	    c.gridy=5;
+	    c.ipadx=30;
+	    c.ipady=30;
+	    menu.add(boutton_menu_quit,c);
 	    
 	    endgame=new JPanel(new GridLayout(7,1,30,10));
 	    this.add(endgame);
@@ -111,8 +164,10 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    endgame.add(end_menu);
 	    endgame.setBackground(Color.LIGHT_GRAY);
 	    
-	    endgame.setVisible(false);
-	    pause.setVisible(false);
+	    this.endgame.setVisible(false);
+	    this.pause.setVisible(false);
+	    this.menu.setVisible(false);
+	    this.grille.setVisible(true);
 	}
 
 	@Override
