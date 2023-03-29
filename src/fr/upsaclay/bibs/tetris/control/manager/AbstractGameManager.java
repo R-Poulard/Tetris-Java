@@ -36,7 +36,6 @@ public abstract class AbstractGameManager implements GameManager {
 		this.cols=AbstractGameManager.DEFAULT_COLS;
 		this.lines=AbstractGameManager.DEFAULT_LINES;
 		provider=AbstractGameManager.DEFAULT_PROVIDER;
-	
 		this.player_type=AbstractGameManager.DEFAULT_PLAYER_TYPE;
 	}
 

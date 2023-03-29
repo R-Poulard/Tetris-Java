@@ -17,6 +17,9 @@ public enum GamePanelEvent {
 	/**
 	 * The player has made a combo
 	 */
-	COMBO;
-	
+	COMBO,
+	/**
+	 * When a combo is stopped;
+	 */
+	END_COMBO;
 }

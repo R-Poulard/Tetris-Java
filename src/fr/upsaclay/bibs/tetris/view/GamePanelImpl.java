@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 
 import fr.upsaclay.bibs.tetris.model.grid.SynchronizedView;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
+import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 
 public class GamePanelImpl extends JPanel implements GamePanel{
@@ -31,7 +32,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	int ligne;
 	int level;
 	Tetromino held;
-	List<Tetromino> next;
+	Tetromino next;
 	
 	Grille grille_de_jeu;
 	TetroCell holded;
@@ -41,7 +42,9 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	JLabel jlscore;
 	JLabel jlligne;
 	JLabel jllevel;
-	
+	JLabel jlinfo1;
+	JLabel jlinfo2;
+
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
@@ -68,12 +71,18 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		jlscore=new JLabel("Score: 0");
 		jlligne=new JLabel("Lignes: 0");
 		jllevel=new JLabel("Level: 0");
+		jlinfo1=new JLabel("Ici");
+		jlinfo2=new JLabel("La");
 		aux.add(Box.createRigidArea(new Dimension(0, 35)));
 		aux.add(jllevel);
 		aux.add(Box.createRigidArea(new Dimension(0, 35)));
 		aux.add(jlligne);
 		aux.add(Box.createRigidArea(new Dimension(0, 35)));
 		aux.add(jlscore);
+		aux.add(Box.createRigidArea(new Dimension(0, 200)));
+		aux.add(jlinfo1);
+		aux.add(Box.createRigidArea(new Dimension(0, 200)));
+		aux.add(jlinfo2);
 	}
 	
 	public class Grille extends JPanel{
@@ -266,7 +275,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 
 	@Override
 	public void setLoopAction(ActionListener listener) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stu
+		
 	}
 
 	@Override
@@ -290,7 +300,18 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	@Override
 	public void launchGamePanelEvent(GamePanelEvent event, Object attach) {
 		// TODO Auto-generated method stub
-		
+		switch(event) {
+		case COMBO:
+			jlinfo1.setText("Combo x"+((ScoreComputer) attach).getComboCount());
+			break;
+		case LINES:
+			jlinfo2.setText(((Integer)attach).toString() + " LIGNES DETRUITES");
+			break;
+		case END_COMBO:
+			jlinfo2.setText("");
+			jlinfo1.setText("");
+			break;		
+		}
 	}
 
 	@Override
@@ -323,7 +344,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	@Override
 	public void updateNextTetrominos(List<Tetromino> tetrominos) {
 		// TODO Auto-generated method stub
-		this.next=tetrominos;
+		this.next=tetrominos.get(0);
 	}
 
 	@Override
@@ -332,7 +353,6 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		grille_de_jeu.update();
 		holded.display_tetromino();
 		nexted.display_tetromino();
-		
 		jlscore.repaint();
 		jlligne.repaint();
 		jllevel.repaint();
