@@ -36,6 +36,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		JRadioButton game_mode1;
 		JButton boutton_menu_start;
 		JButton boutton_menu_quit;
+
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
@@ -166,7 +167,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	public void drawGamePlayView() {
 		// TODO Auto-generated method stub
 		pause.setVisible(false);
-		grille.drawGamePauseView();
+		grille.drawGamePlayView();
 		menu.setVisible(false);
 		endgame.setVisible(false);
 	}
@@ -184,7 +185,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	public void drawEndGameView() {
 		// TODO Auto-generated method stub
 		pause.setVisible(false);
-		grille.drawGamePauseView();
+		grille.drawEndGameView();
 		menu.setVisible(false);
 		endgame.setVisible(true);
 	}

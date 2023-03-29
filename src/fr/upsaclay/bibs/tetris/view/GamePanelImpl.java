@@ -17,7 +17,9 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
+import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager.ActionHandler;
 import fr.upsaclay.bibs.tetris.model.grid.SynchronizedView;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
 import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
@@ -44,7 +46,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	JLabel jllevel;
 	JLabel jlinfo1;
 	JLabel jlinfo2;
-
+	
+	Timer timer;
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
@@ -83,6 +86,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		aux.add(jlinfo1);
 		aux.add(Box.createRigidArea(new Dimension(0, 200)));
 		aux.add(jlinfo2);
+		timer=new Timer(0,null);
 	}
 	
 	public class Grille extends JPanel{
@@ -167,7 +171,6 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 						case GREY:
 							break;
 						case I:
-							System.out.println("lol");
 							jp.setBackground(Color.CYAN);
 							break;
 						case J:
@@ -249,6 +252,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	public void drawEndGameView() {
 		// TODO Auto-generated method stub
 		this.setVisible(true);
+		timer.restart();
 		this.pauseActionLoop();
 	}
 
@@ -276,25 +280,27 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	@Override
 	public void setLoopAction(ActionListener listener) {
 		// TODO Auto-generated method stu
-		
+		timer.addActionListener(listener);
+		((ActionHandler) listener).setTimer(timer);
 	}
 
 	@Override
 	public void startActionLoop() {
 		// TODO Auto-generated method stub
+		timer.start();
 		
 	}
 
 	@Override
 	public void pauseActionLoop() {
 		// TODO Auto-generated method stub
-		
+		timer.stop();
 	}
 
 	@Override
 	public void setLoopDelay(int ms) {
 		// TODO Auto-generated method stub
-		this.loopdelay=ms;
+		timer.setDelay(ms);
 	}
 
 	@Override

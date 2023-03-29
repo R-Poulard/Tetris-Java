@@ -8,10 +8,13 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 
 import javax.swing.JRadioButton;
+import javax.swing.Timer;
 
 import java.awt.event.ActionEvent;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;
+import fr.upsaclay.bibs.tetris.TetrisMode;
+import fr.upsaclay.bibs.tetris.control.player.PlayerType;
 import fr.upsaclay.bibs.tetris.control.player.VisualGamePlayer;
 import fr.upsaclay.bibs.tetris.view.GameFrameImpl;
 import fr.upsaclay.bibs.tetris.view.GamePanelImpl;
@@ -22,6 +25,7 @@ public class VisualGameManager extends AbstractGameManager {
 	KeyHandler key;
 	ActionHandler action;
 	VisualGamePlayer gp;
+	boolean inpause;
 	
 	@Override
 	public void initialize() {
@@ -40,24 +44,38 @@ public class VisualGameManager extends AbstractGameManager {
 	}
 	
 	public void start_game() {
+		inpause=false;
 		pl.drawGamePlayView();
 		pl.startGameKeyListener(key);
+
 		this.createPlayer();
 	}
 	
 	public void menu() {
 		pl.drawManagementView();
+		pl.stopGameKeyListener(key);
+		gp=null;
 	}
 	
+	public void comebacktogame() {
+		inpause=false;
+		pl.drawGamePlayView();
+		
+	}
+	
+	public void pause() {
+		pl.drawGamePauseView();
+		inpause=true;
+	}
 	
 	@Override
 	public void createPlayer() {
 		// TODO Auto-generated method stub
 		gp=new VisualGamePlayer();
 		gp.initialize(gr, scp, DEFAULT_PROVIDER);
-		pl.stopGameKeyListener(key);
 		pl.drawEndGameView();
 	}
+	
 	
 	public class KeyHandler implements KeyListener{
 
@@ -70,29 +88,34 @@ public class VisualGameManager extends AbstractGameManager {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			// TODO Auto-generated method stub
-			switch(e.getKeyCode()){
-			case 65://gauche
-				gp.performAction(TetrisAction.MOVE_LEFT);
-				break;
-			case 90://held
-				gp.performAction(TetrisAction.HOLD);
-				break;
-			case 69://droite
-				gp.performAction(TetrisAction.MOVE_RIGHT);
-				break;
-			case 88://droite
-				gp.performAction(TetrisAction.HARD_DROP);
-				break;
-			case 83://bas
-				gp.performAction(TetrisAction.START_SOFT_DROP);
-				break;	
-			case 75://rotgauche
-				gp.performAction(TetrisAction.ROTATE_LEFT);
-				break;
-			case 77://rotdroit
-				gp.performAction(TetrisAction.ROTATE_RIGHT);
-				break;
-			
+			if(!inpause) {
+				
+				switch(e.getKeyCode()){
+				case KeyEvent.VK_ESCAPE:
+					pause();
+				case 65://gauche
+					gp.performAction(TetrisAction.MOVE_LEFT);
+					break;
+				case 90://held
+					gp.performAction(TetrisAction.HOLD);
+					break;
+				case 69://droite
+					gp.performAction(TetrisAction.MOVE_RIGHT);
+					break;
+				case 88://droite
+					gp.performAction(TetrisAction.HARD_DROP);
+					break;
+				case 83://bas
+					gp.performAction(TetrisAction.START_SOFT_DROP);
+					break;	
+				case 75://rotgauche
+					gp.performAction(TetrisAction.ROTATE_LEFT);
+					break;
+				case 77://rotdroit
+					gp.performAction(TetrisAction.ROTATE_RIGHT);
+					break;
+				
+				}
 			}
 		}
 
@@ -117,32 +140,42 @@ public class VisualGameManager extends AbstractGameManager {
 		JRadioButton game_mode1;
 		JButton boutton_menu_start;
 		JButton boutton_menu_quit;
+		Timer timer;
+		
 		public void actionPerformed(ActionEvent e) {
 			Object source=e.getSource();
 			if(source==boutton_pause_resume) {
-				
+				comebacktogame();
 			}
 			else if(source==boutton_pause_quit) {
-				
+				menu();
 			}
 			else if(source==end_menu) {
-				
+				menu();
 			}
 			else if(source==player_mode1) {
-				
+				player_type=PlayerType.HUMAN;
 			}
 			else if(source==player_mode2) {
-				
+				player_type=PlayerType.AI;
 			}
 			else if(source==game_mode1) {
-				
+				mode=TetrisMode.MARATHON;
 			}
 			else if(source==boutton_menu_start) {
-				
+				start_game();
 			}
 			else if(source==boutton_menu_quit){
-				
+				System.exit(0);
 			}
+			else if(source==timer) {
+				gp.performAction(TetrisAction.DOWN);
+			}
+		}
+		
+		public void setTimer(Timer t) {
+			timer=t;
+			t.setInitialDelay(20);
 		}
 		public void setButton(JButton bpr,JButton bpq, JButton em,JRadioButton pm1,JRadioButton pm2,JRadioButton gm1,JButton bms,JButton bmq) {
 			boutton_pause_resume=bpr;
