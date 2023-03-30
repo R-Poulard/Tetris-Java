@@ -98,8 +98,8 @@ public abstract class AbstractGameManager implements GameManager {
 		// TODO Auto-generated method stub
 		gr=TetrisGrid.getEmptyGrid(lines, cols);
 		scp=ScoreComputer.getScoreComputer(getGameMode());
-		this.createPlayer();
-		this.pausePlayer();
+		createPlayer();
+		pausePlayer();
 	}
 
 	@Override

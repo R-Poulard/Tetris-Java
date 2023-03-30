@@ -128,39 +128,43 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipady=30;
 	    menu.add(boutton_menu_quit,c);
 	    
-	    endgame=new JPanel(new GridLayout(7,1,30,10));
+	    endgame=new JPanel(new GridLayout(6,1,30,10));
 	    this.add(endgame);
-	    endgame.setBounds(0,endgame.getParent().getHeight()*2/10,endgame.getParent().getWidth()*6/10,endgame.getParent().getHeight()*3/10);
-	    JLabel endgame_label1=new JLabel("Partie Terminï¿½");
+	    endgame.setBounds(0,endgame.getParent().getHeight()*2/10,endgame.getParent().getWidth()*6/10,endgame.getParent().getHeight()*5/10);
+	    JLabel endgame_label1=new JLabel("Partie Terminé");
 	    endgame_label1.setHorizontalAlignment(JLabel.CENTER);
 	    JLabel endgame_label2=new JLabel("Score :");
 	    endgame_label2.setHorizontalAlignment(JLabel.CENTER);
 	    JLabel endgame_label3=new JLabel("Niveau atteint :");
 	    endgame_label3.setHorizontalAlignment(JLabel.CENTER);
-	    JLabel endgame_label4=new JLabel("Nombre de ligne cassï¿½ :");
+	    JLabel endgame_label4=new JLabel("Nombre de ligne cassé:");
 	    endgame_label4.setHorizontalAlignment(JLabel.CENTER);
 	    endgame.add(endgame_label1);
 	    endgame.add(endgame_label2);
 	    endgame.add(endgame_label3);
 	    endgame.add(endgame_label4);
-	    
 	    endgame.add(Box.createRigidArea(new Dimension(0, 5)));
 	    endgame.add(end_menu);
+	    
 	    endgame.setBackground(Color.LIGHT_GRAY);
+	    endgame.setOpaque(true);
 	    
 	    this.endgame.setVisible(false);
 	    this.pause.setVisible(false);
 	    this.menu.setVisible(false);
-	    this.grille.setVisible(true);
+	    this.grille.setVisible(false);
 	}
-
+	public GamePanelImpl getgrid() {
+		return grille;
+	}
 	@Override
 	public void drawManagementView() {
 		// TODO Auto-generated method stub
 		pause.setVisible(false);
-		grille.drawGamePauseView();
+		grille.drawManagementView();
 		menu.setVisible(true);
 		endgame.setVisible(false);
+		grille.setFocusable(false);
 	}
 
 	@Override
@@ -170,36 +174,30 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		grille.drawGamePlayView();
 		menu.setVisible(false);
 		endgame.setVisible(false);
+		grille.setFocusable(true);
 	}
 
 	@Override
 	public void drawGamePauseView() {
 		// TODO Auto-generated method stub
+		System.out.println("ici ");
 		pause.setVisible(true);
 		grille.drawGamePauseView();
 		menu.setVisible(false);
 		endgame.setVisible(false);
+		pause.repaint();
+		grille.setFocusable(false);
 	}
 
 	@Override
 	public void drawEndGameView() {
 		// TODO Auto-generated method stub
+		endgame.setVisible(true);
 		pause.setVisible(false);
 		grille.drawEndGameView();
 		menu.setVisible(false);
-		endgame.setVisible(true);
-	}
-
-	public static void main(String[] args) {    
-	    SwingUtilities.invokeLater(new Runnable() {
-	        public void run() {
-	        	GameFrameImpl mp=new GameFrameImpl();
-	            mp.initialize();
-	            mp.grille.updateHeldTetromino(TetrominoShape.ISHAPE.getTetromino(1));
-	            mp.grille.holded.display_tetromino();
-	            mp.drawGamePauseView();
-	        }
-	    });
+		grille.setFocusable(false);
+		endgame.repaint();
 	}
 
 	@Override
@@ -253,13 +251,16 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	@Override
 	public void startGameKeyListener(KeyListener listener) {
 		// TODO Auto-generated method stub
-		this.addKeyListener(listener);
+		grille.addKeyListener(listener);
+		grille.setFocusable(true);
+		grille.requestFocus();
 	}
-
+	
+	
 	@Override
 	public void stopGameKeyListener(KeyListener listener) {
 		// TODO Auto-generated method stub
-		this.removeKeyListener(listener);
+		grille.removeKeyListener(listener);
 	}
 
 	@Override

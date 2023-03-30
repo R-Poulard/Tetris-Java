@@ -1,98 +1,91 @@
 package fr.upsaclay.bibs.tetris.control.player;
 
-import java.io.PrintStream;
+
+import java.util.ArrayList;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;
 import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager;
-import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
-import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
-import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
-import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoProvider;
 
-public class VisualGamePlayer implements GamePlayer{
 
+public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
+
+	VisualGameManager mg;
 	
-	public void initialize(TetrisGrid grid, ScoreComputer scoreComputer, TetrominoProvider provider, VisualGameManager visualGameManager) {
-		// TODO Auto-generated method stub
-		
+	public VisualGamePlayer(VisualGameManager mg) {
+		super(mg.getPlayerType());
+		// TODO Auto-generated constructor stub
+		this.mg=mg;
 	}
-	
-	@Override
-	public PlayerType getType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public void setLogPrintStream(PrintStream out) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public int getLevel() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public int getScore() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public int getLineScore() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public boolean isActive() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
+
 	@Override
 	public void start() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public boolean isOver() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	@Override
-	public TetrisGridView getGridView() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public boolean performAction(TetrisAction action) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	@Override
-	public Tetromino getHeldTetromino() {
-		// TODO Auto-generated method stub
-		return null;
+		super.start();
+		ArrayList<Tetromino> tmp=new ArrayList<>();
+		tmp.add(this.pr.showNext(0));
+		mg.getgame_frame().getgrid().updateNextTetrominos(tmp);
+		mg.getgame_frame().getgrid().updateHeldTetromino(null);
+		mg.getgame_frame().getgrid().update();
 	}
 
-	@Override
-	public void initialize(TetrisGrid grid, ScoreComputer scoreComputer, TetrominoProvider provider) {
-		// TODO Auto-generated method stub
-		
+	
+	public void unpause() {
+		active=true;
+	}
+
+	public boolean performAction(TetrisAction action) {
+		boolean res;
+		try {
+		res=super.performAction(action);
+		}
+		catch(IllegalStateException e) {
+			mg.over();
+			return false;
+		}
+		if(res) {
+			switch(action) {
+			case DOWN:
+				if(!active) {
+					return false;
+				}
+				if(this.already_hold==false) {
+					ArrayList<Tetromino> tmp=new ArrayList<>();
+					tmp.add(this.pr.showNext(0));
+					mg.getgame_frame().getgrid().updateNextTetrominos(tmp);
+				}
+			case END_SOFT_DROP:
+				if(mg.getgame_frame().getgrid().getTimer()!=null) {
+					mg.getgame_frame().getgrid().setLoopDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay());
+				}
+				break;
+			case HOLD:
+				if(!active) {
+
+					return false;
+				}
+				mg.getgame_frame().getgrid().updateHeldTetromino(held);
+				break;
+			case HARD_DROP:
+				if(!active) {
+					return false;
+				}
+				if(this.already_hold==false) {
+					ArrayList<Tetromino> tmp=new ArrayList<>();
+					tmp.add(this.pr.showNext(0));
+					mg.getgame_frame().getgrid().updateNextTetrominos(tmp);
+				}
+			case START_SOFT_DROP:
+				if(mg.getgame_frame().getgrid().getTimer()!=null) {
+					mg.getgame_frame().getgrid().setLoopDelay(100);
+				}
+				this.performAction(TetrisAction.DOWN);
+				break;
+			default:
+				break;
+			}
+			mg.getgame_frame().getgrid().update();
+		}
+	
+		return true;
 	}
 }

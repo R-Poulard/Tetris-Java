@@ -15,7 +15,8 @@ public class SimpleGameManager extends AbstractGameManager{
 		if(player_type==PlayerType.AI) {
 			throw new UnsupportedOperationException();
 		}
-		pl=new SimpleGamePlayer(this.player_type, gr,scp, provider);	
+		pl=new SimpleGamePlayer(this.player_type);	
+		pl.initialize( gr,scp, provider);
 	}
 
 }

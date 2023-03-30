@@ -2,6 +2,7 @@ package fr.upsaclay.bibs.tetris.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -12,12 +13,14 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 
 import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager.ActionHandler;
 import fr.upsaclay.bibs.tetris.model.grid.SynchronizedView;
@@ -26,15 +29,14 @@ import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 
 public class GamePanelImpl extends JPanel implements GamePanel{
-	int nblines=20;
-	int nbcols=10;
-	TetrisGridView grille;
+	int nblines;
+	int nbcols;
+	TetrisGridView grille_model;
 	int loopdelay;
 	int score;
 	int ligne;
 	int level;
-	Tetromino held;
-	Tetromino next;
+
 	
 	Grille grille_de_jeu;
 	TetroCell holded;
@@ -88,31 +90,46 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		aux.add(jlinfo2);
 		timer=new Timer(0,null);
 	}
-	
+
 	public class Grille extends JPanel{
 		
-		SynchronizedView grid;
+		
 		JPanel[][] grille;
 		
 		private Grille() {
 			super();
+			
+		}
+		public void set_up() {
 			this.setLayout(new GridLayout(nblines,nbcols));
+			if(grille!=null) {
+				for(int i=0;i<nblines;i++) {
+					for(int y=0;y<nbcols;y++) {
+						this.remove(grille[i][y]);
+					}
+				}
+				
+			}
 			grille=new JPanel[nblines][nbcols];
 			for(int i=0;i<nblines;i++) {
 				for(int y=0;y<nbcols;y++) {
 					grille[i][y]= new JPanel();
-					grille[i][y].setBackground(new Color(0,0,i*5+y*5));
 					this.add(grille[i][y]);
 				}
 			}
+			this.repaint();
 		}
 		
 		public void update(){
+			
 			for(int i=0;i<nblines;i++) {
 				for(int y=0;y<nbcols;y++) {
-					switch(grid.gridCell(i, y)) {
+					Border blackline = BorderFactory.createLineBorder(Color.black);
+					grille[i][y].setBorder(blackline);
+					switch(grille_model.visibleCell(i, y)) {
 					case EMPTY:
-						grille[i][y].setBackground(Color.WHITE);
+						grille[i][y].setBorder(null);
+						grille[i][y].setBackground(new Color(39,33,79,250));
 						break;
 					case GREY:
 						break;
@@ -152,51 +169,74 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 
 		
 		JPanel main;
+		JPanel[][] grille;
+		Tetromino tr;
 		private TetroCell() {
 			this.setLayout(null);
+
 			this.setBackground(Color.WHITE);
 			
 		}
-		
+		void set_tetro(Tetromino tr) {
+			this.tr=tr;
+		}
 		void display_tetromino(){
-			main=new JPanel(new GridLayout(held.getBoxSize(),held.getBoxSize()));
-			for(int i=0;i<held.getBoxSize();i++) {
-				for(int y=0;y<held.getBoxSize();y++) {
-					JPanel jp=new JPanel();
-					main.add(jp);
-					switch(held.cell(i, y)) {
+			if(main !=null) {
+			this.remove(main);
+			}
+			if(tr==null) {
+				System.out.println("null");
+				this.setBackground(Color.WHITE);
+				this.repaint();
+				return;
+			}
+			main=new JPanel(new GridLayout(tr.getBoxSize(),tr.getBoxSize()));
+			grille = new JPanel[tr.getBoxSize()][tr.getBoxSize()];
+			
+			for(int i=0;i<tr.getBoxSize();i++) {
+				for(int y=0;y<tr.getBoxSize();y++) {
+					grille[i][y]=new JPanel();
+					Border blackline = BorderFactory.createLineBorder(Color.black);
+					grille[i][y].setBorder(blackline);
+					switch(tr.cell(i, y)) {
 						case EMPTY:
-							jp.setBackground(Color.WHITE);
+							grille[i][y].setBorder(null);
+							grille[i][y].setBackground(Color.WHITE);
 							break;
 						case GREY:
 							break;
 						case I:
-							jp.setBackground(Color.CYAN);
+							grille[i][y].setBackground(Color.CYAN);
 							break;
 						case J:
-							jp.setBackground(Color.CYAN);
+							grille[i][y].setBackground(Color.RED);
 							break;
 						case L:
-							jp.setBackground(Color.CYAN);
+							grille[i][y].setBackground(Color.BLUE);
 							break;
 						case O:
-							jp.setBackground(Color.CYAN);
+							grille[i][y].setBackground(Color.YELLOW);
 							break;
 						case S:
-							jp.setBackground(Color.CYAN);
+							grille[i][y].setBackground(Color.GREEN);
 							break;
 						case T:
-							jp.setBackground(Color.CYAN);
+							grille[i][y].setBackground(Color.MAGENTA);
 							break;
 						case Z:
-							jp.setBackground(Color.CYAN);
+							grille[i][y].setBackground(Color.orange);
 							break;
 					}
+					grille[i][y].setVisible(true);
+					grille[i][y].setOpaque(true);
+					
+					main.add(grille[i][y]);
+					grille[i][y].repaint();
 				}
 			}
-			
 			this.add(main);
-			switch(held.getShape()) {
+			
+			switch(tr.getShape()) {
 			case ISHAPE:
 				main.setBounds(20,20,175,175);
 				break;
@@ -222,8 +262,9 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 				break;
 			
 			}
-
-			
+			main.setVisible(true);
+			main.repaint();
+			this.repaint();
 		}
 		
 	}
@@ -239,21 +280,22 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		// TODO Auto-generated method stub
 		this.setVisible(true);
 		this.startActionLoop();
+		System.out.println(timer.isRunning());
+
 	}
 
 	@Override
 	public void drawGamePauseView() {
 		// TODO Auto-generated method stub
-		this.setVisible(true);
+		//this.setVisible(true);
 		this.pauseActionLoop();
+
 	}
 
 	@Override
 	public void drawEndGameView() {
 		// TODO Auto-generated method stub
-		this.setVisible(true);
-		timer.restart();
-		this.pauseActionLoop();
+		this.timer=null;
 	}
 
 	@Override
@@ -271,15 +313,16 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	@Override
 	public void setGridView(TetrisGridView view) {
 		// TODO Auto-generated method stub
-		this.grille=view;
-		this.nbcols=view.numberOfLines();
+		this.grille_model=view;
+		this.nblines=view.numberOfLines();
 		this.nbcols=view.numberOfCols();
-		this.grille_de_jeu.update();
+		this.grille_de_jeu.set_up();
 	}
 
 	@Override
 	public void setLoopAction(ActionListener listener) {
 		// TODO Auto-generated method stu
+		timer=new Timer(1,null);
 		timer.addActionListener(listener);
 		((ActionHandler) listener).setTimer(timer);
 	}
@@ -344,25 +387,34 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	@Override
 	public void updateHeldTetromino(Tetromino tetromino) {
 		// TODO Auto-generated method stub
-		this.held=tetromino;
+		this.holded.set_tetro(tetromino);
+		holded.display_tetromino();
+		holded.revalidate();
+		holded.repaint();	
 	}
 
 	@Override
 	public void updateNextTetrominos(List<Tetromino> tetrominos) {
 		// TODO Auto-generated method stub
-		this.next=tetrominos.get(0);
+		this.nexted.set_tetro(tetrominos.get(0));
+		nexted.display_tetromino();
+		nexted.revalidate();
+		nexted.repaint();
 	}
 
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
 		grille_de_jeu.update();
-		holded.display_tetromino();
-		nexted.display_tetromino();
+		grille_de_jeu.repaint();
 		jlscore.repaint();
 		jlligne.repaint();
 		jllevel.repaint();
-		
+	}
+
+	public Timer getTimer() {
+		// TODO Auto-generated method stub
+		return timer;
 	}
 
 }

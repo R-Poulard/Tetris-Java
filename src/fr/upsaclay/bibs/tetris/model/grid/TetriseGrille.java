@@ -82,9 +82,6 @@ public class TetriseGrille implements TetrisGrid{
 		if(tr_coo==null && tr!=null) {
 			throw new IllegalStateException();
 		}
-		System.out.println(tr_coo);
-		System.out.println(i+" "+j);
-
 		if(tr!=null && i>=tr_coo.getLine() && i<(tr_coo.getLine()+tr.getBoxSize()) && j>=tr_coo.getCol() && j<(tr_coo.getCol()+tr.getBoxSize())){
 			return (tr.cell(i-tr_coo.getLine(), j-tr_coo.getCol())!=TetrisCell.EMPTY)? tr.cell(i-tr_coo.getLine(), j-tr_coo.getCol()): this.gridCell(i, j);
 		}

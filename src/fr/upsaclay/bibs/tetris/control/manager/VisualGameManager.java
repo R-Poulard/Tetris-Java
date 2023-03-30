@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 
 import javax.swing.JRadioButton;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import java.awt.event.ActionEvent;
@@ -16,16 +17,18 @@ import fr.upsaclay.bibs.tetris.TetrisAction;
 import fr.upsaclay.bibs.tetris.TetrisMode;
 import fr.upsaclay.bibs.tetris.control.player.PlayerType;
 import fr.upsaclay.bibs.tetris.control.player.VisualGamePlayer;
+import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoShape;
 import fr.upsaclay.bibs.tetris.view.GameFrameImpl;
 import fr.upsaclay.bibs.tetris.view.GamePanelImpl;
 
 public class VisualGameManager extends AbstractGameManager {
 
-	GameFrameImpl pl;
+	GameFrameImpl game_frame;
 	KeyHandler key;
 	ActionHandler action;
-	VisualGamePlayer gp;
+	VisualGamePlayer pl;
 	boolean inpause;
+	Timer timer;
 	
 	@Override
 	public void initialize() {
@@ -37,45 +40,58 @@ public class VisualGameManager extends AbstractGameManager {
 		this.player_type=AbstractGameManager.DEFAULT_PLAYER_TYPE;
 		key=new KeyHandler();
 		action=new ActionHandler();
-		pl=new GameFrameImpl();
-		pl.initialize();
-		pl.attachManagerActionListener(action);
+		game_frame=new GameFrameImpl();
+		game_frame.initialize();
+		game_frame.attachManagerActionListener(action);
 		menu();
 	}
 	
+	public GameFrameImpl getgame_frame() {
+		return game_frame;
+	}
 	public void start_game() {
-		inpause=false;
-		pl.drawGamePlayView();
-		pl.startGameKeyListener(key);
-
-		this.createPlayer();
+		inpause=false;	
+		loadNewGame();
+		game_frame.getgrid().setGridView(gr.getView());
+		pl.initialize(gr, scp, DEFAULT_PROVIDER);
+		pl.start();
+		game_frame.getgrid().setLoopAction(action);
+		game_frame.drawGamePlayView();
+		game_frame.startGameKeyListener(key);
 	}
 	
 	public void menu() {
-		pl.drawManagementView();
-		pl.stopGameKeyListener(key);
-		gp=null;
+		game_frame.drawManagementView();
+		pl=null;
 	}
 	
 	public void comebacktogame() {
 		inpause=false;
-		pl.drawGamePlayView();
-		
+		game_frame.drawGamePlayView();
+		pl.unpause();
 	}
 	
 	public void pause() {
-		pl.drawGamePauseView();
+		game_frame.drawGamePauseView();
 		inpause=true;
 	}
 	
+	
+	public void over() {
+		System.out.println("IT S OVEEEERRR");
+		game_frame.drawEndGameView();
+		game_frame.stopGameKeyListener(key);
+	}
 	@Override
 	public void createPlayer() {
-		// TODO Auto-generated method stub
-		gp=new VisualGamePlayer();
-		gp.initialize(gr, scp, DEFAULT_PROVIDER);
-		pl.drawEndGameView();
+		 this.pl=new VisualGamePlayer(this);
 	}
 	
+	@Override
+	public void pausePlayer() {
+		// TODO Auto-generated method stub
+		pl.pause();
+	}
 	
 	public class KeyHandler implements KeyListener{
 
@@ -88,33 +104,42 @@ public class VisualGameManager extends AbstractGameManager {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			// TODO Auto-generated method stub
+
 			if(!inpause) {
-				
+				boolean res=true;
 				switch(e.getKeyCode()){
 				case KeyEvent.VK_ESCAPE:
 					pause();
+					pl.pause();
+					res=true;
+					break;
 				case 65://gauche
-					gp.performAction(TetrisAction.MOVE_LEFT);
+
+					res=pl.performAction(TetrisAction.MOVE_LEFT);
 					break;
 				case 90://held
-					gp.performAction(TetrisAction.HOLD);
+					res=pl.performAction(TetrisAction.HOLD);
 					break;
 				case 69://droite
-					gp.performAction(TetrisAction.MOVE_RIGHT);
+
+					res=pl.performAction(TetrisAction.MOVE_RIGHT);
 					break;
-				case 88://droite
-					gp.performAction(TetrisAction.HARD_DROP);
+				case 88://hard drop
+					res=pl.performAction(TetrisAction.HARD_DROP);
 					break;
 				case 83://bas
-					gp.performAction(TetrisAction.START_SOFT_DROP);
+					res=pl.performAction(TetrisAction.START_SOFT_DROP);
 					break;	
 				case 75://rotgauche
-					gp.performAction(TetrisAction.ROTATE_LEFT);
+					res=pl.performAction(TetrisAction.ROTATE_LEFT);
 					break;
 				case 77://rotdroit
-					gp.performAction(TetrisAction.ROTATE_RIGHT);
+					res=pl.performAction(TetrisAction.ROTATE_RIGHT);
 					break;
-				
+				}
+				if(!res) {
+
+					over();
 				}
 			}
 		}
@@ -124,12 +149,24 @@ public class VisualGameManager extends AbstractGameManager {
 			// TODO Auto-generated method stub
 			switch(e.getKeyCode()){
 			case 83://bas
-				gp.performAction(TetrisAction.END_SOFT_DROP);
+				if(!pl.performAction(TetrisAction.END_SOFT_DROP)) {
+
+					over();
+				}
 			}
 		}
 		
 	}
 	
+	public static void main(String[] args) {    
+	    SwingUtilities.invokeLater(new Runnable() {
+	        public void run() {
+	        	SwingUtilities.invokeLater(()-> GameManager.getGameManager(GameType.VISUAL).initialize());
+
+	        }
+	    });
+	}
+
 	public class ActionHandler implements ActionListener{
 		JButton boutton_pause_resume;
 		JButton boutton_pause_quit;
@@ -140,7 +177,7 @@ public class VisualGameManager extends AbstractGameManager {
 		JRadioButton game_mode1;
 		JButton boutton_menu_start;
 		JButton boutton_menu_quit;
-		Timer timer;
+		
 		
 		public void actionPerformed(ActionEvent e) {
 			Object source=e.getSource();
@@ -169,13 +206,16 @@ public class VisualGameManager extends AbstractGameManager {
 				System.exit(0);
 			}
 			else if(source==timer) {
-				gp.performAction(TetrisAction.DOWN);
+				if(pl!=null && !pl.performAction(TetrisAction.DOWN)) {
+					over();
+				}
 			}
 		}
 		
 		public void setTimer(Timer t) {
 			timer=t;
-			t.setInitialDelay(20);
+			timer.setInitialDelay(1000);
+			timer.setDelay(1000);
 		}
 		public void setButton(JButton bpr,JButton bpq, JButton em,JRadioButton pm1,JRadioButton pm2,JRadioButton gm1,JButton bms,JButton bmq) {
 			boutton_pause_resume=bpr;

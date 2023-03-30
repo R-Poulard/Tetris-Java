@@ -22,9 +22,8 @@ public class SimpleGamePlayer implements GamePlayer {
 	boolean soft_dropping=false;
 	boolean already_hold=false;
 	
-	public SimpleGamePlayer(PlayerType p,TetrisGrid grid, ScoreComputer scoreComputer, TetrominoProvider provider) {
+	public SimpleGamePlayer(PlayerType p) {
 		this.p=p;
-		initialize(grid, scoreComputer, provider);
 	}
 	
 	@Override
@@ -80,6 +79,8 @@ public class SimpleGamePlayer implements GamePlayer {
 	public void pause() {
 		active=false;
 	}
+	
+
 
 	@Override
 	public boolean isOver() {
