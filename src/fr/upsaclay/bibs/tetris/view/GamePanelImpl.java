@@ -185,25 +185,35 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		Tetromino tr;
 		private TetroCell() {
 			this.setLayout(null);
-
-			this.setBackground(Color.WHITE);
+			this.setBackground(new Color(39,33,79,255));
 			
 		}
 		void set_tetro(Tetromino tr) {
 			this.tr=tr;
 		}
+		
 		void display_tetromino(){
+			System.out.println(this.getComponentCount());
 			if(main !=null) {
-			this.remove(main);
+				System.out.println("on remove");
+				this.removeAll();
+				for(int i=0;i<grille.length;i++) {
+					for(int y=0;y<grille.length;y++) {
+						main.remove(grille[i][y]);
+						grille[i][y].setVisible(false);
+					}
+				}
+				this.revalidate();
+				this.repaint();
 			}
-			this.setBackground(new Color(39,33,79,160));
-			this.repaint();
 			if(tr==null) {
+				System.out.println("tr null");
 				this.repaint();
 				return;
 			}
+			System.out.println("init");
 			main=new JPanel(new GridLayout(tr.getBoxSize(),tr.getBoxSize()));
-			main.setBackground(new Color(39,33,79,160));
+			main.setBackground(new Color(39,33,79,255));
 			
 			grille = new JPanel[tr.getBoxSize()][tr.getBoxSize()];
 			
@@ -215,8 +225,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 					switch(tr.cell(i, y)) {
 						case EMPTY:
 							grille[i][y].setBorder(null);
-							grille[i][y].setOpaque(false);
-							grille[i][y].setBackground(new Color(39,33,79,160));
+							grille[i][y].setOpaque(true);
+							grille[i][y].setBackground(new Color(39,33,79,255));
 							break;
 						case GREY:
 							break;
@@ -242,47 +252,56 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 							grille[i][y].setBackground(Color.orange);
 							break;
 					}
-					grille[i][y].setVisible(true);
-					grille[i][y].setOpaque(true);
 					main.add(grille[i][y]);
 					grille[i][y].repaint();
 				}
 			}
 			this.add(main);
 			
+			this.getParent().getWidth();
+			
 			switch(tr.getShape()) {
 			case ISHAPE:
-				main.setBounds(20,20,175,175);
+				main.setBounds(this.getParent().getWidth()/8
+						,this.getParent().getWidth()/12,175,175);
 				break;
 			case JSHAPE:
-				main.setBounds(10,35,150,150);
+				main.setBounds(this.getParent().getWidth()/8
+				,this.getParent().getWidth()/12,150,150);
 				break;
 			case LSHAPE:
-				main.setBounds(10,35,150,150);
+				main.setBounds(this.getParent().getWidth()/8
+				,this.getParent().getWidth()/12,150,150);
 				break;
 			case OSHAPE:
-				main.setBounds(60,60,100,100);
+				main.setBounds(this.getParent().getWidth()/6
+				,this.getParent().getWidth()/6,100,100);
 				break;
 			case SSHAPE:
-				main.setBounds(10,35,150,150);
+				main.setBounds(this.getParent().getWidth()/8
+				,this.getParent().getWidth()/6,150,150);
 				break;
 			case TSHAPE:
-				main.setBounds(35,35,150,150);
+				main.setBounds(this.getParent().getWidth()/8
+				,this.getParent().getWidth()/6,150,150);
 				break;
 			case ZSHAPE:
-				main.setBounds(10,35,150,150);
+				main.setBounds(this.getParent().getWidth()/8
+				,this.getParent().getWidth()/6,150,150);
 				break;
 			default:
 				break;
 			
 			}
 			main.setVisible(true);
+			main.setOpaque(true);
 			main.repaint();
+			this.revalidate();
 			this.repaint();
 		}
 		
 	}
-
+	
 	@Override
 	public void drawManagementView() {
 		// TODO Auto-generated method stub

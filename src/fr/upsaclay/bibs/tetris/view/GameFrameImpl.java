@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.upsaclay.bibs.tetris.control.manager.ManagerAction;
@@ -54,10 +55,13 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		this.setBackground(Color.BLACK);
 		this.createManagerComponents();
 		pause=new JPanel();
-		pause.setBackground(Color.LIGHT_GRAY);
+		pause.setBackground(new Color(0,0,0,200));
+		Border blackline = BorderFactory.createLineBorder(Color.cyan);
+		pause.setBorder(blackline);
 		pause.setLayout(new BoxLayout(pause,BoxLayout.Y_AXIS));
 		
 		JLabel text_pause=new JLabel("Jeu en Pause");
+		text_pause.setForeground(Color.cyan);
 		text_pause.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		
 		pause.add(Box.createRigidArea(new Dimension(0, 35)));
