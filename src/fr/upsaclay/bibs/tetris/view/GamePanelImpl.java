@@ -4,13 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -55,11 +59,26 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	public void initialize() {
 		// TODO Auto-generated method stub
 		this.setLayout(null);
-		aux=new JPanel();
+		aux=new JPanel() {
+		  @Override
+		  protected void paintComponent(Graphics g) {
+		    super.paintComponent(g);
+		    Image background;
+			try {
+				String fileName = "resources/images/background.jpg";
+				background = ImageIO.read(new File(fileName));
+			    g.drawImage(background, 0, 0, null);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} };
+		aux.setBackground(Color.black);
 		this.add(aux);
 		aux.setLayout(new BoxLayout(aux,BoxLayout.Y_AXIS));
 		aux.setBounds(aux.getParent().getWidth()*6/10+5,5,aux.getParent().getWidth()*4/10-5,aux.getParent().getHeight()-15);
-		aux.setBackground(Color.black);
+
 		grille_de_jeu=new Grille();
 		this.add(grille_de_jeu);
 		grille_de_jeu.setBounds(5,5,grille_de_jeu.getParent().getWidth()*6/10,grille_de_jeu.getParent().getHeight()-15);
@@ -68,37 +87,61 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		nexted=new TetroCell();
 		aux.add(nexted);
 		nexted.setMinimumSize(new Dimension(nexted.getParent().getWidth()*4/7,nexted.getParent().getWidth()*4/7));
-		
+
 		nexted.setMaximumSize(new Dimension(nexted.getParent().getWidth()*4/7,nexted.getParent().getHeight()*1/5));
 		aux.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		holded=new TetroCell();
 		aux.add(holded);
+
 		holded.setMaximumSize(new Dimension(holded.getParent().getWidth()*4/7,holded.getParent().getWidth()*4/7));
 		holded.setMinimumSize(new Dimension(holded.getParent().getWidth()*4/7,holded.getParent().getWidth()*4/7));
 
+		JPanel labels=new JPanel();
+		
+		
 		jlscore=new JLabel("Score: 0");
-		jlscore.setForeground(Color.CYAN);
+		jlscore.setFont(new Font("Rockwell", Font.BOLD, 30)); //Creating an Times New Roman Font Style with size 30
+		jlscore.setForeground(Color.red);
+		jlscore.setAlignmentX(CENTER_ALIGNMENT);
+		
 		jlligne=new JLabel("Lignes: 0");
-		jlligne.setForeground(Color.CYAN);
+		jlligne.setFont(new Font("Rockwell", Font.BOLD, 30)); //Creating an Times New Roman Font Style with size 30
+		jlligne.setForeground(Color.red);
+		jlligne.setAlignmentX(CENTER_ALIGNMENT);
+		
 		jllevel=new JLabel("Level: 0");
-		jllevel.setForeground(Color.CYAN);
+		jllevel.setFont(new Font("Rockwell", Font.BOLD, 30)); //Creating an Times New Roman Font Style with size 30
+		jllevel.setForeground(Color.red);
+		jllevel.setAlignmentX(CENTER_ALIGNMENT);
+		
 		jlinfo1=new JLabel("");
-		jlinfo1.setForeground(Color.RED);
+		jlinfo1.setFont(new Font("Rockwell", Font.BOLD, 50)); //Creating an Times New Roman Font Style with size 30
+		jlinfo1.setForeground(Color.red);
 		jlinfo1.setAlignmentX(CENTER_ALIGNMENT);
+		
 		jlinfo2=new JLabel("");
-		jlinfo2.setForeground(Color.RED);
+		jlinfo2.setFont(new Font("Rockwell", Font.BOLD, 50)); //Creating an Times New Roman Font Style with size 30
+		jlinfo2.setForeground(Color.red);
 		jlinfo2.setAlignmentX(CENTER_ALIGNMENT);
+		
 		aux.add(Box.createRigidArea(new Dimension(0, 35)));
-		aux.add(jllevel);
-		aux.add(Box.createRigidArea(new Dimension(0, 35)));
-		aux.add(jlligne);
-		aux.add(Box.createRigidArea(new Dimension(0, 35)));
-		aux.add(jlscore);
-		aux.add(Box.createRigidArea(new Dimension(0, 150)));
+		labels.add(Box.createRigidArea(new Dimension(0,35)));
+		labels.add(jllevel);
+		labels.add(Box.createRigidArea(new Dimension(0, 40)));
+		labels.add(jlligne);
+		labels.add(Box.createRigidArea(new Dimension(0, 40)));
+		labels.add(jlscore);
+		aux.add(labels);
+		labels.setMaximumSize(new Dimension(nexted.getParent().getWidth()*5/7,nexted.getParent().getHeight()*1/7));
+		labels.setOpaque(true);
+		labels.setBackground(new Color(39,33,79,255));
+		labels.setBorder(BorderFactory.createLineBorder(Color.cyan,3));
+		aux.add(Box.createRigidArea(new Dimension(0, 50)));
 		aux.add(jlinfo1);
 		aux.add(Box.createRigidArea(new Dimension(0, 100)));
 		aux.add(jlinfo2);
+		aux.repaint();
 		timer=new Timer(0,null);
 		this.setBackground(Color.black);
 	}
@@ -114,6 +157,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			
 		}
 		public void set_up() {
+			Border backline=BorderFactory.createLineBorder(Color.cyan,5);
+			this.setBorder(backline);
 			this.setLayout(new GridLayout(nblines,nbcols));
 			if(grille!=null) {
 				for(int i=0;i<nblines;i++) {
@@ -186,7 +231,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		private TetroCell() {
 			this.setLayout(null);
 			this.setBackground(new Color(39,33,79,255));
-			
+			Border backline=BorderFactory.createLineBorder(Color.cyan,5);
+			this.setBorder(backline);
 		}
 		void set_tetro(Tetromino tr) {
 			this.tr=tr;
@@ -195,7 +241,6 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		void display_tetromino(){
 			System.out.println(this.getComponentCount());
 			if(main !=null) {
-				System.out.println("on remove");
 				this.removeAll();
 				for(int i=0;i<grille.length;i++) {
 					for(int y=0;y<grille.length;y++) {
@@ -207,11 +252,9 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 				this.repaint();
 			}
 			if(tr==null) {
-				System.out.println("tr null");
 				this.repaint();
 				return;
 			}
-			System.out.println("init");
 			main=new JPanel(new GridLayout(tr.getBoxSize(),tr.getBoxSize()));
 			main.setBackground(new Color(39,33,79,255));
 			
@@ -262,8 +305,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			
 			switch(tr.getShape()) {
 			case ISHAPE:
-				main.setBounds(this.getParent().getWidth()/8
-						,this.getParent().getWidth()/12,175,175);
+				main.setBounds(this.getParent().getWidth()/15
+						,this.getParent().getWidth()/15,175,175);
 				break;
 			case JSHAPE:
 				main.setBounds(this.getParent().getWidth()/8
@@ -274,20 +317,20 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 				,this.getParent().getWidth()/12,150,150);
 				break;
 			case OSHAPE:
-				main.setBounds(this.getParent().getWidth()/6
-				,this.getParent().getWidth()/6,100,100);
+				main.setBounds(this.getParent().getWidth()/7
+				,this.getParent().getWidth()/10,100,100);
 				break;
 			case SSHAPE:
 				main.setBounds(this.getParent().getWidth()/8
-				,this.getParent().getWidth()/6,150,150);
+				,this.getParent().getWidth()/8,150,150);
 				break;
 			case TSHAPE:
 				main.setBounds(this.getParent().getWidth()/8
-				,this.getParent().getWidth()/6,150,150);
+				,this.getParent().getWidth()/8,150,150);
 				break;
 			case ZSHAPE:
 				main.setBounds(this.getParent().getWidth()/8
-				,this.getParent().getWidth()/6,150,150);
+				,this.getParent().getWidth()/8,150,150);
 				break;
 			default:
 				break;

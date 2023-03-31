@@ -7,6 +7,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JRadioButton;
@@ -31,7 +37,13 @@ public class VisualGameManager extends AbstractGameManager {
 	VisualGamePlayer pl;
 	boolean inpause;
 	Timer timer;
-	
+	Clip clip_boutton;
+	Clip command;
+	Clip music;
+	Clip clear;
+	Clip over;
+	boolean done=false;
+	Clip put;
 	@Override
 	public void initialize() {
 		this.mode=AbstractGameManager.DEFAULT_MODE;
@@ -46,8 +58,38 @@ public class VisualGameManager extends AbstractGameManager {
 		game_frame.initialize();
 		game_frame.attachManagerActionListener(action);
 		menu();
+		try {
+			clip_boutton= AudioSystem.getClip();
+			clip_boutton.open(AudioSystem.getAudioInputStream(new File("resources/sounds/9285.wav")));
+			music= AudioSystem.getClip();
+			music.open(AudioSystem.getAudioInputStream(new File("resources/sounds/mainSound.wav")));
+			music.setLoopPoints(0, -1);
+			music.start();
+			FloatControl gainControl= (FloatControl) music.getControl(FloatControl.Type.MASTER_GAIN);
+			float range = gainControl.getMaximum() - gainControl.getMinimum();
+			float gain = (range * 0.7f) + gainControl.getMinimum();
+			gainControl.setValue(gain);
+			clear= AudioSystem.getClip();
+			clear.open(AudioSystem.getAudioInputStream(new File("resources/sounds/clear.wav")));
+			over= AudioSystem.getClip();
+			over.open(AudioSystem.getAudioInputStream(new File("resources/sounds/next-level.wav")));	
+			put= AudioSystem.getClip();
+			put.open(AudioSystem.getAudioInputStream(new File("resources/sounds/put.wav")));	
+		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+		//command=new Clip();
 	}
 	
+	public Clip getclear() {
+		return clear;
+	}
+	public Clip getput() {
+		return put;
+	}
 	public GameFrameImpl getgame_frame() {
 		return game_frame;
 	}
@@ -72,6 +114,7 @@ public class VisualGameManager extends AbstractGameManager {
 		game_frame.startGameKeyListener(key);
 	}
 	public void menu() {
+		done=false;
 		game_frame.drawManagementView();
 		pl=null;
 	}
@@ -89,7 +132,11 @@ public class VisualGameManager extends AbstractGameManager {
 	
 	
 	public void over() {
-		System.out.println("IT S OVEEEERRR");
+		if(!over.isRunning() && !done) {
+			done=true;
+			over.start();
+			over.setMicrosecondPosition(0);
+		}
 		game_frame.drawEndGameView();
 		game_frame.stopGameKeyListener(key);
 	}
@@ -106,6 +153,7 @@ public class VisualGameManager extends AbstractGameManager {
 	
 	public class KeyHandler implements KeyListener{
 
+		boolean toomuch=false;
 		@Override
 		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
@@ -117,6 +165,7 @@ public class VisualGameManager extends AbstractGameManager {
 			// TODO Auto-generated method stub
 
 			if(!inpause) {
+				
 				boolean res=true;
 				switch(e.getKeyCode()){
 				case KeyEvent.VK_ESCAPE:
@@ -127,10 +176,11 @@ public class VisualGameManager extends AbstractGameManager {
 					}
 					break;
 				case 65://gauche
-
+					
 					res=pl.performAction(TetrisAction.MOVE_LEFT);
 					break;
 				case 90://held
+
 					res=pl.performAction(TetrisAction.HOLD);
 					break;
 				case 69://droite
@@ -138,15 +188,21 @@ public class VisualGameManager extends AbstractGameManager {
 					res=pl.performAction(TetrisAction.MOVE_RIGHT);
 					break;
 				case 88://hard drop
-					res=pl.performAction(TetrisAction.HARD_DROP);
+					if(!toomuch) {
+						res=pl.performAction(TetrisAction.HARD_DROP);
+						toomuch=true;
+					}
 					break;
 				case 83://bas
+
 					res=pl.performAction(TetrisAction.START_SOFT_DROP);
 					break;	
 				case 75://rotgauche
+
 					res=pl.performAction(TetrisAction.ROTATE_LEFT);
 					break;
 				case 77://rotdroit
+
 					res=pl.performAction(TetrisAction.ROTATE_RIGHT);
 					break;
 				}
@@ -166,6 +222,11 @@ public class VisualGameManager extends AbstractGameManager {
 
 					over();
 				}
+		   case 88://hard drop
+				if(toomuch) {
+					toomuch=false;
+				}
+				break;
 			}
 		}
 		
@@ -203,57 +264,90 @@ public class VisualGameManager extends AbstractGameManager {
 					over();
 				}
 			}
-			else if(source==boutton_pause_resume) {
-				comebacktogame();
-			}
-			else if(source==boutton_pause_quit) {
-				menu();
-			}
-			else if(source==end_menu) {
-				menu();
-			}
-			else if(source==player_mode1) {
-				player_type=PlayerType.HUMAN;
-			}
-			else if(source==player_mode2) {
-				player_type=PlayerType.AI;
-			}
-			else if(source==game_mode1) {
-				mode=TetrisMode.MARATHON;
-			}
-			else if(source==boutton_menu_start) {
-				start_game();
-			}
-			else if(source==boutton_menu_quit){
-				System.exit(0);
-			}
-			else if(source==boutton_save_file){
-				int returnVal = chooser.showOpenDialog(null);
-		        if(returnVal == JFileChooser.APPROVE_OPTION) {
-		        	try {
-						save(chooser.getSelectedFile());
-						menu();
-					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
-						
-					} 
-		        }
-			}
-			else if(source==chose_file){
-		        int returnVal = chooser.showOpenDialog(null);
-		        if(returnVal == JFileChooser.APPROVE_OPTION) {
-		        	try {
-						loadFromFile(chooser.getSelectedFile());
-						start_from_file();
-					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
-						
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-		            
-		        }
+			else {
+				
+				if(source==boutton_pause_resume) {
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					comebacktogame();
+				}
+				else if(source==boutton_pause_quit) {
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					menu();
+				}
+				else if(source==end_menu) {
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					menu();
+				}
+				else if(source==player_mode1) {
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					player_type=PlayerType.HUMAN;
+				}
+				else if(source==player_mode2) {
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					player_type=PlayerType.AI;
+				}
+				else if(source==game_mode1) {
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					mode=TetrisMode.MARATHON;
+				}
+				else if(source==boutton_menu_start) {
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					start_game();
+				}
+				else if(source==boutton_menu_quit){
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					System.exit(0);
+				}
+				else if(source==boutton_save_file){
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					int returnVal = chooser.showOpenDialog(null);
+			        if(returnVal == JFileChooser.APPROVE_OPTION) {
+			        	try {
+							save(chooser.getSelectedFile());
+							menu();
+						} catch (FileNotFoundException e1) {
+							// TODO Auto-generated catch block
+							
+						} 
+			        }
+				}
+				else if(source==chose_file){
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+			        int returnVal = chooser.showOpenDialog(null);
+			        if(returnVal == JFileChooser.APPROVE_OPTION) {
+			        	try {
+							loadFromFile(chooser.getSelectedFile());
+							start_from_file();
+						} catch (FileNotFoundException e1) {
+							// TODO Auto-generated catch block
+							
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+			            
+			        }
+				}
 			}
 		}
 		

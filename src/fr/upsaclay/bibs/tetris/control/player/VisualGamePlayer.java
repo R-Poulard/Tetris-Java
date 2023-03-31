@@ -39,10 +39,14 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 
 	@Override
 	public void packing(TetrisGrid grid,ScoreComputer sc) {
+		mg.getput().start();
+		mg.getput().setMicrosecondPosition(0);
 		List<Integer> to_break=grid.pack();
 		sc.registerMergePack(to_break, grid);
 		System.out.println("Ici");
 		if(to_break.size()!=0) {
+			mg.getclear().start();
+			mg.getclear().setMicrosecondPosition(0);
 			mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.LINES,to_break);
 		}
 	}

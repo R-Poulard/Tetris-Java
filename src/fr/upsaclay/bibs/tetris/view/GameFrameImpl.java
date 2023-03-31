@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
@@ -28,6 +31,8 @@ import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoShape;
 
 public class GameFrameImpl extends JFrame implements GameFrame {
 
+	 	JPanel filling;
+	 	JPanel filling2;
 		JPanel pause;
 		JButton boutton_pause_resume;
 		JButton boutton_pause_quit;
@@ -47,13 +52,15 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		JButton boutton_menu_quit;
 		JButton chose_file;
 
+	
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
 		this.setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setBackground(Color.BLACK);
+		//this.setBackground(Color.black);
 		this.createManagerComponents();
+		
 		pause=new JPanel();
 		pause.setBackground(new Color(0,0,0,200));
 		Border blackline = BorderFactory.createLineBorder(Color.cyan);
@@ -85,17 +92,52 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    grille.initialize();
 	    
 	    menu=new JPanel();
+	    
 	    menu.setLayout(new GridBagLayout());
 	    GridBagConstraints c=new GridBagConstraints();
 	    c.insets = new Insets(1, 1, 1, 1);
 	    this.add(menu);
+	    filling=new JPanel(){
+			  @Override
+			  protected void paintComponent(Graphics g) {
+			    super.paintComponent(g);
+			    Image background;
+				try {
+					String fileName = "resources/images/bck.jpg";
+					background = ImageIO.read(new File(fileName));
+				    g.drawImage(background, 0, 0, null);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			} };
+	    filling.setBounds(0,0,this.getWidth(),this.getHeight()/4);
+	    this.add(filling);
+	    filling2=new JPanel(){
+			  @Override
+			  protected void paintComponent(Graphics g) {
+			    super.paintComponent(g);
+			    Image background;
+				try {
+					String fileName = "resources/images/bck2.jpg";
+					background = ImageIO.read(new File(fileName));
+				    g.drawImage(background, 0, 0, null);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			} };
+	    filling2.setBounds(0,750,this.getWidth(),this.getHeight()/4);
+	    this.add(filling2);
 	    menu.setBounds(0,this.getHeight()*2/10,this.getWidth(),this.getHeight()/2);
-	    menu.setBackground(Color.LIGHT_GRAY);
+	    menu.setBackground(new Color(39,33,79,255));
 	    
 	    BufferedImage myPicture;
 	    JLabel tittle;
 		try {
-			String fileName = "resources/tittle.png";
+			String fileName = "resources/images/tittle.png";
 			myPicture = ImageIO.read(new File(fileName));
 			tittle =new JLabel(new ImageIcon(myPicture));
 		} catch (IOException e) {
@@ -104,9 +146,16 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 			tittle =new JLabel("Tetris (lame edition)");
 		}
 	    tittle.setHorizontalAlignment(JLabel.CENTER);
-	    JLabel game_mode_label =new JLabel("Mode de jeu:");
+	    JLabel game_mode_label =new JLabel("MODE DE JEU:");
+	    game_mode_label.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    game_mode_label.setForeground(Color.green);
+	    game_mode_label.setAlignmentX(CENTER_ALIGNMENT);
 	    game_mode_label.setHorizontalAlignment(JLabel.CENTER);
-	    JLabel player_mode_label =new JLabel("Mode du joueur:");
+	    JLabel player_mode_label =new JLabel("TYPE DE JOUEUR:");
+	    player_mode_label.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    player_mode_label.setForeground(Color.green);
+	    player_mode_label.setAlignmentX(CENTER_ALIGNMENT);
+	    player_mode_label.setHorizontalAlignment(JLabel.CENTER);
 	    player_mode_label.setHorizontalAlignment(JLabel.CENTER);
 	   
 	    c.gridx=1;
@@ -157,18 +206,30 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipadx=10;
 	    c.ipady=10;
 	    menu.add(boutton_menu_quit,c);
-	    
 	    endgame=new JPanel(new GridLayout(6,1,30,10));
 	    this.add(endgame);
-	    endgame.setBounds(0,endgame.getParent().getHeight()*2/10,endgame.getParent().getWidth()*6/10,endgame.getParent().getHeight()*5/10);
-	    JLabel endgame_label1=new JLabel("Partie Terminï¿½");
+	    endgame.setBounds(10,endgame.getParent().getHeight()*2/10,endgame.getParent().getWidth()*6/10-10,endgame.getParent().getHeight()*5/10);
+	    JLabel endgame_label1=new JLabel("Partie Terminée");
 	    endgame_label1.setHorizontalAlignment(JLabel.CENTER);
+	    endgame_label1.setFont(new Font("Rockwell", Font.BOLD, 50)); //Creating an Times New Roman Font Style with size 30
+	    endgame_label1.setForeground(Color.cyan);
+	    endgame_label1.setAlignmentX(CENTER_ALIGNMENT);
 	    JLabel endgame_label2=new JLabel("Score :");
 	    endgame_label2.setHorizontalAlignment(JLabel.CENTER);
+	    endgame_label2.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    endgame_label2.setForeground(Color.cyan);
+	    endgame_label2.setAlignmentX(CENTER_ALIGNMENT);
+	    endgame_label2.setHorizontalAlignment(JLabel.CENTER);
 	    JLabel endgame_label3=new JLabel("Niveau atteint :");
+	    endgame_label3.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    endgame_label3.setForeground(Color.cyan);
+	    endgame_label3.setAlignmentX(CENTER_ALIGNMENT);
 	    endgame_label3.setHorizontalAlignment(JLabel.CENTER);
-	    JLabel endgame_label4=new JLabel("Nombre de ligne cassï¿½:");
+	    JLabel endgame_label4=new JLabel("Nombre de ligne cassées:");
 	    endgame_label4.setHorizontalAlignment(JLabel.CENTER);
+	    endgame_label4.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    endgame_label4.setForeground(Color.cyan);
+	    endgame_label4.setAlignmentX(CENTER_ALIGNMENT);
 	    endgame.add(endgame_label1);
 	    endgame.add(endgame_label2);
 	    endgame.add(endgame_label3);
@@ -176,7 +237,8 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    endgame.add(Box.createRigidArea(new Dimension(0, 5)));
 	    endgame.add(end_menu);
 	    
-	    endgame.setBackground(Color.LIGHT_GRAY);
+	    endgame.setBackground(new Color(39,33,79,255));
+	    
 	    endgame.setOpaque(true);
 	    
 	    this.endgame.setVisible(false);
@@ -184,6 +246,8 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    this.menu.setVisible(false);
 	    this.grille.setVisible(false);
 	}
+
+	
 	public GamePanelImpl getgrid() {
 		return grille;
 	}
@@ -246,17 +310,24 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		
 		player_mode=new ButtonGroup();
 	    player_mode1= new JRadioButton("IA (not chatGPT good)");
+	    player_mode1.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
+	    player_mode1.setForeground(Color.green);
 	    player_mode1.setOpaque(false);
 	    player_mode2 = new JRadioButton("Human");
+	    player_mode2.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
+	    player_mode2.setForeground(Color.green);
 	    player_mode2.setOpaque(false);
         player_mode.add(player_mode1);
         player_mode.add(player_mode2);
-        player_mode.setSelected(player_mode1.getModel(), true);
+        player_mode.setSelected(player_mode2.getModel(), true);
         
         game_mode=new ButtonGroup();
 	    game_mode1=new JRadioButton("Marathon");
 	    game_mode1.setOpaque(false);
-	    game_mode.setSelected(game_mode1.getModel(), true);
+	    game_mode1.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
+	    game_mode1.setForeground(Color.green);
+	    game_mode.setSelected(game_mode1.getModel(), true);	
+	    game_mode.add(game_mode1);
        
 	    boutton_menu_start=new JButton("START");
 	    boutton_menu_start.setOpaque(false);
