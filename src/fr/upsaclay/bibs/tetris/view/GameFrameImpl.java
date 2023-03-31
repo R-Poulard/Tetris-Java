@@ -11,7 +11,14 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import fr.upsaclay.bibs.tetris.control.manager.ManagerAction;
 import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisCell;
@@ -23,6 +30,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		JPanel pause;
 		JButton boutton_pause_resume;
 		JButton boutton_pause_quit;
+		JButton boutton_save_file;
 		
 		GamePanelImpl grille;
 
@@ -36,6 +44,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		JRadioButton game_mode1;
 		JButton boutton_menu_start;
 		JButton boutton_menu_quit;
+		JButton chose_file;
 
 	@Override
 	public void initialize() {
@@ -56,6 +65,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		pause.add(Box.createRigidArea(new Dimension(0, 35)));
 		JPanel pause_aux=new JPanel(new FlowLayout());
 		pause_aux.add(boutton_pause_resume);
+		pause_aux.add(boutton_save_file);
 		pause_aux.add(boutton_pause_quit);
 		pause_aux.setOpaque(false);
 		pause.add(pause_aux);
@@ -77,7 +87,18 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    this.add(menu);
 	    menu.setBounds(0,this.getHeight()*2/10,this.getWidth(),this.getHeight()/2);
 	    menu.setBackground(Color.LIGHT_GRAY);
-	    JLabel tittle =new JLabel("Tetris (lame edition)");
+	    
+	    BufferedImage myPicture;
+	    JLabel tittle;
+		try {
+			String fileName = "resources/tittle.png";
+			myPicture = ImageIO.read(new File(fileName));
+			tittle =new JLabel(new ImageIcon(myPicture));
+		} catch (IOException e) {
+			e.printStackTrace();
+			// TODO Auto-generated catch block
+			tittle =new JLabel("Tetris (lame edition)");
+		}
 	    tittle.setHorizontalAlignment(JLabel.CENTER);
 	    JLabel game_mode_label =new JLabel("Mode de jeu:");
 	    game_mode_label.setHorizontalAlignment(JLabel.CENTER);
@@ -118,26 +139,31 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipady=10;
 	    menu.add(game_mode1,c);
 	    c.gridx=0;
-	    c.gridy=5;
+	    c.gridy=6;
 	    c.ipadx=30;
 	    c.ipady=30;
 	    menu.add(boutton_menu_start,c);
-	    c.gridx=2;
-	    c.gridy=5;
+	    c.gridx=1;
+	    c.gridy=6;
 	    c.ipadx=30;
 	    c.ipady=30;
+	    menu.add(chose_file,c);
+	    c.gridx=5;
+	    c.gridy=7;
+	    c.ipadx=10;
+	    c.ipady=10;
 	    menu.add(boutton_menu_quit,c);
 	    
 	    endgame=new JPanel(new GridLayout(6,1,30,10));
 	    this.add(endgame);
 	    endgame.setBounds(0,endgame.getParent().getHeight()*2/10,endgame.getParent().getWidth()*6/10,endgame.getParent().getHeight()*5/10);
-	    JLabel endgame_label1=new JLabel("Partie Terminé");
+	    JLabel endgame_label1=new JLabel("Partie Terminï¿½");
 	    endgame_label1.setHorizontalAlignment(JLabel.CENTER);
 	    JLabel endgame_label2=new JLabel("Score :");
 	    endgame_label2.setHorizontalAlignment(JLabel.CENTER);
 	    JLabel endgame_label3=new JLabel("Niveau atteint :");
 	    endgame_label3.setHorizontalAlignment(JLabel.CENTER);
-	    JLabel endgame_label4=new JLabel("Nombre de ligne cassé:");
+	    JLabel endgame_label4=new JLabel("Nombre de ligne cassï¿½:");
 	    endgame_label4.setHorizontalAlignment(JLabel.CENTER);
 	    endgame.add(endgame_label1);
 	    endgame.add(endgame_label2);
@@ -175,12 +201,12 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		menu.setVisible(false);
 		endgame.setVisible(false);
 		grille.setFocusable(true);
+		grille.requestFocus();
 	}
 
 	@Override
 	public void drawGamePauseView() {
 		// TODO Auto-generated method stub
-		System.out.println("ici ");
 		pause.setVisible(true);
 		grille.drawGamePauseView();
 		menu.setVisible(false);
@@ -212,6 +238,8 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 
 		boutton_pause_resume=new JButton("Continuer");
 		boutton_pause_quit=new JButton("quitter");
+		boutton_save_file=new JButton("Save & quit");
+		
 		player_mode=new ButtonGroup();
 	    player_mode1= new JRadioButton("IA (not chatGPT good)");
 	    player_mode1.setOpaque(false);
@@ -230,8 +258,12 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    boutton_menu_start.setOpaque(false);
 	    boutton_menu_quit=new JButton("QUIT");
 	    boutton_menu_quit.setOpaque(false);
+	    chose_file=new JButton("Load Game");
+	    chose_file.setOpaque(false);
 	    end_menu=new JButton("Menu");
 	    end_menu.setPreferredSize(new Dimension(40, 40));
+	    
+	    
 	}
 
 	@Override
@@ -239,13 +271,15 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		// TODO Auto-generated method stub
 		boutton_pause_resume.addActionListener(listener);
 		boutton_pause_quit.addActionListener(listener);
+		boutton_save_file.addActionListener(listener);
 		end_menu.addActionListener(listener);
 		player_mode1.addActionListener(listener);
 		player_mode2.addActionListener(listener);
 		game_mode1.addActionListener(listener);
 		boutton_menu_start.addActionListener(listener);
 		boutton_menu_quit.addActionListener(listener);
-		((VisualGameManager.ActionHandler) listener).setButton(boutton_pause_resume,boutton_pause_quit, end_menu,player_mode1,player_mode2,game_mode1,boutton_menu_start,boutton_menu_quit);
+		chose_file.addActionListener(listener);
+		((VisualGameManager.ActionHandler) listener).setButton(boutton_save_file,chose_file,boutton_pause_resume,boutton_pause_quit, end_menu,player_mode1,player_mode2,game_mode1,boutton_menu_start,boutton_menu_quit);
 	}
 
 	@Override

@@ -3,13 +3,16 @@ package fr.upsaclay.bibs.tetris.control.manager;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.JButton;
-
+import javax.swing.JFileChooser;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.event.ActionEvent;
 
@@ -17,9 +20,8 @@ import fr.upsaclay.bibs.tetris.TetrisAction;
 import fr.upsaclay.bibs.tetris.TetrisMode;
 import fr.upsaclay.bibs.tetris.control.player.PlayerType;
 import fr.upsaclay.bibs.tetris.control.player.VisualGamePlayer;
-import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoShape;
 import fr.upsaclay.bibs.tetris.view.GameFrameImpl;
-import fr.upsaclay.bibs.tetris.view.GamePanelImpl;
+
 
 public class VisualGameManager extends AbstractGameManager {
 
@@ -60,6 +62,15 @@ public class VisualGameManager extends AbstractGameManager {
 		game_frame.startGameKeyListener(key);
 	}
 	
+	public void start_from_file() {
+		inpause=false;	
+		game_frame.getgrid().setGridView(gr.getView());
+		pl.initialize(gr, scp, DEFAULT_PROVIDER);
+		pl.start();
+		game_frame.getgrid().setLoopAction(action);
+		game_frame.drawGamePlayView();
+		game_frame.startGameKeyListener(key);
+	}
 	public void menu() {
 		game_frame.drawManagementView();
 		pl=null;
@@ -109,9 +120,11 @@ public class VisualGameManager extends AbstractGameManager {
 				boolean res=true;
 				switch(e.getKeyCode()){
 				case KeyEvent.VK_ESCAPE:
-					pause();
-					pl.pause();
-					res=true;
+					if(!inpause) {
+						pause();
+						pl.pause();
+						res=true;
+					}
 					break;
 				case 65://gauche
 
@@ -170,18 +183,27 @@ public class VisualGameManager extends AbstractGameManager {
 	public class ActionHandler implements ActionListener{
 		JButton boutton_pause_resume;
 		JButton boutton_pause_quit;
+		JButton boutton_save_file;
 		
 		JButton end_menu;
+		
 
 		JRadioButton player_mode1,player_mode2;
 		JRadioButton game_mode1;
 		JButton boutton_menu_start;
 		JButton boutton_menu_quit;
-		
+		JButton chose_file;
+		JFileChooser chooser = new JFileChooser();
+
 		
 		public void actionPerformed(ActionEvent e) {
 			Object source=e.getSource();
-			if(source==boutton_pause_resume) {
+			if(source==timer) {
+				if(pl!=null && !pl.performAction(TetrisAction.DOWN)) {
+					over();
+				}
+			}
+			else if(source==boutton_pause_resume) {
 				comebacktogame();
 			}
 			else if(source==boutton_pause_quit) {
@@ -205,19 +227,47 @@ public class VisualGameManager extends AbstractGameManager {
 			else if(source==boutton_menu_quit){
 				System.exit(0);
 			}
-			else if(source==timer) {
-				if(pl!=null && !pl.performAction(TetrisAction.DOWN)) {
-					over();
-				}
+			else if(source==boutton_save_file){
+				int returnVal = chooser.showOpenDialog(null);
+		        if(returnVal == JFileChooser.APPROVE_OPTION) {
+		        	try {
+						save(chooser.getSelectedFile());
+						menu();
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						
+					} 
+		        }
+			}
+			else if(source==chose_file){
+		        int returnVal = chooser.showOpenDialog(null);
+		        if(returnVal == JFileChooser.APPROVE_OPTION) {
+		        	try {
+						loadFromFile(chooser.getSelectedFile());
+						start_from_file();
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+		            
+		        }
 			}
 		}
+		
 		
 		public void setTimer(Timer t) {
 			timer=t;
 			timer.setInitialDelay(1000);
 			timer.setDelay(1000);
 		}
-		public void setButton(JButton bpr,JButton bpq, JButton em,JRadioButton pm1,JRadioButton pm2,JRadioButton gm1,JButton bms,JButton bmq) {
+		public void setButton(JButton sf,JButton cf,JButton bpr,JButton bpq, JButton em,JRadioButton pm1,JRadioButton pm2,JRadioButton gm1,JButton bms,JButton bmq) {
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(null,"txt");
+	        chooser.setFileFilter(filter);
+	        chose_file=cf;
+			boutton_save_file=sf;
 			boutton_pause_resume=bpr;
 			boutton_pause_quit=bpq;
 			

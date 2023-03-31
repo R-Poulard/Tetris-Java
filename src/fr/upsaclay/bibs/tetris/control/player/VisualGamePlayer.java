@@ -2,10 +2,14 @@ package fr.upsaclay.bibs.tetris.control.player;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;
 import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager;
+import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
+import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
+import fr.upsaclay.bibs.tetris.view.GamePanelEvent;
 
 
 public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
@@ -33,6 +37,23 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 		active=true;
 	}
 
+	@Override
+	public void packing(TetrisGrid grid,ScoreComputer sc) {
+		List<Integer> to_break=grid.pack();
+		sc.registerMergePack(to_break, grid);
+		System.out.println("Ici");
+		if(to_break.size()!=0) {
+			mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.LINES,to_break);
+		}
+	}
+	
+	@Override
+	public void next() {
+		super.next();
+		ArrayList<Tetromino> tmp=new ArrayList<>();
+		tmp.add(this.pr.showNext(0));
+		mg.getgame_frame().getgrid().updateNextTetrominos(tmp);
+	}
 	public boolean performAction(TetrisAction action) {
 		boolean res;
 		try {
@@ -48,11 +69,6 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 				if(!active) {
 					return false;
 				}
-				if(this.already_hold==false) {
-					ArrayList<Tetromino> tmp=new ArrayList<>();
-					tmp.add(this.pr.showNext(0));
-					mg.getgame_frame().getgrid().updateNextTetrominos(tmp);
-				}
 			case END_SOFT_DROP:
 				if(mg.getgame_frame().getgrid().getTimer()!=null) {
 					mg.getgame_frame().getgrid().setLoopDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay());
@@ -60,7 +76,6 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 				break;
 			case HOLD:
 				if(!active) {
-
 					return false;
 				}
 				mg.getgame_frame().getgrid().updateHeldTetromino(held);
@@ -68,11 +83,6 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 			case HARD_DROP:
 				if(!active) {
 					return false;
-				}
-				if(this.already_hold==false) {
-					ArrayList<Tetromino> tmp=new ArrayList<>();
-					tmp.add(this.pr.showNext(0));
-					mg.getgame_frame().getgrid().updateNextTetrominos(tmp);
 				}
 			case START_SOFT_DROP:
 				if(mg.getgame_frame().getgrid().getTimer()!=null) {

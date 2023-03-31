@@ -1,11 +1,13 @@
 package fr.upsaclay.bibs.tetris.control.player;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisCoordinates;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
+import fr.upsaclay.bibs.tetris.model.grid.TetriseGrille;
 import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoProvider;
@@ -94,6 +96,15 @@ public class SimpleGamePlayer implements GamePlayer {
 		return grid.getView();
 	}
 
+	public void packing(TetrisGrid grid,ScoreComputer sc) {
+		System.out.println("plutot ici");
+		sc.registerMergePack(grid.pack(), grid);
+	}
+	
+	public void next() {
+		grid.setTetromino(pr.next());
+		grid.setAtStartingCoordinates();
+	}
 	@Override
 	public boolean performAction(TetrisAction action) {
 		// TODO Auto-generated method stub
@@ -113,10 +124,9 @@ public class SimpleGamePlayer implements GamePlayer {
 				if(res==false) {
 					this.already_hold=false;
 					grid.merge();
-					sc.registerMergePack(grid.pack(), grid);
+					packing(grid,sc);
 					if(pr.hasNext()) {
-						grid.setTetromino(pr.next());
-						grid.setAtStartingCoordinates();
+						next();
 						if(grid.hasConflicts()) {
 							pause();
 						}
@@ -135,10 +145,9 @@ public class SimpleGamePlayer implements GamePlayer {
 				sc.registerAfterAction(grid);
 				this.already_hold=false;
 				grid.merge();
-				sc.registerMergePack(grid.pack(), grid);
+				packing(grid,sc);
 				if(pr.hasNext()) {
-					grid.setTetromino(pr.next());
-					grid.setAtStartingCoordinates();
+					next();
 					if(grid.hasConflicts()) {
 						pause();
 					}
@@ -162,8 +171,7 @@ public class SimpleGamePlayer implements GamePlayer {
 							grid.setAtStartingCoordinates();
 						}else {
 							if(pr.hasNext()) {
-								grid.setTetromino(pr.next());
-								grid.setAtStartingCoordinates();
+								next();
 								if(grid.hasConflicts()) {
 									pause();
 								}

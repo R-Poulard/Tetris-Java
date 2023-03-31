@@ -148,19 +148,19 @@ public abstract class AbstractGameManager implements GameManager {
 					pattern[i][y]=TetrisCell.valueOf(tmp[y]);
 				}
 			}
-			this.gr=TetrisGrid.getEmptyGrid(nb_lines, nb_cols);
+			gr=TetrisGrid.getEmptyGrid(nb_lines, nb_cols);
 			gr.initiateCells(pattern);
-			this.mode=TetrisMode.valueOf(gameMode);
-			this.player_type=PlayerType.HUMAN;
-			this.cols=nb_cols;
-			this.lines=nb_lines;
-			this.provider=AbstractGameManager.DEFAULT_PROVIDER;
-			this.player_type=AbstractGameManager.DEFAULT_PLAYER_TYPE;
-			this.gr.setTetromino(TetrominoShape.valueOf(tetromino).getTetromino(rotation));
-			this.gr.setCoordinates(new TetrisCoordinates(lines,cols));
+			mode=TetrisMode.valueOf(gameMode);
+			player_type=PlayerType.HUMAN;
+			cols=nb_cols;
+			lines=nb_lines;
+			provider=AbstractGameManager.DEFAULT_PROVIDER;
+			player_type=AbstractGameManager.DEFAULT_PLAYER_TYPE;
+			gr.setTetromino(TetrominoShape.valueOf(tetromino).getTetromino(rotation));
+			gr.setCoordinates(new TetrisCoordinates(lines,cols));
 			scp=ScoreComputer.getScoreComputer(getGameMode(), score, level, linescore);
-			this.createPlayer();
-			this.pausePlayer();
+			createPlayer();
+			pausePlayer();
 			sc.close();
 		}
 		catch(NoSuchElementException e2) {

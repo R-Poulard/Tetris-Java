@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -58,37 +59,48 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		this.add(aux);
 		aux.setLayout(new BoxLayout(aux,BoxLayout.Y_AXIS));
 		aux.setBounds(aux.getParent().getWidth()*6/10+5,5,aux.getParent().getWidth()*4/10-5,aux.getParent().getHeight()-15);
-		
+		aux.setBackground(Color.black);
 		grille_de_jeu=new Grille();
 		this.add(grille_de_jeu);
 		grille_de_jeu.setBounds(5,5,grille_de_jeu.getParent().getWidth()*6/10,grille_de_jeu.getParent().getHeight()-15);
 		 
+		
+		nexted=new TetroCell();
+		aux.add(nexted);
+		nexted.setMinimumSize(new Dimension(nexted.getParent().getWidth()*4/7,nexted.getParent().getWidth()*4/7));
+		
+		nexted.setMaximumSize(new Dimension(nexted.getParent().getWidth()*4/7,nexted.getParent().getHeight()*1/5));
+		aux.add(Box.createRigidArea(new Dimension(0, 10)));
+		
 		holded=new TetroCell();
 		aux.add(holded);
 		holded.setMaximumSize(new Dimension(holded.getParent().getWidth()*4/7,holded.getParent().getWidth()*4/7));
 		holded.setMinimumSize(new Dimension(holded.getParent().getWidth()*4/7,holded.getParent().getWidth()*4/7));
-		
-		aux.add(Box.createRigidArea(new Dimension(0, 10)));
-		nexted=new TetroCell();
-		aux.add(nexted);
-		nexted.setMaximumSize(new Dimension(nexted.getParent().getWidth()*4/7,nexted.getParent().getHeight()*1/5));
 
 		jlscore=new JLabel("Score: 0");
+		jlscore.setForeground(Color.CYAN);
 		jlligne=new JLabel("Lignes: 0");
+		jlligne.setForeground(Color.CYAN);
 		jllevel=new JLabel("Level: 0");
-		jlinfo1=new JLabel("Ici");
-		jlinfo2=new JLabel("La");
+		jllevel.setForeground(Color.CYAN);
+		jlinfo1=new JLabel("");
+		jlinfo1.setForeground(Color.RED);
+		jlinfo1.setAlignmentX(CENTER_ALIGNMENT);
+		jlinfo2=new JLabel("");
+		jlinfo2.setForeground(Color.RED);
+		jlinfo2.setAlignmentX(CENTER_ALIGNMENT);
 		aux.add(Box.createRigidArea(new Dimension(0, 35)));
 		aux.add(jllevel);
 		aux.add(Box.createRigidArea(new Dimension(0, 35)));
 		aux.add(jlligne);
 		aux.add(Box.createRigidArea(new Dimension(0, 35)));
 		aux.add(jlscore);
-		aux.add(Box.createRigidArea(new Dimension(0, 200)));
+		aux.add(Box.createRigidArea(new Dimension(0, 150)));
 		aux.add(jlinfo1);
-		aux.add(Box.createRigidArea(new Dimension(0, 200)));
+		aux.add(Box.createRigidArea(new Dimension(0, 100)));
 		aux.add(jlinfo2);
 		timer=new Timer(0,null);
+		this.setBackground(Color.black);
 	}
 
 	public class Grille extends JPanel{
@@ -98,6 +110,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		
 		private Grille() {
 			super();
+			this.setOpaque(false);
 			
 		}
 		public void set_up() {
@@ -128,8 +141,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 					grille[i][y].setBorder(blackline);
 					switch(grille_model.visibleCell(i, y)) {
 					case EMPTY:
-						grille[i][y].setBorder(null);
-						grille[i][y].setBackground(new Color(39,33,79,250));
+						grille[i][y].setBackground(new Color(39,33,79,160));
 						break;
 					case GREY:
 						break;
@@ -184,13 +196,15 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			if(main !=null) {
 			this.remove(main);
 			}
+			this.setBackground(new Color(39,33,79,160));
+			this.repaint();
 			if(tr==null) {
-				System.out.println("null");
-				this.setBackground(Color.WHITE);
 				this.repaint();
 				return;
 			}
 			main=new JPanel(new GridLayout(tr.getBoxSize(),tr.getBoxSize()));
+			main.setBackground(new Color(39,33,79,160));
+			
 			grille = new JPanel[tr.getBoxSize()][tr.getBoxSize()];
 			
 			for(int i=0;i<tr.getBoxSize();i++) {
@@ -201,7 +215,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 					switch(tr.cell(i, y)) {
 						case EMPTY:
 							grille[i][y].setBorder(null);
-							grille[i][y].setBackground(Color.WHITE);
+							grille[i][y].setOpaque(false);
+							grille[i][y].setBackground(new Color(39,33,79,160));
 							break;
 						case GREY:
 							break;
@@ -229,7 +244,6 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 					}
 					grille[i][y].setVisible(true);
 					grille[i][y].setOpaque(true);
-					
 					main.add(grille[i][y]);
 					grille[i][y].repaint();
 				}
@@ -354,7 +368,32 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			jlinfo1.setText("Combo x"+((ScoreComputer) attach).getComboCount());
 			break;
 		case LINES:
-			jlinfo2.setText(((Integer)attach).toString() + " LIGNES DETRUITES");
+			List<Integer> to_break=(List<Integer>)attach;
+			jlinfo2.setText(to_break.size() + " LIGNES DETRUITES");
+			jlinfo2.repaint();
+			ActionListener taskPerformer = new ActionListener() {
+	            public void actionPerformed(ActionEvent evt) {
+	            	for(Integer i: to_break) {
+	            	for(int y=0;y<nbcols;y++) {
+	            		grille_de_jeu.grille[i][y].setBorder(null);
+	            		grille_de_jeu.grille[i][y].setBackground(new Color(39,33,79,100));
+						grille_de_jeu.grille[i][y].repaint();
+	            	}	       
+	            	try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	            	jlinfo2.setText(" ");
+	            	jlinfo2.repaint();
+				}
+	            }
+	        };
+			Timer t=new Timer(150,taskPerformer);
+			t.setRepeats(false);
+			t.start();
+			System.out.println("on est laaaaa");
 			break;
 		case END_COMBO:
 			jlinfo2.setText("");
