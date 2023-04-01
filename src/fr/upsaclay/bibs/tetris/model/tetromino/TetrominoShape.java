@@ -68,131 +68,43 @@ public enum TetrominoShape {
 	private static final Random RANDOM = new Random();
 	private final static HashMap<String,Tetromino> mapping=new HashMap<>();
 	static {
-		//I formes
-	TetrisCell[][] I1 =new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.I,		TetrisCell.I,		TetrisCell.I,		TetrisCell.I},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] I2=new TetrisCell[][] {
-		{TetrisCell.EMPTY,TetrisCell.EMPTY,	TetrisCell.I,	TetrisCell.EMPTY,	},
-		{TetrisCell.EMPTY,TetrisCell.EMPTY,		TetrisCell.I,		TetrisCell.EMPTY,		},
-		{TetrisCell.EMPTY,TetrisCell.EMPTY,	TetrisCell.I,	TetrisCell.EMPTY,	},
-		{TetrisCell.EMPTY,TetrisCell.EMPTY,	TetrisCell.I,	TetrisCell.EMPTY,	}
-	};
-	TetrisCell[][] I3 =new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.I,		TetrisCell.I,		TetrisCell.I,		TetrisCell.I},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY},
-	};
-	TetrisCell[][] I4=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.I,	TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,		TetrisCell.I,		TetrisCell.EMPTY,		TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.I,	TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.I,	TetrisCell.EMPTY,	TetrisCell.EMPTY}
-	};
+	//I formes
+	TetrisCell[][] I1 =ISHAPE.shape;
+	TetrisCell[][] I2 = rotateLeft(I1);
+	TetrisCell[][] I3 = rotateLeft(I2);
+	TetrisCell[][] I4 = rotateLeft(I3);
+	
 	//O formes
-	TetrisCell[][] O1=new TetrisCell[][] {
-		{TetrisCell.O, TetrisCell.O},
-		{TetrisCell.O, TetrisCell.O}
-	};
+	TetrisCell[][] O1=OSHAPE.shape;
+	
 	//T formes
-	TetrisCell[][] T1=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.T,		TetrisCell.EMPTY},
-		{TetrisCell.T,		TetrisCell.T,		TetrisCell.T},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] T2=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.T,		TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.T,		TetrisCell.T},
-		{TetrisCell.EMPTY,	TetrisCell.T,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] T3=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.T,		TetrisCell.T,		TetrisCell.T},
-		{TetrisCell.EMPTY,	TetrisCell.T,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] T4=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.T,	TetrisCell.EMPTY},
-		{TetrisCell.T,		TetrisCell.T,	TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.T,	TetrisCell.EMPTY}
-	};
+	TetrisCell[][] T1 = TSHAPE.shape;
+	TetrisCell[][] T2 = rotateLeft(T1);
+	TetrisCell[][] T3 = rotateLeft(T2);
+	TetrisCell[][] T4 = rotateLeft(T3);
+	
 	//L shape
-	TetrisCell[][] L1=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.L},
-		{TetrisCell.L,		TetrisCell.L,		TetrisCell.L},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] L2=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.L,	TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,		TetrisCell.L,		TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.L,	TetrisCell.L}
-	};
-	TetrisCell[][] L3=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.L,		TetrisCell.L,		TetrisCell.L},
-		{TetrisCell.L,	TetrisCell.EMPTY,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] L4=new TetrisCell[][] {
-		{TetrisCell.L,	TetrisCell.L,	TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,		TetrisCell.L,		TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.L,	TetrisCell.EMPTY}
-	};
+	TetrisCell[][] L1 = LSHAPE.shape;
+	TetrisCell[][] L2 = rotateLeft(L1);
+	TetrisCell[][] L3 = rotateLeft(L2);
+	TetrisCell[][] L4 = rotateLeft(L3);
+	
 	//J shape
-	TetrisCell[][] J1=new TetrisCell[][] {
-		{TetrisCell.J,		TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.J,		TetrisCell.J,		TetrisCell.J},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] J2=new TetrisCell[][] {
-		{TetrisCell.EMPTY,		TetrisCell.J,	TetrisCell.J},
-		{TetrisCell.EMPTY,		TetrisCell.J,	TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	    TetrisCell.J,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] J3=new TetrisCell[][] {
-		{TetrisCell.EMPTY,		TetrisCell.EMPTY,	TetrisCell.EMPTY},
-		{TetrisCell.J,		TetrisCell.J,		TetrisCell.J},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.J}
-	};
-	TetrisCell[][] J4=new TetrisCell[][] {
-		{TetrisCell.EMPTY,		TetrisCell.J,	TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,		TetrisCell.J,		TetrisCell.EMPTY},
-		{TetrisCell.J,	TetrisCell.J,	TetrisCell.EMPTY}
-	};
+	TetrisCell[][] J1 = JSHAPE.shape;
+	TetrisCell[][] J2 = rotateLeft(J1);
+	TetrisCell[][] J3 = rotateLeft(J2);
+	TetrisCell[][] J4 = rotateLeft(J3);
+	
 	//Z shape
-	TetrisCell[][] Z1=new TetrisCell[][] {
-		{TetrisCell.Z,		TetrisCell.Z,		TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.Z,		TetrisCell.Z},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] Z2=new TetrisCell[][] {
-		{TetrisCell.EMPTY,		TetrisCell.EMPTY,		TetrisCell.Z},
-		{TetrisCell.EMPTY,	TetrisCell.Z,		TetrisCell.Z},
-		{TetrisCell.EMPTY,	TetrisCell.Z,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] Z3=new TetrisCell[][] {
-		{TetrisCell.EMPTY,		TetrisCell.EMPTY,		TetrisCell.EMPTY},
-		{TetrisCell.Z,	TetrisCell.Z,		TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.Z,	TetrisCell.Z}
-	};
+	TetrisCell[][] Z1 = ZSHAPE.shape;
+	TetrisCell[][] Z2 = rotateLeft(Z1);
+	TetrisCell[][] Z3 = rotateLeft(Z2);
+	
 	//S shape
-	TetrisCell[][] S1=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.S,		TetrisCell.S},
-		{TetrisCell.S,		TetrisCell.S,		TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.EMPTY}
-	};
-	TetrisCell[][] S2=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.S,		TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,		TetrisCell.S,		TetrisCell.S},
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,	TetrisCell.S}
-	};
-	TetrisCell[][] S3=new TetrisCell[][] {
-		{TetrisCell.EMPTY,	TetrisCell.EMPTY,		TetrisCell.EMPTY},
-		{TetrisCell.EMPTY,		TetrisCell.S,		TetrisCell.S},
-		{TetrisCell.S,	TetrisCell.S,	TetrisCell.EMPTY}
-	};
+	TetrisCell[][] S1 = SSHAPE.shape;
+	TetrisCell[][] S2 = rotateLeft(S1);
+	TetrisCell[][] S3 = rotateLeft(S2);
+
 	//I shape
 	mapping.put("ISHAPE0",new TetrominoImpl(I1,0,ISHAPE));
 	mapping.put("ISHAPE1",new TetrominoImpl(I2,1,ISHAPE));
@@ -294,6 +206,19 @@ public enum TetrominoShape {
 		String key=this.name()+String.valueOf(nb);	
 		return mapping.get(key);
 		}
+
+	public static TetrisCell[][] rotateLeft(TetrisCell[][] cells) {
+	    int height = cells.length;
+	    int width = cells[0].length;
+	    TetrisCell[][] rotated = new TetrisCell[width][height];
+	    for (int i = 0; i < height; i++) {
+	        for (int j = 0; j < width; j++) {
+	            rotated[j][height - 1 - i] = cells[i][j];
+	        }
+	    }
+	    return rotated;
+	}
+	
 	private static class TetrominoImpl implements Tetromino{
 		
 		private final static HashMap<String,List<TetrisCoordinates>> kick_map=new HashMap<>();
