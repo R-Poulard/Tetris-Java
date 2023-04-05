@@ -107,6 +107,7 @@ public interface ScoreComputer {
 		switch(mode) {
 		case MARATHON:
 		case CAVERN:
+		case SPACE_CLEANER:
 			return new Scoring_marathon(initialScore, initialLevel, initialLines);
 
 		default:

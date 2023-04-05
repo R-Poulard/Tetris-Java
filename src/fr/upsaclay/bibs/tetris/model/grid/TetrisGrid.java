@@ -65,7 +65,11 @@ public interface TetrisGrid extends TetrisGridView {
 	 */
 	public void setAtStartingCoordinates();
 	
-	
+	/**
+	 * Permet de poser un bloc à la position i et j supposé vide
+	 * return true si l'action c'est faite correctement
+	 */
+	public boolean setBlock(int i,int j,TetrisCell type);
 	/**
 	 * Try to move the current tetromino by the given direction
 	 * 

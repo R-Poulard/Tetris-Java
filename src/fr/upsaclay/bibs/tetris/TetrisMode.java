@@ -44,11 +44,17 @@ public enum TetrisMode {
 	 */
 	MARATHON,
 	/**
-	 * Classic tetris marathon with level
+	 * Classic tetris marathon with level in the dark
 	 * 
 	 * Your vision start to trouble and you can't see much,
 	 * But the end of the case is near, I have a hunch.
 	 * Or...Is it?
 	 */
-	CAVERN
+	CAVERN,
+	/**
+	 * Clear the grid from rock to end the game
+	 * 
+	 * 
+	 */
+	SPACE_CLEANER
 }

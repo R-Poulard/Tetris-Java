@@ -20,5 +20,6 @@ public enum TetrisCell {
 	Z,
 	S,
 	EMPTY,
-	GREY
+	GREY,
+	ROCK
 }

@@ -258,6 +258,7 @@ public class VisualGameManager extends AbstractGameManager {
 		JRadioButton player_mode1,player_mode2;
 		JRadioButton game_mode1;
 		JRadioButton game_mode2;
+		JRadioButton game_mode3;
 		JButton boutton_menu_start;
 		JButton boutton_menu_quit;
 		JButton chose_file;
@@ -315,6 +316,12 @@ public class VisualGameManager extends AbstractGameManager {
 
 					mode=TetrisMode.CAVERN;
 				}
+				else if(source==game_mode3) {
+					clip_boutton.setMicrosecondPosition(0);
+					clip_boutton.start();
+
+					mode=TetrisMode.SPACE_CLEANER;
+				}
 				else if(source==boutton_menu_start) {
 					clip_boutton.setMicrosecondPosition(0);
 					clip_boutton.start();
@@ -370,7 +377,7 @@ public class VisualGameManager extends AbstractGameManager {
 			timer.setInitialDelay(1000);
 			timer.setDelay(1000);
 		}
-		public void setButton(JButton sf,JButton cf,JButton bpr,JButton bpq, JButton em,JRadioButton pm1,JRadioButton pm2,JRadioButton gm1,JRadioButton gm2,JButton bms,JButton bmq) {
+		public void setButton(JButton sf,JButton cf,JButton bpr,JButton bpq, JButton em,JRadioButton pm1,JRadioButton pm2,JRadioButton gm1,JRadioButton gm2,JRadioButton gm3,JButton bms,JButton bmq) {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(null,"txt");
 	        chooser.setFileFilter(filter);
 	        chose_file=cf;
@@ -384,6 +391,7 @@ public class VisualGameManager extends AbstractGameManager {
 			player_mode2=pm2;
 			game_mode1=gm1;
 			game_mode2=gm2;
+			game_mode3=gm3;
 			boutton_menu_start=bms;
 			boutton_menu_quit=bmq;
 		}

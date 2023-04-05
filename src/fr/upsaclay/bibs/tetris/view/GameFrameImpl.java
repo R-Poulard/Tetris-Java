@@ -51,6 +51,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		JRadioButton player_mode1,player_mode2;
 		JRadioButton game_mode1;
 		JRadioButton game_mode2;
+		JRadioButton game_mode3;
 		JButton boutton_menu_start;
 		JButton boutton_menu_quit;
 		JButton chose_file;
@@ -194,11 +195,16 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipadx=10;
 	    c.ipady=10;
 	    menu.add(game_mode1,c);
-	    c.gridx=2;
+	    c.gridx=1;
 	    c.gridy=4;
 	    c.ipadx=10;
 	    c.ipady=10;
 	    menu.add(game_mode2,c);
+	    c.gridx=2;
+	    c.gridy=4;
+	    c.ipadx=10;
+	    c.ipady=10;
+	    menu.add(game_mode3,c);
 	    c.gridx=0;
 	    c.gridy=6;
 	    c.ipadx=30;
@@ -209,7 +215,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipadx=30;
 	    c.ipady=30;
 	    menu.add(chose_file,c);
-	    c.gridx=5;
+	    c.gridx=3;
 	    c.gridy=7;
 	    c.ipadx=10;
 	    c.ipady=10;
@@ -334,12 +340,18 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    game_mode1.setOpaque(false);
 	    game_mode1.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
 	    game_mode1.setForeground(Color.green);
-	    game_mode2=new JRadioButton("Carvern");
+	    game_mode2=new JRadioButton("Asteroic Field");
 	    game_mode2.setOpaque(false);
 	    game_mode2.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
 	    game_mode2.setForeground(Color.green);
+	    game_mode3=new JRadioButton("Space Cleaner");
+	    game_mode3.setOpaque(false);
+	    game_mode3.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
+	    game_mode3.setForeground(Color.green);
 	    game_mode.add(game_mode1);
+	    game_mode.add(game_mode3);
 	    game_mode.add(game_mode2);
+	    
 	    game_mode.setSelected(game_mode1.getModel(), true);	
 	    
        
@@ -366,10 +378,11 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		player_mode2.addActionListener(listener);
 		game_mode1.addActionListener(listener);
 		game_mode2.addActionListener(listener);
+		game_mode3.addActionListener(listener);
 		boutton_menu_start.addActionListener(listener);
 		boutton_menu_quit.addActionListener(listener);
 		chose_file.addActionListener(listener);
-		((VisualGameManager.ActionHandler) listener).setButton(boutton_save_file,chose_file,boutton_pause_resume,boutton_pause_quit, end_menu,player_mode1,player_mode2,game_mode1,game_mode2,boutton_menu_start,boutton_menu_quit);
+		((VisualGameManager.ActionHandler) listener).setButton(boutton_save_file,chose_file,boutton_pause_resume,boutton_pause_quit, end_menu,player_mode1,player_mode2,game_mode1,game_mode2,game_mode3,boutton_menu_start,boutton_menu_quit);
 	}
 
 	@Override

@@ -87,7 +87,17 @@ public class TetriseGrille implements TetrisGrid{
 		}
 		return this.gridCell(i, j);
 	}
-
+	@Override
+	public boolean setBlock(int i,int j,TetrisCell type) {
+		if(type==TetrisCell.EMPTY || this.visibleCell(i, j)!=TetrisCell.EMPTY) {
+			System.out.println("this.visibleCell(i, j) ="+this.visibleCell(i, j));
+			return false;
+		}
+		else {
+			grille[i][j]=type;
+			return true;
+		}
+	}
 	@Override
 	public boolean hasConflicts() {
 		// TODO Auto-generated method stub

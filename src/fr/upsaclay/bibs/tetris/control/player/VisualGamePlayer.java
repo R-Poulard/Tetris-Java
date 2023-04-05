@@ -3,9 +3,12 @@ package fr.upsaclay.bibs.tetris.control.player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;
+import fr.upsaclay.bibs.tetris.TetrisMode;
 import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager;
+import fr.upsaclay.bibs.tetris.model.grid.TetrisCell;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
 import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
@@ -29,6 +32,29 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 		tmp.add(this.pr.showNext(0));
 		mg.getgame_frame().getgrid().updateNextTetrominos(tmp);
 		mg.getgame_frame().getgrid().updateHeldTetromino(null);
+		if(this.mg.getGameMode()==TetrisMode.SPACE_CLEANER) {
+			System.out.println("Dedans");
+			Random rand = new Random(); 
+			for(int i=8;i<mg.getNumberOfLines();i++) {
+				System.out.println("Ici");
+			      int upperbound = 4;
+			      // Generating random values from 0 - 24 
+			      // using nextInt()
+			      int int_random = rand.nextInt(upperbound)+4; 
+			      for(int a=int_random;a>0;a--) {
+			    	  System.out.println("la");
+			    	  boolean posed=false;
+			    	  while(posed!=true) {
+					      int position = rand.nextInt(10); 
+					      
+			    		  posed=this.grid.setBlock(i,position,TetrisCell.ROCK);
+			    		  if(posed) {
+			    		  System.out.println(posed);
+			    		  }
+			    	  }
+			      }
+			}
+		}
 		mg.getgame_frame().getgrid().update();
 	}
 
@@ -43,11 +69,18 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 		mg.getput().setMicrosecondPosition(0);
 		List<Integer> to_break=grid.pack();
 		sc.registerMergePack(to_break, grid);
-		System.out.println("Ici");
 		if(to_break.size()!=0) {
 			mg.getclear().start();
 			mg.getclear().setMicrosecondPosition(0);
 			mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.LINES,to_break);
+		}
+		if(this.mg.getGameMode()==TetrisMode.SPACE_CLEANER) {
+			for(int i=0;i<grid.numberOfCols();i++) {
+				if(grid.visibleCell(19, i)==TetrisCell.ROCK) {
+					return;
+				}
+			}
+			mg.over();
 		}
 	}
 	

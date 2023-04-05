@@ -219,6 +219,11 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 						case Z:
 							grille[i][y].setBackground(Color.orange);
 							break;
+						case ROCK:
+							blackline = BorderFactory.createLineBorder(new Color(51,51,51));
+							grille[i][y].setBorder(blackline);
+							grille[i][y].setBackground(Color.GRAY);
+							break;
 						default:
 							break;
 						}
