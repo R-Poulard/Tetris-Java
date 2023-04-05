@@ -45,13 +45,127 @@ public class Scoring_marathon implements ScoreComputer{
 	@Override
 	public void registerBeforeAction(TetrisAction action, TetrisGridView gridView) {
 		// TODO Auto-generated method stub
+		if(action == TetrisAction.HARD_DROP) {
+	        //récupère la position courante du tétrmino et stocker dans saved
+			currentTetromino = gridView.getTetromino();
+	        savedTetrominoPosition = gridView.getCoordinates();
+	    //cette valeur : pour calculer le score 
+	    //en fonction de la distance parcourue par le tétrmino lors du "hard drop"
+		}
 	}
 
 	@Override
 	public void registerAfterAction(TetrisGridView gridView) {
-		// TODO Auto-generated method stub
-		
+	    if (savedTetrominoPosition == null) {
+	        throw new IllegalStateException("No action has been registered");
+	    }
+
+	    TetrisCoordinates finalPosition = gridView.getCoordinates();
+	    int distance = finalPosition.getLine() - savedTetrominoPosition.getLine();
+
+	    // Calculate score based on number of cleared lines
+	    int numClearedLines = this.getLines();
+	    if (numClearedLines > 0) {
+	        int baseScore = 0;
+	        switch (numClearedLines) {
+	            case 1:
+	                baseScore = 40;
+	                break;
+	            case 2:
+	                baseScore = 100;
+	                break;
+	            case 3:
+	                baseScore = 500;
+	                break;
+	            case 4:
+	                baseScore = 1200;
+	                break;
+	        }
+	        
+	        // Add combo bonus to base score
+	        int comboBonus = 0;
+	        if (combo_count >= 1) {
+	            comboBonus = (combo_count + 1) * 50;
+	        }
+	        score += (baseScore + comboBonus) * level;
+
+	        // Increase combo counter if a line is cleared
+	        if (numClearedLines >= 1) {
+	            combo_count++;
+	        } else { // Reset combo counter if no lines are cleared
+	        	combo_count = -1;
+	        }
+	    } else { // Reset combo counter if no lines are cleared
+	    	combo_count = -1;
+	    }
+
+	    if (distance > 0) {
+	        score += distance * level;
+	    }
+
+	    savedTetrominoPosition = null;
+	    currentTetromino = null;
 	}
+
+	//public void registerMergePack(List<Integer> packResult, TetrisGridView gridView) {
+
+	//	lines = packResult.size();
+
+	//	level = getLevel();
+
+	//	combo_count = getComboCount();
+
+	//	score = getScore();
+
+	//	int point = 0;
+
+
+	//	if (lines > 0) {
+
+	//	combo_count ++;
+
+	//	} else {
+
+	//	combo_count = -1;
+
+	//	}
+
+	//	switch (lines) {
+
+	//	case 1:
+
+	//	point = 40 * (level);
+
+	//	break;
+
+	//	case 2:
+
+	//	point = 100 * (level);
+
+	//	break;
+
+	//	case 3:
+
+	//	point = 500 * (level);
+
+	//	break;
+
+	//	case 4:
+
+	//	point = 1200 * (level);
+
+	//	break;
+
+	//	}
+
+	//	point = point + 50 * combo_count * level;
+
+	//	score += point;
+
+	//	lines += packResult.size();
+
+
+	//	}
 
 	@Override
 	public void registerMergePack(List<Integer> packResult, TetrisGridView gridView) {
