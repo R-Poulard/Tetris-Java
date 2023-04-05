@@ -29,11 +29,15 @@ import javax.swing.border.Border;
 
 import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager.ActionHandler;
 import fr.upsaclay.bibs.tetris.model.grid.SynchronizedView;
+import fr.upsaclay.bibs.tetris.model.grid.TetrisCell;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
 import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 
 public class GamePanelImpl extends JPanel implements GamePanel{
+	
+	boolean black_mode;
+	
 	int nblines;
 	int nbcols;
 	TetrisGridView grille_model;
@@ -55,6 +59,9 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	JLabel jlinfo2;
 	
 	Timer timer;
+	
+	
+	
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
@@ -121,7 +128,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		jlinfo1.setAlignmentX(CENTER_ALIGNMENT);
 		
 		jlinfo2=new JLabel("");
-		jlinfo2.setFont(new Font("Rockwell", Font.BOLD, 50)); //Creating an Times New Roman Font Style with size 30
+		jlinfo2.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
 		jlinfo2.setForeground(Color.red);
 		jlinfo2.setAlignmentX(CENTER_ALIGNMENT);
 		
@@ -150,8 +157,9 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		
 		
 		JPanel[][] grille;
+		boolean black_mode=false;
 		
-		private Grille() {
+		private Grille( ) {
 			super();
 			this.setOpaque(false);
 			
@@ -179,46 +187,103 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		}
 		
 		public void update(){
-			
-			for(int i=0;i<nblines;i++) {
-				for(int y=0;y<nbcols;y++) {
-					Border blackline = BorderFactory.createLineBorder(Color.black);
-					grille[i][y].setBorder(blackline);
-					switch(grille_model.visibleCell(i, y)) {
-					case EMPTY:
-						grille[i][y].setBackground(new Color(39,33,79,160));
-						break;
-					case GREY:
-						break;
-					case I:
-						grille[i][y].setBackground(Color.CYAN);
-						break;
-					case J:
-						grille[i][y].setBackground(Color.RED);
-						break;
-					case L:
-						grille[i][y].setBackground(Color.BLUE);
-						break;
-					case O:
-						grille[i][y].setBackground(Color.YELLOW);
-						break;
-					case S:
-						grille[i][y].setBackground(Color.GREEN);
-						break;
-					case T:
-						grille[i][y].setBackground(Color.MAGENTA);
-						break;
-					case Z:
-						grille[i][y].setBackground(Color.orange);
-						break;
-					default:
-						break;
+			if(!black_mode) {
+				for(int i=0;i<nblines;i++) {
+					for(int y=0;y<nbcols;y++) {
+						Border blackline = BorderFactory.createLineBorder(Color.black);
+						grille[i][y].setBorder(blackline);
+						switch(grille_model.visibleCell(i, y)) {
+						case EMPTY:
+							grille[i][y].setBackground(new Color(39,33,79,160));
+							break;
+						case GREY:
+							break;
+						case I:
+							grille[i][y].setBackground(Color.CYAN);
+							break;
+						case J:
+							grille[i][y].setBackground(Color.RED);
+							break;
+						case L:
+							grille[i][y].setBackground(Color.BLUE);
+							break;
+						case O:
+							grille[i][y].setBackground(Color.YELLOW);
+							break;
+						case S:
+							grille[i][y].setBackground(Color.GREEN);
+							break;
+						case T:
+							grille[i][y].setBackground(Color.MAGENTA);
+							break;
+						case Z:
+							grille[i][y].setBackground(Color.orange);
+							break;
+						default:
+							break;
+						}
 					}
 				}
+				this.repaint();
 			}
-			this.repaint();
+			else {
+				for(int i=0;i<nblines;i++) {
+					for(int y=0;y<nbcols;y++) {
+						Border blackline = BorderFactory.createLineBorder(Color.black);
+						grille[i][y].setBorder(blackline);
+
+						if(inCircle(i,y)) {
+							switch(grille_model.visibleCell(i, y)) {
+							case EMPTY:
+								grille[i][y].setBorder(null);
+								grille[i][y].setBackground(new Color(102, 51, 0));
+								break;
+							case GREY:
+								break;
+							case I:
+								grille[i][y].setBackground(Color.CYAN);
+								break;
+							case J:
+								grille[i][y].setBackground(Color.RED);
+								break;
+							case L:
+								grille[i][y].setBackground(Color.BLUE);
+								break;
+							case O:
+								grille[i][y].setBackground(Color.YELLOW);
+								break;
+							case S:
+								grille[i][y].setBackground(Color.GREEN);
+								break;
+							case T:
+								grille[i][y].setBackground(Color.MAGENTA);
+								break;
+							case Z:
+								grille[i][y].setBackground(Color.orange);
+								break;
+							default:
+								break;
+							}
+						}
+						else {
+							grille[i][y].setBackground(Color.black);
+						}
+					}
+				}
+				this.repaint();
+			}
 		}
 		
+		public boolean inCircle(int x,int y) {
+			int m1=grille_model.getCoordinates().getLine()+grille_model.getTetromino().getBoxSize()/2;
+			int m2=grille_model.getCoordinates().getCol()+grille_model.getTetromino().getBoxSize()/2;
+			int dx=x-m1;
+			int dy=y-m2;
+			int distanceSquared = dx * dx + dy * dy;
+
+		    return (distanceSquared <= 4*4);
+
+		}
 	}
 	
 	public class TetroCell extends JPanel{
@@ -228,18 +293,32 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		JPanel main;
 		JPanel[][] grille;
 		Tetromino tr;
-		private TetroCell() {
+		boolean black_mode=false;
+		private TetroCell( ) {
 			this.setLayout(null);
 			this.setBackground(new Color(39,33,79,255));
 			Border backline=BorderFactory.createLineBorder(Color.cyan,5);
 			this.setBorder(backline);
+			
 		}
 		void set_tetro(Tetromino tr) {
 			this.tr=tr;
 		}
 		
+		void set_black_mode(boolean black_mode) {
+			this.black_mode=black_mode;
+			if(black_mode) {
+				this.setBackground(Color.BLACK);
+				
+				display_tetromino();
+			}
+			else {
+				this.setBackground(new Color(39,33,79,255));
+				display_tetromino();
+			}
+		}
 		void display_tetromino(){
-			System.out.println(this.getComponentCount());
+
 			if(main !=null) {
 				this.removeAll();
 				for(int i=0;i<grille.length;i++) {
@@ -256,10 +335,16 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 				return;
 			}
 			main=new JPanel(new GridLayout(tr.getBoxSize(),tr.getBoxSize()));
-			main.setBackground(new Color(39,33,79,255));
 			
+			if(black_mode) {
+				main.setBackground(Color.BLACK);
+			}
+			else {
+				main.setBackground(new Color(39,33,79,255));
+			}
 			grille = new JPanel[tr.getBoxSize()][tr.getBoxSize()];
 			
+			if(!black_mode) {
 			for(int i=0;i<tr.getBoxSize();i++) {
 				for(int y=0;y<tr.getBoxSize();y++) {
 					grille[i][y]=new JPanel();
@@ -297,6 +382,18 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 					}
 					main.add(grille[i][y]);
 					grille[i][y].repaint();
+				}
+			}
+			}
+			else {
+				for(int i=0;i<tr.getBoxSize();i++) {
+					for(int y=0;y<tr.getBoxSize();y++) {
+						grille[i][y]=new JPanel();
+						grille[i][y].setOpaque(true);
+						grille[i][y].setBackground(Color.BLACK);
+						main.add(grille[i][y]);
+						grille[i][y].repaint();
+					}
 				}
 			}
 			this.add(main);
@@ -344,7 +441,13 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		}
 		
 	}
+
+	public void set_black_mode(boolean bl) {
+		this.grille_de_jeu.black_mode=bl;
+		this.nexted.set_black_mode(bl);;
+	}
 	
+
 	@Override
 	public void drawManagementView() {
 		// TODO Auto-generated method stub
@@ -371,7 +474,13 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	@Override
 	public void drawEndGameView() {
 		// TODO Auto-generated method stub
+		System.out.println("I CAN T");
 		this.timer=null;
+		if(grille_de_jeu.black_mode) {
+			this.grille_de_jeu.black_mode=false;
+			this.grille_de_jeu.update();
+			this.set_black_mode(false);
+		}
 	}
 
 	@Override
@@ -455,7 +564,6 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			Timer t=new Timer(150,taskPerformer);
 			t.setRepeats(false);
 			t.start();
-			System.out.println("on est laaaaa");
 			break;
 		case END_COMBO:
 			jlinfo2.setText("");

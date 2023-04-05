@@ -30,7 +30,9 @@ import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
 import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoShape;
 
 public class GameFrameImpl extends JFrame implements GameFrame {
-
+		
+		boolean black_mode;
+		
 	 	JPanel filling;
 	 	JPanel filling2;
 		JPanel pause;
@@ -48,6 +50,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		ButtonGroup game_mode;
 		JRadioButton player_mode1,player_mode2;
 		JRadioButton game_mode1;
+		JRadioButton game_mode2;
 		JButton boutton_menu_start;
 		JButton boutton_menu_quit;
 		JButton chose_file;
@@ -186,11 +189,16 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipadx=20;
 	    c.ipady=20;
 	    menu.add(game_mode_label,c);
-	    c.gridx=1;
+	    c.gridx=0;
 	    c.gridy=4;
 	    c.ipadx=10;
 	    c.ipady=10;
 	    menu.add(game_mode1,c);
+	    c.gridx=2;
+	    c.gridy=4;
+	    c.ipadx=10;
+	    c.ipady=10;
+	    menu.add(game_mode2,c);
 	    c.gridx=0;
 	    c.gridy=6;
 	    c.ipadx=30;
@@ -309,7 +317,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		boutton_save_file=new JButton("Save & quit");
 		
 		player_mode=new ButtonGroup();
-	    player_mode1= new JRadioButton("IA (not chatGPT good)");
+	    player_mode1= new JRadioButton("IA (not AlphaGo-good)");
 	    player_mode1.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
 	    player_mode1.setForeground(Color.green);
 	    player_mode1.setOpaque(false);
@@ -326,8 +334,14 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    game_mode1.setOpaque(false);
 	    game_mode1.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
 	    game_mode1.setForeground(Color.green);
-	    game_mode.setSelected(game_mode1.getModel(), true);	
+	    game_mode2=new JRadioButton("Carvern");
+	    game_mode2.setOpaque(false);
+	    game_mode2.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
+	    game_mode2.setForeground(Color.green);
 	    game_mode.add(game_mode1);
+	    game_mode.add(game_mode2);
+	    game_mode.setSelected(game_mode1.getModel(), true);	
+	    
        
 	    boutton_menu_start=new JButton("START");
 	    boutton_menu_start.setOpaque(false);
@@ -351,25 +365,32 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		player_mode1.addActionListener(listener);
 		player_mode2.addActionListener(listener);
 		game_mode1.addActionListener(listener);
+		game_mode2.addActionListener(listener);
 		boutton_menu_start.addActionListener(listener);
 		boutton_menu_quit.addActionListener(listener);
 		chose_file.addActionListener(listener);
-		((VisualGameManager.ActionHandler) listener).setButton(boutton_save_file,chose_file,boutton_pause_resume,boutton_pause_quit, end_menu,player_mode1,player_mode2,game_mode1,boutton_menu_start,boutton_menu_quit);
+		((VisualGameManager.ActionHandler) listener).setButton(boutton_save_file,chose_file,boutton_pause_resume,boutton_pause_quit, end_menu,player_mode1,player_mode2,game_mode1,game_mode2,boutton_menu_start,boutton_menu_quit);
 	}
 
 	@Override
 	public void startGameKeyListener(KeyListener listener) {
 		// TODO Auto-generated method stub
-		grille.addKeyListener(listener);
+
 		grille.setFocusable(true);
 		grille.requestFocus();
+
 	}
 	
+	public void bindGameKeyListener(KeyListener listener) {
+		grille.addKeyListener(listener);
+		grille.setFocusable(false);
+	}
 	
 	@Override
 	public void stopGameKeyListener(KeyListener listener) {
 		// TODO Auto-generated method stub
-		grille.removeKeyListener(listener);
+
+		grille.setFocusable(false);
 	}
 
 	@Override

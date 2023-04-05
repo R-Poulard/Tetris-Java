@@ -42,5 +42,13 @@ public enum TetrisMode {
 	 * Extra points for difficult actions (see tetris wiki)
 	 * 
 	 */
-	MARATHON
+	MARATHON,
+	/**
+	 * Classic tetris marathon with level
+	 * 
+	 * Your vision start to trouble and you can't see much,
+	 * But the end of the case is near, I have a hunch.
+	 * Or...Is it?
+	 */
+	CAVERN
 }
