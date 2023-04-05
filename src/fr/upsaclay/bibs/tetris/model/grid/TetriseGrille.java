@@ -90,7 +90,6 @@ public class TetriseGrille implements TetrisGrid{
 	@Override
 	public boolean setBlock(int i,int j,TetrisCell type) {
 		if(type==TetrisCell.EMPTY || this.visibleCell(i, j)!=TetrisCell.EMPTY) {
-			System.out.println("this.visibleCell(i, j) ="+this.visibleCell(i, j));
 			return false;
 		}
 		else {
@@ -328,7 +327,10 @@ public class TetriseGrille implements TetrisGrid{
 	@Override
 	public List<Integer> pack() {
 		// TODO Auto-generated method stub
-		List<Integer> fulls=this.fullLines();		
+		List<Integer> fulls=this.fullLines();	
+		if(fulls.isEmpty()) {
+			return fulls;
+		}
 		for(int i=numberOfLines()-1;i>=0;i--) {
 			if(fulls.contains(i)) {
 				Arrays.fill(grille[i],TetrisCell.EMPTY);
@@ -353,5 +355,41 @@ public class TetriseGrille implements TetrisGrid{
 		}
 		return fulls;
 	}
-
+	//pour le mode cleaner
+	public List<Integer> pack2() {
+		// TODO Auto-generated method stub
+		List<Integer> fulls=this.fullLines();	
+		if(fulls.isEmpty()) {
+			return fulls;
+		}
+		for(int i=numberOfLines()-1;i>=0;i--) {
+			if(fulls.contains(i)) {
+				Arrays.fill(grille[i],TetrisCell.EMPTY);
+				continue;
+			}
+		}
+		for(int i=numberOfLines()-1;i>=0;i--) {
+			for(int j=0;j<numberOfCols();j++) {
+				if(grille[i][j]==TetrisCell.EMPTY || grille[i][j]==TetrisCell.ROCK) {
+					continue;
+				}
+				boolean stop=false;
+				int deplacement=i;
+				while(!stop) {
+					if(deplacement+1>=numberOfLines() || grille[deplacement+1][j]!=TetrisCell.EMPTY) {
+						
+						stop=true;
+					}
+					else {
+						deplacement++;
+					}
+				}
+				
+				grille[deplacement][j]=TetrisCell.valueOf(grille[i][j].name());
+				grille[i][j]=TetrisCell.EMPTY;
+				System.out.println(i+" "+j+" "+deplacement);
+			}
+		}
+		return fulls;
+	}
 }

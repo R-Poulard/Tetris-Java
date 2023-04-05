@@ -97,7 +97,6 @@ public class SimpleGamePlayer implements GamePlayer {
 	}
 
 	public void packing(TetrisGrid grid,ScoreComputer sc) {
-		System.out.println("plutot ici");
 		sc.registerMergePack(grid.pack(), grid);
 	}
 	

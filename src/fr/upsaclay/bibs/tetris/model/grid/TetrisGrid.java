@@ -161,6 +161,17 @@ public interface TetrisGrid extends TetrisGridView {
 	 */
 	public List<Integer> pack();
 	
+	/**
+	 * "Pack" the grid
+	 * i.e. remove all full lines
+	 * 
+	 * "gravity" is applied on the non-rock TetrisCells
+	 * 
+	 * @return the list of line indexes that have been "packed". These are the indices of lines
+	 *         that were full before packing
+	 */
+	public List<Integer> pack2();
+	
 	
 	
 	/**

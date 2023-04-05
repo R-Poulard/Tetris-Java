@@ -18,6 +18,7 @@ import fr.upsaclay.bibs.tetris.view.GamePanelEvent;
 public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 
 	VisualGameManager mg;
+	boolean cleaner_over=false;
 	
 	public VisualGamePlayer(VisualGameManager mg) {
 		super(mg.getPlayerType());
@@ -33,23 +34,22 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 		mg.getgame_frame().getgrid().updateNextTetrominos(tmp);
 		mg.getgame_frame().getgrid().updateHeldTetromino(null);
 		if(this.mg.getGameMode()==TetrisMode.SPACE_CLEANER) {
-			System.out.println("Dedans");
+
+	
 			Random rand = new Random(); 
-			for(int i=8;i<mg.getNumberOfLines();i++) {
-				System.out.println("Ici");
+			for(int i=18;i<mg.getNumberOfLines();i++) {
+
 			      int upperbound = 4;
-			      // Generating random values from 0 - 24 
-			      // using nextInt()
+
 			      int int_random = rand.nextInt(upperbound)+4; 
 			      for(int a=int_random;a>0;a--) {
-			    	  System.out.println("la");
 			    	  boolean posed=false;
 			    	  while(posed!=true) {
 					      int position = rand.nextInt(10); 
 					      
 			    		  posed=this.grid.setBlock(i,position,TetrisCell.ROCK);
 			    		  if(posed) {
-			    		  System.out.println(posed);
+
 			    		  }
 			    	  }
 			      }
@@ -65,22 +65,63 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 
 	@Override
 	public void packing(TetrisGrid grid,ScoreComputer sc) {
-		mg.getput().start();
-		mg.getput().setMicrosecondPosition(0);
-		List<Integer> to_break=grid.pack();
-		sc.registerMergePack(to_break, grid);
-		if(to_break.size()!=0) {
-			mg.getclear().start();
-			mg.getclear().setMicrosecondPosition(0);
-			mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.LINES,to_break);
-		}
 		if(this.mg.getGameMode()==TetrisMode.SPACE_CLEANER) {
-			for(int i=0;i<grid.numberOfCols();i++) {
-				if(grid.visibleCell(19, i)==TetrisCell.ROCK) {
-					return;
+			List<Integer> to_break;
+			do {
+			mg.getput().start();
+			mg.getput().setMicrosecondPosition(0);
+			to_break=grid.pack2();
+			
+			sc.registerMergePack(to_break, grid);
+			if(to_break.size()!=0) {
+				mg.getclear().start();
+				mg.getclear().setMicrosecondPosition(0);
+	
+				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.LINES,to_break);
+				if(sc.getComboCount()>0) {
+				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.COMBO,Integer.valueOf(sc.getComboCount()));
 				}
 			}
-			mg.over();
+			else {
+				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.END_COMBO,0);
+				
+			}
+			boolean ended=true;
+			for(int i=0;i<grid.numberOfCols();i++) {
+				if(grid.visibleCell(19, i)==TetrisCell.ROCK) {
+					ended=false;
+				}
+			}
+			if(ended) {
+				cleaner_over=true;
+				return;
+			}
+			else {
+				mg.getgame_frame().getgrid().updateScore(sc.getScore());
+				mg.getgame_frame().getgrid().updateScoreLines(sc.getLines());
+				mg.getgame_frame().getgrid().updateLevel(sc.getLevel());
+				mg.getgame_frame().getgrid().update();
+			}
+			}while(to_break.size()!=0);
+		}
+		else {
+			mg.getput().start();
+			mg.getput().setMicrosecondPosition(0);
+			List<Integer> to_break=grid.pack();
+			sc.registerMergePack(to_break, grid);
+			if(to_break.size()!=0) {
+				mg.getclear().start();
+				mg.getclear().setMicrosecondPosition(0);
+	
+				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.LINES,to_break);
+				if(sc.getComboCount()>0) {
+				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.COMBO,Integer.valueOf(sc.getComboCount()));
+				}
+			}
+			else {
+				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.END_COMBO,0);
+				
+			}
 		}
 	}
 	
@@ -130,9 +171,16 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 			default:
 				break;
 			}
+			mg.getgame_frame().getgrid().updateScore(sc.getScore());
+			mg.getgame_frame().getgrid().updateScoreLines(sc.getLines());
+			mg.getgame_frame().getgrid().updateLevel(sc.getLevel());
 			mg.getgame_frame().getgrid().update();
+		if(this.cleaner_over) {
+			System.out.println("FALSE RETURNED");
+			this.cleaner_over=false;
+			return false;
 		}
-	
+		}
 		return true;
 	}
 }

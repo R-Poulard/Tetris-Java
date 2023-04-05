@@ -105,7 +105,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		holded.setMinimumSize(new Dimension(holded.getParent().getWidth()*4/7,holded.getParent().getWidth()*4/7));
 
 		JPanel labels=new JPanel();
-		
+		labels.setLayout(new BoxLayout(labels,BoxLayout.Y_AXIS));
 		
 		jlscore=new JLabel("Score: 0");
 		jlscore.setFont(new Font("Rockwell", Font.BOLD, 30)); //Creating an Times New Roman Font Style with size 30
@@ -117,7 +117,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		jlligne.setForeground(Color.red);
 		jlligne.setAlignmentX(CENTER_ALIGNMENT);
 		
-		jllevel=new JLabel("Level: 0");
+		jllevel=new JLabel("Level: 1");
 		jllevel.setFont(new Font("Rockwell", Font.BOLD, 30)); //Creating an Times New Roman Font Style with size 30
 		jllevel.setForeground(Color.red);
 		jllevel.setAlignmentX(CENTER_ALIGNMENT);
@@ -132,12 +132,12 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		jlinfo2.setForeground(Color.red);
 		jlinfo2.setAlignmentX(CENTER_ALIGNMENT);
 		
-		aux.add(Box.createRigidArea(new Dimension(0, 35)));
-		labels.add(Box.createRigidArea(new Dimension(0,35)));
+		aux.add(Box.createRigidArea(new Dimension(0, 5)));
+		labels.add(Box.createRigidArea(new Dimension(0,5)));
 		labels.add(jllevel);
-		labels.add(Box.createRigidArea(new Dimension(0, 40)));
+		labels.add(Box.createRigidArea(new Dimension(0, 5)));
 		labels.add(jlligne);
-		labels.add(Box.createRigidArea(new Dimension(0, 40)));
+		labels.add(Box.createRigidArea(new Dimension(0, 5)));
 		labels.add(jlscore);
 		aux.add(labels);
 		labels.setMaximumSize(new Dimension(nexted.getParent().getWidth()*5/7,nexted.getParent().getHeight()*1/7));
@@ -541,7 +541,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		// TODO Auto-generated method stub
 		switch(event) {
 		case COMBO:
-			jlinfo1.setText("Combo x"+((ScoreComputer) attach).getComboCount());
+			jlinfo1.setText("Combo x"+ ((Integer)attach).toString());
 			break;
 		case LINES:
 			List<Integer> to_break=(List<Integer>)attach;
@@ -571,7 +571,6 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			t.start();
 			break;
 		case END_COMBO:
-			jlinfo2.setText("");
 			jlinfo1.setText("");
 			break;		
 		}

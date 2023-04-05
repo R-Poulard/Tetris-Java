@@ -1,6 +1,5 @@
 package fr.upsaclay.bibs.tetris.view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -19,15 +18,21 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.Border;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.upsaclay.bibs.tetris.control.manager.ManagerAction;
 import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager;
-import fr.upsaclay.bibs.tetris.model.grid.TetrisCell;
-import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
-import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoShape;
+import lol.Client;
 
 public class GameFrameImpl extends JFrame implements GameFrame {
 		

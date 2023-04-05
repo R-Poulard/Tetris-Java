@@ -195,7 +195,7 @@ public class VisualGameManager extends AbstractGameManager {
 					break;
 				case 88://hard drop
 					if(!toomuch) {
-						res=pl.performAction(TetrisAction.HARD_DROP);
+						pl.performAction(TetrisAction.HARD_DROP);
 						toomuch=true;
 					}
 					break;
@@ -212,8 +212,9 @@ public class VisualGameManager extends AbstractGameManager {
 					res=pl.performAction(TetrisAction.ROTATE_RIGHT);
 					break;
 				}
+				System.out.println("res "+res);
 				if(!res) {
-
+					
 					over();
 				}
 			}
