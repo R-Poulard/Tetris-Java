@@ -171,7 +171,6 @@ public class VisualGameManager extends AbstractGameManager {
 		public void keyPressed(KeyEvent e) {
 			// TODO Auto-generated method stub
 			if(!inpause) {
-				
 				boolean res=true;
 				switch(e.getKeyCode()){
 				case KeyEvent.VK_ESCAPE:
@@ -182,7 +181,6 @@ public class VisualGameManager extends AbstractGameManager {
 					}
 					break;
 				case 65://gauche
-					
 					res=pl.performAction(TetrisAction.MOVE_LEFT);
 					break;
 				case 90://held
@@ -195,7 +193,7 @@ public class VisualGameManager extends AbstractGameManager {
 					break;
 				case 88://hard drop
 					if(!toomuch) {
-						pl.performAction(TetrisAction.HARD_DROP);
+						res=pl.performAction(TetrisAction.HARD_DROP);
 						toomuch=true;
 					}
 					break;
@@ -212,7 +210,6 @@ public class VisualGameManager extends AbstractGameManager {
 					res=pl.performAction(TetrisAction.ROTATE_RIGHT);
 					break;
 				}
-				System.out.println("res "+res);
 				if(!res) {
 					
 					over();
@@ -375,8 +372,8 @@ public class VisualGameManager extends AbstractGameManager {
 		
 		public void setTimer(Timer t) {
 			timer=t;
-			timer.setInitialDelay(1000);
-			timer.setDelay(1000);
+			timer.setInitialDelay(1500);
+			timer.setDelay(1500);
 		}
 		public void setButton(JButton sf,JButton cf,JButton bpr,JButton bpq, JButton em,JRadioButton pm1,JRadioButton pm2,JRadioButton gm1,JRadioButton gm2,JRadioButton gm3,JButton bms,JButton bmq) {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(null,"txt");

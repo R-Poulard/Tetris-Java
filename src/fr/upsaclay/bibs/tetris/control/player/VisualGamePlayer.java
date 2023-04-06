@@ -93,7 +93,8 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 				}
 			}
 			if(ended) {
-				cleaner_over=true;
+				pause();
+				mg.over();
 				return;
 			}
 			else {
@@ -105,6 +106,7 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 			}while(to_break.size()!=0);
 		}
 		else {
+			int post_level=sc.getScore();
 			mg.getput().start();
 			mg.getput().setMicrosecondPosition(0);
 			List<Integer> to_break=grid.pack();
@@ -116,6 +118,24 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.LINES,to_break);
 				if(sc.getComboCount()>0) {
 				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.COMBO,Integer.valueOf(sc.getComboCount()));
+				}
+				if(post_level!=sc.getLevel()) {
+					int pre_level=sc.getLevel();
+					if(pre_level==9) {
+						mg.getgame_frame().getgrid().getTimer().setInitialDelay(150);
+					}
+					else if(pre_level<9) {
+					mg.getgame_frame().getgrid().getTimer().setInitialDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay()-(150*sc.getLevel()));
+					}
+					else if(pre_level>=10 && pre_level<=12) {
+						mg.getgame_frame().getgrid().getTimer().setInitialDelay(60);
+						
+					}
+					else if(pre_level>=13 && pre_level<=15) {
+						mg.getgame_frame().getgrid().getTimer().setInitialDelay(30);
+						
+					}
+					mg.getgame_frame().getgrid().setLoopDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay());
 				}
 			}
 			else {
@@ -149,7 +169,7 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 				}
 			case END_SOFT_DROP:
 				if(mg.getgame_frame().getgrid().getTimer()!=null) {
-					mg.getgame_frame().getgrid().setLoopDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay());
+					mg.getgame_frame().getgrid().setLoopDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay()-100);
 				}
 				break;
 			case HOLD:
@@ -164,7 +184,7 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 				}
 			case START_SOFT_DROP:
 				if(mg.getgame_frame().getgrid().getTimer()!=null) {
-					mg.getgame_frame().getgrid().setLoopDelay(100);
+					mg.getgame_frame().getgrid().setLoopDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay()+100);
 				}
 				this.performAction(TetrisAction.DOWN);
 				break;
@@ -175,11 +195,7 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 			mg.getgame_frame().getgrid().updateScoreLines(sc.getLines());
 			mg.getgame_frame().getgrid().updateLevel(sc.getLevel());
 			mg.getgame_frame().getgrid().update();
-		if(this.cleaner_over) {
-			System.out.println("FALSE RETURNED");
-			this.cleaner_over=false;
-			return false;
-		}
+		
 		}
 		return true;
 	}

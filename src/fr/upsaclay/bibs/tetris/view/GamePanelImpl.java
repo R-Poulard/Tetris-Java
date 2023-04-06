@@ -579,22 +579,21 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	@Override
 	public void updateScore(int score) {
 		// TODO Auto-generated method stub
-		this.score=score;
+
 		jlscore.setText("Score: "+score);
 	}
 
 	@Override
 	public void updateScoreLines(int lines) {
 		// TODO Auto-generated method stub
-		this.ligne=lines;
-		jlligne.setText("Ligne: "+ligne);
+
+		jlligne.setText("Ligne: "+lines);
 	}
 
 	@Override
 	public void updateLevel(int level) {
 		// TODO Auto-generated method stub
-		this.level=level;
-		jllevel.setText("Level: "+this.level);
+		jllevel.setText("Level: "+level);
 	}
 
 	@Override
