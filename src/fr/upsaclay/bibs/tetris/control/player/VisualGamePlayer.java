@@ -37,7 +37,7 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 
 	
 			Random rand = new Random(); 
-			for(int i=18;i<mg.getNumberOfLines();i++) {
+			for(int i=7;i<mg.getNumberOfLines();i++) {
 
 			      int upperbound = 4;
 
@@ -106,7 +106,7 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 			}while(to_break.size()!=0);
 		}
 		else {
-			int post_level=sc.getScore();
+			int post_level=sc.getLevel();
 			mg.getput().start();
 			mg.getput().setMicrosecondPosition(0);
 			List<Integer> to_break=grid.pack();
@@ -120,12 +120,14 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.COMBO,Integer.valueOf(sc.getComboCount()));
 				}
 				if(post_level!=sc.getLevel()) {
+
 					int pre_level=sc.getLevel();
+
 					if(pre_level==9) {
 						mg.getgame_frame().getgrid().getTimer().setInitialDelay(150);
 					}
 					else if(pre_level<9) {
-					mg.getgame_frame().getgrid().getTimer().setInitialDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay()-(150*sc.getLevel()));
+					mg.getgame_frame().getgrid().getTimer().setInitialDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay()-150);
 					}
 					else if(pre_level>=10 && pre_level<=12) {
 						mg.getgame_frame().getgrid().getTimer().setInitialDelay(60);
@@ -136,7 +138,7 @@ public class VisualGamePlayer extends SimpleGamePlayer implements GamePlayer{
 						
 					}
 					mg.getgame_frame().getgrid().setLoopDelay(mg.getgame_frame().getgrid().getTimer().getInitialDelay());
-				}
+					}
 			}
 			else {
 				mg.getgame_frame().getgrid().launchGamePanelEvent(GamePanelEvent.END_COMBO,0);

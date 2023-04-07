@@ -236,15 +236,7 @@ public class VisualGameManager extends AbstractGameManager {
 		
 	}
 	
-	public static void main(String[] args) {    
-	    SwingUtilities.invokeLater(new Runnable() {
-	        public void run() {
-	        	SwingUtilities.invokeLater(()-> GameManager.getGameManager(GameType.VISUAL).initialize());
-
-	        }
-	    });
-	}
-
+	
 	public class ActionHandler implements ActionListener{
 		JButton boutton_pause_resume;
 		JButton boutton_pause_quit;

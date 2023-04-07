@@ -130,6 +130,7 @@ public class Scoring_marathon implements ScoreComputer{
 		this.lines+=packResult.size();
 		if(lines%10==0 && packResult.size()>0) {
 			this.level++;
+			System.out.println("ICCCIIIIII");
 		}
 		this.score=this.getScore()+score_add;
 	}

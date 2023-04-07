@@ -42,6 +42,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	int nbcols;
 	TetrisGridView grille_model;
 	int loopdelay;
+	
 	int score;
 	int ligne;
 	int level;
@@ -240,8 +241,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 						if(inCircle(i,y)) {
 							switch(grille_model.visibleCell(i, y)) {
 							case EMPTY:
-								grille[i][y].setBorder(null);
-								grille[i][y].setBackground(new Color(102, 51, 0));
+								
+								grille[i][y].setBackground(new Color(39,33,79,160));
 								break;
 							case GREY:
 								break;
@@ -271,7 +272,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 							}
 						}
 						else {
-							grille[i][y].setBackground(Color.black);
+							grille[i][y].setBorder(null);
+							grille[i][y].setBackground(Color.DARK_GRAY);
 						}
 					}
 				}
@@ -579,20 +581,21 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	@Override
 	public void updateScore(int score) {
 		// TODO Auto-generated method stub
-
+		this.score=score;
 		jlscore.setText("Score: "+score);
 	}
 
 	@Override
 	public void updateScoreLines(int lines) {
 		// TODO Auto-generated method stub
-
+		this.ligne=lines;
 		jlligne.setText("Ligne: "+lines);
 	}
 
 	@Override
 	public void updateLevel(int level) {
 		// TODO Auto-generated method stub
+		this.level=level;
 		jllevel.setText("Level: "+level);
 	}
 
@@ -627,6 +630,14 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	public Timer getTimer() {
 		// TODO Auto-generated method stub
 		return timer;
+	}
+
+
+	public void update_endgame(JLabel endgame_label2, JLabel endgame_label3, JLabel endgame_label4) {
+		// TODO Auto-generated method stub
+		endgame_label2.setText("Score: "+score);
+		endgame_label3.setText("Niveau atteint: "+level);
+		endgame_label4.setText("Nombre de ligne cassées: "+ligne);
 	}
 
 }

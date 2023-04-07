@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -28,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 import fr.upsaclay.bibs.tetris.control.manager.ManagerAction;
@@ -48,6 +50,9 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		GamePanelImpl grille;
 
 		JPanel endgame;
+		JLabel endgame_label2;
+		JLabel endgame_label3;
+		JLabel endgame_label4;
 		JButton end_menu;
 		
 		JPanel menu;
@@ -61,15 +66,77 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		JButton boutton_menu_quit;
 		JButton chose_file;
 
-	
+		JPanel controls;
+		JButton open;
+
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
 		this.setLayout(null);
+		this.setResizable(false);
+		this.setSize(new Dimension(450, 950));
+		this.setMaximumSize(new Dimension(450, 950));
+		this.setMinimumSize(new Dimension(450, 950));
+
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//this.setBackground(Color.black);
 		this.createManagerComponents();
 		
+		controls=new JPanel();
+		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
+		controls.setBounds(this.getWidth()+140,10,350,this.getHeight()*2/7);
+	    controls.setBackground(new Color(39,33,79,255));
+	    controls.setBorder(BorderFactory.createLineBorder(Color.GREEN,6));
+	    JLabel cmain =new JLabel("Control List");
+	    cmain.setFont(new Font("Rockwell", Font.BOLD, 40)); //Creating an Times New Roman Font Style with size 30
+	    cmain.setForeground(Color.green);
+	    cmain.setAlignmentX(CENTER_ALIGNMENT);
+	    cmain.setHorizontalAlignment(JLabel.CENTER);
+	    controls.add(cmain);
+	    JLabel cg =new JLabel("Right            A");
+	    cg.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    cg.setForeground(Color.green);
+	    cg.setAlignmentX(CENTER_ALIGNMENT);
+	    cg.setHorizontalAlignment(JLabel.CENTER);
+	    controls.add(cg);
+	    JLabel cf =new JLabel("Left             E");
+	    cf.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    cf.setForeground(Color.green);
+	    cf.setAlignmentX(CENTER_ALIGNMENT);
+	    cf.setHorizontalAlignment(JLabel.CENTER);
+	    controls.add(cf);
+	    JLabel ce =new JLabel("Hold             Z");
+	    ce.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    ce.setForeground(Color.green);
+	    ce.setAlignmentX(CENTER_ALIGNMENT);
+	    ce.setHorizontalAlignment(JLabel.CENTER);
+	    controls.add(ce);
+	    JLabel cd =new JLabel("Soft Drop (press)    S");
+	    cd.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    cd.setForeground(Color.green);
+	    cd.setAlignmentX(CENTER_ALIGNMENT);
+	    cd.setHorizontalAlignment(JLabel.CENTER);
+	    controls.add(cd);
+	    JLabel cc =new JLabel("Hard drop                 X");
+	    cc.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    cc.setForeground(Color.green);
+	    cc.setAlignmentX(CENTER_ALIGNMENT);
+	    cc.setHorizontalAlignment(JLabel.CENTER);
+	    controls.add(cc);
+	    JLabel cb =new JLabel("Rotate Left                K");
+	    cb.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    cb.setForeground(Color.green);
+	    cb.setAlignmentX(CENTER_ALIGNMENT);
+	    cb.setHorizontalAlignment(JLabel.CENTER);
+	    controls.add(cb);
+	    JLabel ca =new JLabel("Rotate right               M");
+	    ca.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
+	    ca.setForeground(Color.green);
+	    ca.setAlignmentX(CENTER_ALIGNMENT);
+	    ca.setHorizontalAlignment(JLabel.CENTER);
+	    controls.add(ca);
+	    this.add(controls);
+	    
 		pause=new JPanel();
 		pause.setBackground(new Color(0,0,0,200));
 		Border blackline = BorderFactory.createLineBorder(Color.cyan);
@@ -138,7 +205,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 				}
 
 			} };
-	    filling2.setBounds(0,750,this.getWidth(),this.getHeight()/4);
+	    filling2.setBounds(0,this.getHeight()*7/10,this.getWidth(),this.getHeight()*3/10);
 	    this.add(filling2);
 	    menu.setBounds(0,this.getHeight()*2/10,this.getWidth(),this.getHeight()/2);
 	    menu.setBackground(new Color(39,33,79,255));
@@ -225,6 +292,11 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipadx=10;
 	    c.ipady=10;
 	    menu.add(boutton_menu_quit,c);
+	    c.gridx=3;
+	    c.gridy=1;
+	    c.ipadx=10;
+	    c.ipady=10;
+	    menu.add(open,c);
 	    endgame=new JPanel(new GridLayout(6,1,30,10));
 	    this.add(endgame);
 	    endgame.setBounds(10,endgame.getParent().getHeight()*2/10,endgame.getParent().getWidth()*6/10-10,endgame.getParent().getHeight()*5/10);
@@ -233,18 +305,18 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    endgame_label1.setFont(new Font("Rockwell", Font.BOLD, 50)); //Creating an Times New Roman Font Style with size 30
 	    endgame_label1.setForeground(Color.cyan);
 	    endgame_label1.setAlignmentX(CENTER_ALIGNMENT);
-	    JLabel endgame_label2=new JLabel("Score :");
+	    endgame_label2=new JLabel("Score :");
 	    endgame_label2.setHorizontalAlignment(JLabel.CENTER);
 	    endgame_label2.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
 	    endgame_label2.setForeground(Color.cyan);
 	    endgame_label2.setAlignmentX(CENTER_ALIGNMENT);
 	    endgame_label2.setHorizontalAlignment(JLabel.CENTER);
-	    JLabel endgame_label3=new JLabel("Niveau atteint :");
+	    endgame_label3=new JLabel("Niveau atteint :");
 	    endgame_label3.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
 	    endgame_label3.setForeground(Color.cyan);
 	    endgame_label3.setAlignmentX(CENTER_ALIGNMENT);
 	    endgame_label3.setHorizontalAlignment(JLabel.CENTER);
-	    JLabel endgame_label4=new JLabel("Nombre de ligne cassées:");
+	    endgame_label4=new JLabel("Nombre de ligne cassées:");
 	    endgame_label4.setHorizontalAlignment(JLabel.CENTER);
 	    endgame_label4.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
 	    endgame_label4.setForeground(Color.cyan);
@@ -264,6 +336,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    this.pause.setVisible(false);
 	    this.menu.setVisible(false);
 	    this.grille.setVisible(false);
+	    this.controls.setVisible(false);
 	}
 
 	
@@ -278,6 +351,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		menu.setVisible(true);
 		endgame.setVisible(false);
 		grille.setFocusable(false);
+		controls.setVisible(false);
 	}
 
 	@Override
@@ -289,6 +363,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		endgame.setVisible(false);
 		grille.setFocusable(true);
 		grille.requestFocus();
+		controls.setVisible(false);
 	}
 
 	@Override
@@ -300,16 +375,20 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		endgame.setVisible(false);
 		pause.repaint();
 		grille.setFocusable(false);
+		controls.setVisible(false);
 	}
 
 	@Override
 	public void drawEndGameView() {
 		// TODO Auto-generated method stub
+		grille.update_endgame(endgame_label2,endgame_label3,endgame_label4);
+		
 		endgame.setVisible(true);
 		pause.setVisible(false);
 		grille.drawEndGameView();
 		menu.setVisible(false);
 		grille.setFocusable(false);
+		controls.setVisible(false);
 		endgame.repaint();
 	}
 
@@ -369,7 +448,17 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    end_menu=new JButton("Menu");
 	    end_menu.setPreferredSize(new Dimension(40, 40));
 	    
-	    
+	   
+	    open=new JButton("Controls");
+	    ActionListener actionListener = new ActionListener() {
+	    	boolean displayed=false;
+	         public void actionPerformed(ActionEvent event) {
+	        	 displayed=!displayed;
+	        	 controls.setVisible(displayed);
+	           
+	         }
+	      };
+	      open.addActionListener(actionListener);
 	}
 
 	@Override
