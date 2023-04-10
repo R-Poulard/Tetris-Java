@@ -1891,5 +1891,58 @@ class TetrisGridTest {
 		assertTrue(lines.contains(5));
 		assertTrue(testEqualGrids(grid, smallGrid2));
 	}
+	@Test
+	void testPack21() {
+		TetrisGrid grid = TetrisGrid.getEmptyGrid(10, 5);
+		grid.initiateCells(smallGrid);
+		List<Integer> lines = grid.pack2();
+		assertEquals(grid.numberOfLines(),10);
+		assertEquals(lines.size(), 2);
+		assertTrue(lines.contains(8));
+		assertTrue(lines.contains(9));
+		assertTrue(testEqualGrids(grid, smallGridPacked));
+	}
+	
+	TetrisCell[][] pack2_test = {
+			{TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.L, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.I, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.I, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.I, TetrisCell.L, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.I, TetrisCell.L, TetrisCell.EMPTY, TetrisCell.O, TetrisCell.EMPTY} ,
+			{TetrisCell.L, TetrisCell.L, TetrisCell.EMPTY, TetrisCell.T, TetrisCell.O },
+			{TetrisCell.O, TetrisCell.O, TetrisCell.T, TetrisCell.T, TetrisCell.T },
+	};
+	
+	TetrisCell[][] pack3_test = {
+			{TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.L, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.I, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.I, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.I, TetrisCell.L, TetrisCell.EMPTY, TetrisCell.EMPTY, TetrisCell.EMPTY },
+			{TetrisCell.I, TetrisCell.L, TetrisCell.EMPTY, TetrisCell.O, TetrisCell.EMPTY} ,
+			{TetrisCell.L, TetrisCell.L, TetrisCell.EMPTY, TetrisCell.T, TetrisCell.O },
+			
+	};
+	@Test
+	void testPack22() {
+		TetrisGrid grid = TetrisGrid.getEmptyGrid(10, 5);
+		grid.initiateCells(smallGrid2);
+		List<Integer> lines = grid.pack2();
+		assertEquals(grid.numberOfLines(),10);
+		assertEquals(lines.size(), 3);
+		assertTrue(lines.contains(8));
+		assertTrue(lines.contains(9));
+		assertTrue(lines.contains(5));
+		assertTrue(testEqualGrids(grid, pack2_test));
+		lines = grid.pack2();
+		assertEquals(lines.size(), 1);
+		assertTrue(testEqualGrids(grid, pack3_test));
+	}
 	
 }

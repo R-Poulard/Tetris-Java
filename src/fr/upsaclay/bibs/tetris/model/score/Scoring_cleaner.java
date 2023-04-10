@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;
-import fr.upsaclay.bibs.tetris.model.grid.TetrisCoordinates;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
-import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 
-public class Scoring_marathon implements ScoreComputer{
+public class Scoring_cleaner implements ScoreComputer {
 	int score;
 	int level;
 	int lines;
@@ -17,12 +15,12 @@ public class Scoring_marathon implements ScoreComputer{
 	int dropped;
 	boolean action_done;
 	int depart;
-	public Scoring_marathon(int score,int level,int lines) {
+	
+	public Scoring_cleaner(int score,int level,int lines) {
 		this.score=score;
 		this.level=level;
 		this.lines=lines;
-	}
-	@Override
+	}@Override
 	public int getLevel() {
 		// TODO Auto-generated method stub
 		return level;
@@ -75,11 +73,11 @@ public class Scoring_marathon implements ScoreComputer{
 	    if(dropped==1 && went_down) {
 
 	    	went_down=false;
-			  this.score+=1;
+			  this.score+=2;
 		}
 		else if(dropped==2){
 		    dropped=0;
-			this.score+=2*(gridView.getCoordinates().getLine()-depart);
+			this.score+=3*(gridView.getCoordinates().getLine()-depart);
 			depart=0;
 		 }
 	}
@@ -96,43 +94,14 @@ public class Scoring_marathon implements ScoreComputer{
 			combo_count=-1;
 		}
 		if(combo_count>0){
-			score+=50*this.level*combo_count;
+			score+=100*this.level*combo_count;
 
 		}
-		int score_add=0;
-		int compteur=1;
+		if(combo_count>this.level) {
+			level++;
+		}
 		
-		List<Integer> compte=new ArrayList<Integer>();
-		for(int i=0;i<packResult.size();i++) {
-			if(i+1<packResult.size() && packResult.get(i)==packResult.get(i+1)-1) {
-				compteur++;
-			}
-			else {
-				compte.add(Integer.valueOf(compteur));
-				compteur=1;
-			}
-		}
-		for(int i=0;i<compte.size();i++) {
-			switch(compte.get(i)) {
-			case 1: score_add+=100*this.getLevel();
-			break;
-			case 2:score_add+=300*this.getLevel();
-			break;
-				
-			case 3:
-				score_add+=500*this.getLevel();
-				break;
-			case 4:
-				score_add+=800*this.getLevel();
-				break;
-			}
-		}
-		this.lines+=packResult.size();
-		if(lines%10==0 && packResult.size()>0) {
-			this.level++;
-
-		}
-		this.score=this.getScore()+score_add;
 	}
 
 }
+

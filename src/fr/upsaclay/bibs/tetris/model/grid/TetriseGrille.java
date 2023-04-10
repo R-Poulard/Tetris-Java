@@ -387,7 +387,6 @@ public class TetriseGrille implements TetrisGrid{
 				
 				grille[deplacement][j]=TetrisCell.valueOf(grille[i][j].name());
 				grille[i][j]=TetrisCell.EMPTY;
-				System.out.println(i+" "+j+" "+deplacement);
 			}
 		}
 		return fulls;

@@ -107,8 +107,10 @@ public interface ScoreComputer {
 		switch(mode) {
 		case MARATHON:
 		case CAVERN:
-		case SPACE_CLEANER:
 			return new Scoring_marathon(initialScore, initialLevel, initialLines);
+
+		case SPACE_CLEANER:
+			return new Scoring_cleaner(initialScore, initialLevel, initialLines);
 
 		default:
 			throw new UnsupportedOperationException("Not implemented");
