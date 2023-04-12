@@ -300,7 +300,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipadx=10;
 	    c.ipady=10;
 	    menu.add(boutton_menu_quit,c);
-	    c.gridx=3;
+	    c.gridx=2;
 	    c.gridy=1;
 	    c.ipadx=10;
 	    c.ipady=10;

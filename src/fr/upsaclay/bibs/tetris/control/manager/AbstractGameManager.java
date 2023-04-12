@@ -155,8 +155,6 @@ public abstract class AbstractGameManager implements GameManager {
 			gr.initiateCells(pattern);
 			mode=TetrisMode.valueOf(gameMode);
 			player_type=PlayerType.HUMAN;//default car non preciser
-			cols=nb_cols;
-			lines=nb_lines;
 			
 			provider=AbstractGameManager.DEFAULT_PROVIDER;//default car non preciser
 			player_type=AbstractGameManager.DEFAULT_PLAYER_TYPE;//default car non preciser
