@@ -31,41 +31,50 @@ import fr.upsaclay.bibs.tetris.view.GameFrameImpl;
 
 public class VisualGameManager extends AbstractGameManager {
 
-	GameFrameImpl game_frame;
-	KeyHandler key;
-	ActionHandler action;
-	VisualGamePlayer pl;
-	boolean inpause;
-	Timer timer;
+	GameFrameImpl game_frame;//vue
+	KeyHandler key;//gere les commandes
+	ActionHandler action;//gere les boutons du visual game manager
+	VisualGamePlayer pl;//player 
+	boolean inpause;//Permet de bloquer le key listener quand la pose est faite
+	Timer timer;//timer de l action descente (gardé en memeoire car la vitesse varie au cours de la partie)
+	
+	//Music (charger via le controleur pour plus de controle)
+	
 	Clip clip_boutton;
 	Clip command;
 	Clip music;
 	Clip clear;
 	Clip over;
-	boolean done=false;
 	Clip put;
+	boolean done=false;//permet que la fonciton "over" agissent pas en boucle
+	
 	
 	@Override
 	public void initialize() {
+		//standard
 		this.mode=AbstractGameManager.DEFAULT_MODE;
 		this.player_type=AbstractGameManager.DEFAULT_PLAYER_TYPE;
 		this.cols=AbstractGameManager.DEFAULT_COLS;
 		this.lines=AbstractGameManager.DEFAULT_LINES;
 		provider=AbstractGameManager.DEFAULT_PROVIDER;
+		//creation des handler de la vue et bind l''un aux autres
 		key=new KeyHandler();
 		action=new ActionHandler();
 		game_frame=new GameFrameImpl();
 		game_frame.initialize();
 		game_frame.attachManagerActionListener(action);
 		game_frame.bindGameKeyListener(key);
+		//affichage du menu
 		menu();
+		//chargement des music
 		try {
 			clip_boutton= AudioSystem.getClip();
 			clip_boutton.open(AudioSystem.getAudioInputStream(new File("resources/sounds/9285.wav")));
 			music= AudioSystem.getClip();
 			music.open(AudioSystem.getAudioInputStream(new File("resources/sounds/mainSound.wav")));
-			music.loop(Clip.LOOP_CONTINUOUSLY);
+			music.loop(Clip.LOOP_CONTINUOUSLY);//loop en boucle car c es tla musique de fond
 			music.start();
+			//baisse legermeent le volume
 			FloatControl gainControl= (FloatControl) music.getControl(FloatControl.Type.MASTER_GAIN);
 			float range = gainControl.getMaximum() - gainControl.getMinimum();
 			float gain = (range * 0.7f) + gainControl.getMinimum();
@@ -81,8 +90,6 @@ public class VisualGameManager extends AbstractGameManager {
 			e.printStackTrace();
 		}
 		
-
-		//command=new Clip();
 	}
 	
 	public Clip getclear() {
@@ -91,17 +98,35 @@ public class VisualGameManager extends AbstractGameManager {
 	public Clip getput() {
 		return put;
 	}
+	
 	public GameFrameImpl getgame_frame() {
 		return game_frame;
 	}
+	
 	public void start_game() {
 		inpause=false;	
-		loadNewGame();
+		loadNewGame();//creation de la nouvelle game
+		game_frame.getgrid().setGridView(gr.getView());//set la gridView
+		pl.initialize(gr, scp, DEFAULT_PROVIDER);//initialisation du player
+		pl.start();//demarrage
+		game_frame.getgrid().setLoopAction(action);//debut du timer
+		if(this.mode==TetrisMode.CAVERN) {//ceci permet de changer la vue si le mode de jeu est caverne
+			game_frame.getgrid().set_black_mode(true);
+		}
+		else {
+			game_frame.getgrid().set_black_mode(false);
+		}
+		game_frame.drawGamePlayView();//affiche la partie de jeu
+		game_frame.startGameKeyListener(key);//request focus de la vue
+	}
+	
+	public void start_from_file() {//meme chose que precedement mais a partir d un fichier
+		inpause=false;	
 		game_frame.getgrid().setGridView(gr.getView());
 		pl.initialize(gr, scp, DEFAULT_PROVIDER);
 		pl.start();
 		game_frame.getgrid().setLoopAction(action);
-		if(this.mode==TetrisMode.CAVERN) {
+		if(this.mode==TetrisMode.CAVERN) {//ceci permet de changer la vue si le mode de jeu est caverne
 			game_frame.getgrid().set_black_mode(true);
 		}
 		else {
@@ -110,23 +135,13 @@ public class VisualGameManager extends AbstractGameManager {
 		game_frame.drawGamePlayView();
 		game_frame.startGameKeyListener(key);
 	}
-	
-	public void start_from_file() {
-		inpause=false;	
-		game_frame.getgrid().setGridView(gr.getView());
-		pl.initialize(gr, scp, DEFAULT_PROVIDER);
-		pl.start();
-		game_frame.getgrid().setLoopAction(action);
-		game_frame.drawGamePlayView();
-		game_frame.startGameKeyListener(key);
-	}
 	public void menu() {
 		done=false;
 		game_frame.drawManagementView();
-		pl=null;
+		pl=null;//player null car on quitte la partie
 	}
 	
-	public void comebacktogame() {
+	public void comebacktogame() {//permet de revenir apres une pause (si on reste a jouer)
 		inpause=false;
 		game_frame.drawGamePlayView();
 		pl.unpause();
@@ -139,13 +154,13 @@ public class VisualGameManager extends AbstractGameManager {
 	
 	
 	public void over() {
-		if(!over.isRunning() && !done) {
+		if(!over.isRunning() && !done) {//permet de faire jouer le son une seul fois
 			done=true;
 			over.start();
-			over.setMicrosecondPosition(0);
+			over.setMicrosecondPosition(0);//le remet au debut
 		}
 		game_frame.drawEndGameView();
-		game_frame.stopGameKeyListener(key);
+		game_frame.stopGameKeyListener(key);//on ne request plus le focus
 	}
 	@Override
 	public void createPlayer() {
@@ -160,7 +175,7 @@ public class VisualGameManager extends AbstractGameManager {
 	
 	public class KeyHandler implements KeyListener{
 
-		boolean toomuch=false;
+		boolean toomuch=false;//permet d eviter le spam du hardrop
 		@Override
 		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
@@ -170,16 +185,17 @@ public class VisualGameManager extends AbstractGameManager {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			// TODO Auto-generated method stub
-			if(!inpause) {
+			if(!inpause) {//si on pose alors il n'y a pas d'action qui sont faite
 				boolean res=true;
 				switch(e.getKeyCode()){
 				case KeyEvent.VK_ESCAPE:
-					if(!inpause) {
+					if(!inpause) {//permet de check que l'on est pas deja en pause
 						pause();
 						pl.pause();
 						res=true;
 					}
 					break;
+				//call le joueur pour faire une action en fonction de la commande
 				case 65://gauche
 					res=pl.performAction(TetrisAction.MOVE_LEFT);
 					break;
@@ -210,7 +226,7 @@ public class VisualGameManager extends AbstractGameManager {
 					res=pl.performAction(TetrisAction.ROTATE_RIGHT);
 					break;
 				}
-				if(!res) {
+				if(!res) {//res renvoie false si jamais le joueur detecte une fin de partie
 					
 					over();
 				}
@@ -218,11 +234,11 @@ public class VisualGameManager extends AbstractGameManager {
 		}
 
 		@Override
-		public void keyReleased(KeyEvent e) {
+		public void keyReleased(KeyEvent e) {//permet de faire en s ort que le softdrop soit en press/realease et pas touch/stop
 			// TODO Auto-generated method stub
 			switch(e.getKeyCode()){
 			case 83://bas
-				if(!pl.performAction(TetrisAction.END_SOFT_DROP)) {
+				if(!pl.performAction(TetrisAction.END_SOFT_DROP)) {//check si la partie est fini sur cette action
 
 					over();
 				}
@@ -238,6 +254,8 @@ public class VisualGameManager extends AbstractGameManager {
 	
 	
 	public class ActionHandler implements ActionListener{
+		
+		//voir description des bouttons dans la vues
 		JButton boutton_pause_resume;
 		JButton boutton_pause_quit;
 		JButton boutton_save_file;
@@ -252,12 +270,12 @@ public class VisualGameManager extends AbstractGameManager {
 		JButton boutton_menu_start;
 		JButton boutton_menu_quit;
 		JButton chose_file;
-		JFileChooser chooser = new JFileChooser();
+		JFileChooser chooser = new JFileChooser();//permet de load une game
 
 		
 		public void actionPerformed(ActionEvent e) {
 			Object source=e.getSource();
-			if(source==timer) {
+			if(source==timer) {//l aciton down du jeu
 				if(pl!=null && !pl.performAction(TetrisAction.DOWN)) {
 					over();
 				}
@@ -328,6 +346,7 @@ public class VisualGameManager extends AbstractGameManager {
 					clip_boutton.setMicrosecondPosition(0);
 					clip_boutton.start();
 
+					//permet de choisir le fichier, de save et de reoturne rua menu
 					int returnVal = chooser.showOpenDialog(null);
 			        if(returnVal == JFileChooser.APPROVE_OPTION) {
 			        	try {
@@ -342,7 +361,7 @@ public class VisualGameManager extends AbstractGameManager {
 				else if(source==chose_file){
 					clip_boutton.setMicrosecondPosition(0);
 					clip_boutton.start();
-
+					//lance la game depuis le file
 			        int returnVal = chooser.showOpenDialog(null);
 			        if(returnVal == JFileChooser.APPROVE_OPTION) {
 			        	try {
@@ -361,12 +380,14 @@ public class VisualGameManager extends AbstractGameManager {
 			}
 		}
 		
-		
+		//set le delay initial d'une game
 		public void setTimer(Timer t) {
 			timer=t;
 			timer.setInitialDelay(1500);
 			timer.setDelay(1500);
 		}
+		//permet de link les bouttons aux handler (pour savoir qu'elle boutton a envoyer l'action)
+		
 		public void setButton(JButton sf,JButton cf,JButton bpr,JButton bpq, JButton em,JRadioButton pm1,JRadioButton pm2,JRadioButton gm1,JRadioButton gm2,JRadioButton gm3,JButton bms,JButton bmq) {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(null,"txt");
 	        chooser.setFileFilter(filter);

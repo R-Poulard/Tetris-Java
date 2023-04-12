@@ -26,7 +26,9 @@ public abstract class AbstractGameManager implements GameManager {
 	public  TetrominoProvider provider;
 	public  PlayerType player_type;
 	public int cols,lines;
+	//Permet de garder un pointeur vers le joueurs pour le pauser ou le start
 	GamePlayer pl=null;
+	//a donner au player
 	ScoreComputer scp=null;
 	TetrisGrid gr;
 	@Override
@@ -96,17 +98,18 @@ public abstract class AbstractGameManager implements GameManager {
 	@Override
 	public void loadNewGame() {
 		// TODO Auto-generated method stub
-		gr=TetrisGrid.getEmptyGrid(lines, cols);
+		gr=TetrisGrid.getEmptyGrid(lines, cols);//nouvelle grid, nouveau score computer
 		scp=ScoreComputer.getScoreComputer(getGameMode());
 		createPlayer();
-		pausePlayer();
+		pausePlayer();//player mis en pause au début du jeu
 	}
 
 	@Override
 	public void loadFromFile(File file) throws FileNotFoundException, IOException {
 		// TODO Auto-generated method stub
-		Scanner sc=new Scanner(file);
+		Scanner sc=new Scanner(file);//on essaye de lire
 		try {
+			//recupere les information pres grille
 			String gameMode=sc.nextLine();
 			int score=sc.nextInt();
 			int level=sc.nextInt();
@@ -120,7 +123,7 @@ public abstract class AbstractGameManager implements GameManager {
 			int nb_lines=0;
 			int nb_cols=0;
 			sc.nextLine();
-			ArrayList<String[]> tr=new ArrayList<String[]>();
+			ArrayList<String[]> tr=new ArrayList<String[]>();//on recupere les lignes une a une
 			while(sc.hasNextLine()) {
 				pointeur=sc.nextLine();
 				if(pointeur.equals("")) {
@@ -130,9 +133,9 @@ public abstract class AbstractGameManager implements GameManager {
 					break;
 				}
 				else {
-					nb_lines++;
+					nb_lines++;//on garde un int pour compter le nombre de ligne
 					String[] lecture=pointeur.split(" ");
-					if(lecture.length!=nb_cols && nb_cols!=0) {
+					if(lecture.length!=nb_cols && nb_cols!=0) {//test la malformation de la grille
 						throw new IOException("nombre de colonnes variant");
 					}
 					else if(nb_cols==0) {
@@ -140,25 +143,29 @@ public abstract class AbstractGameManager implements GameManager {
 					}
 					tr.add(lecture);
 				}
-			}
+			}//Instanciation de la grille avec les donner recuperer
 			TetrisCell[][] pattern=new TetrisCell[nb_lines][nb_cols];
+			//pour chaque lighe on va creer une ligne de TetrisCell a son image
 			for(int i=0;i<nb_lines;i++) {
 				String[] tmp=tr.get(i);
 				for(int y=0;y<tmp.length;y++) {
 					pattern[i][y]=TetrisCell.valueOf(tmp[y]);
 				}
 			}
+			//on set la partie en instanciant la tetris grid ( avec la matrice etablie juste avant
 			gr=TetrisGrid.getEmptyGrid(nb_lines, nb_cols);
 			gr.initiateCells(pattern);
 			mode=TetrisMode.valueOf(gameMode);
-			player_type=PlayerType.HUMAN;
+			player_type=PlayerType.HUMAN;//default car non preciser
 			cols=nb_cols;
 			lines=nb_lines;
-			provider=AbstractGameManager.DEFAULT_PROVIDER;
-			player_type=AbstractGameManager.DEFAULT_PLAYER_TYPE;
+			
+			provider=AbstractGameManager.DEFAULT_PROVIDER;//default car non preciser
+			player_type=AbstractGameManager.DEFAULT_PLAYER_TYPE;//default car non preciser
+			//On ajoute le tetromino (on a recuperer sa classe en string qu on essaye d instancier)
 			gr.setTetromino(TetrominoShape.valueOf(tetromino).getTetromino(rotation));
 			gr.setCoordinates(new TetrisCoordinates(lines,cols));
-			scp=ScoreComputer.getScoreComputer(getGameMode(), score, level, linescore);
+			scp=ScoreComputer.getScoreComputer(getGameMode(), score, level, linescore);//score computer a partir des informations
 			createPlayer();
 			pausePlayer();
 			sc.close();
@@ -184,7 +191,7 @@ public abstract class AbstractGameManager implements GameManager {
 	@Override
 	public void save(File file) throws FileNotFoundException {
 		// TODO Auto-generated method stub
-		PrintStream m=new PrintStream(file);
+		PrintStream m=new PrintStream(file);//nous permet de print sans trop nous soucier du type d'entier ou du rajout de \n a la fin car println le fait pour nous
 		m.println(this.getGameMode());
 		m.println(scp.getScore());
 		m.println(scp.getLevel());

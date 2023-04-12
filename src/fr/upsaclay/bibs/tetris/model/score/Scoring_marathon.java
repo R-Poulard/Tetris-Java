@@ -47,7 +47,7 @@ public class Scoring_marathon implements ScoreComputer{
 	}
 
 	@Override
-	public void registerBeforeAction(TetrisAction action, TetrisGridView gridView) {
+	public void registerBeforeAction(TetrisAction action, TetrisGridView gridView) {//voir scoring cleaner
 		// TODO Auto-generated method stub
 		action_done=true;
 		if(action == TetrisAction.HARD_DROP) {
@@ -68,7 +68,7 @@ public class Scoring_marathon implements ScoreComputer{
 	}
 
 	@Override
-	public void registerAfterAction(TetrisGridView gridView) {
+	public void registerAfterAction(TetrisGridView gridView) {//voir scoring cleaner
 	    if (!action_done) {
 	        throw new IllegalStateException("No action has been registered");
 	    }
@@ -95,7 +95,7 @@ public class Scoring_marathon implements ScoreComputer{
 		else {
 			combo_count=-1;
 		}
-		if(combo_count>0){
+		if(combo_count>0){//score combo
 			score+=50*this.level*combo_count;
 
 		}
@@ -103,7 +103,7 @@ public class Scoring_marathon implements ScoreComputer{
 		int compteur=1;
 		
 		List<Integer> compte=new ArrayList<Integer>();
-		for(int i=0;i<packResult.size();i++) {
+		for(int i=0;i<packResult.size();i++) {//permet de voir si on a casser plusieur ligne a des endroit different d'avoir un scoring accurante
 			if(i+1<packResult.size() && packResult.get(i)==packResult.get(i+1)-1) {
 				compteur++;
 			}
@@ -112,7 +112,7 @@ public class Scoring_marathon implements ScoreComputer{
 				compteur=1;
 			}
 		}
-		for(int i=0;i<compte.size();i++) {
+		for(int i=0;i<compte.size();i++) {//ajout score en fonction du level
 			switch(compte.get(i)) {
 			case 1: score_add+=100*this.getLevel();
 			break;
@@ -128,11 +128,11 @@ public class Scoring_marathon implements ScoreComputer{
 			}
 		}
 		this.lines+=packResult.size();
-		if(lines%10==0 && packResult.size()>0) {
+		if(lines%10==0 && packResult.size()>0) {//level up si on a casser 10 ligne
 			this.level++;
 
 		}
-		this.score=this.getScore()+score_add;
+		this.score=this.getScore()+score_add;//ajout du scroe au totale
 	}
 
 }

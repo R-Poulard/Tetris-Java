@@ -67,6 +67,8 @@ public enum TetrominoShape {
 	
 	private static final Random RANDOM = new Random();
 	private final static HashMap<String,Tetromino> mapping=new HashMap<>();
+	
+	//Permet de generer une foi pour toute au debut du programme tout les tetromino possible, on part de la 1er rotation et on le tourne left 4 fois
 	static {
 	//I formes
 	TetrisCell[][] I1 =ISHAPE.shape;
@@ -105,6 +107,9 @@ public enum TetrominoShape {
 	TetrisCell[][] S2 = rotateLeft(S1);
 	TetrisCell[][] S3 = rotateLeft(S2);
 
+	
+	//On met tout ça dans une map pour y acceder dans un temps lineaire (ce qui serat potentiellement fait bcp de fois)
+	
 	//I shape
 	mapping.put("ISHAPE0",new TetrominoImpl(I1,0,ISHAPE));
 	mapping.put("ISHAPE1",new TetrominoImpl(I2,1,ISHAPE));
@@ -141,7 +146,7 @@ public enum TetrominoShape {
 	
 	TetrisCell[][] shape;
 	
-	public static Tetromino randomTetromino() {
+	public static Tetromino randomTetromino() {//on prend une valuer aleatoire qui correspond à l'indice du tableau des values que peut prendre tetromino, on prend une rotation aleatoire de ce tetromino
 		TetrominoShape randomShape = values()[RANDOM.nextInt(values().length)];
 		return randomShape.getTetromino(RANDOM.nextInt(randomShape.getNumberOfRotations()));
 	}
@@ -202,12 +207,12 @@ public enum TetrominoShape {
 	
 	public Tetromino getTetromino(int rotationNumber) {
 		int rotmax=this.getNumberOfRotations();
-		int nb= (((rotationNumber % rotmax) + rotmax) % rotmax);
-		String key=this.name()+String.valueOf(nb);	
+		int nb= (((rotationNumber % rotmax) + rotmax) % rotmax);//permet de retourner à 0 si on depasse 4 et inverdserment
+		String key=this.name()+String.valueOf(nb);	//creation de la clee pour chercher dans la map
 		return mapping.get(key);
 		}
 
-	public static TetrisCell[][] rotateLeft(TetrisCell[][] cells) {
+	public static TetrisCell[][] rotateLeft(TetrisCell[][] cells) {//programme permetant de faire une copie du tetrominoshape mais rotate left
 	    int height = cells.length;
 	    int width = cells[0].length;
 	    TetrisCell[][] rotated = new TetrisCell[width][height];
@@ -219,17 +224,16 @@ public enum TetrominoShape {
 	    return rotated;
 	}
 	
-	private static class TetrominoImpl implements Tetromino{
+	private static class TetrominoImpl implements Tetromino{//Implementation de tetromino
 		
 		private final static HashMap<String,List<TetrisCoordinates>> kick_map=new HashMap<>();
-		static {
-			//generic case
-			TetrisCoordinates t0=new TetrisCoordinates(0,0);
+		static {//list de tetris coordinate a tester pour chaque wall kick 
+
+
 			TetrisCoordinates t1=new TetrisCoordinates(0,-1);
 			TetrisCoordinates t2=new TetrisCoordinates(0,1);
 			TetrisCoordinates t3=new TetrisCoordinates(0,-2);
 			TetrisCoordinates t4=new TetrisCoordinates(0,2);
-			TetrisCoordinates t5bis=new TetrisCoordinates(1,0);
 			TetrisCoordinates t5=new TetrisCoordinates(1,-1);
 			TetrisCoordinates t6=new TetrisCoordinates(1,1);
 			TetrisCoordinates t7=new TetrisCoordinates(1,-2);
@@ -237,9 +241,6 @@ public enum TetrominoShape {
 			TetrisCoordinates t9bis=new TetrisCoordinates(2,0);
 			TetrisCoordinates t9=new TetrisCoordinates(2,-1);
 			TetrisCoordinates t10=new TetrisCoordinates(2,1);
-			TetrisCoordinates t11=new TetrisCoordinates(2,-2);
-			TetrisCoordinates t12=new TetrisCoordinates(2,2);
-			TetrisCoordinates t13bis=new TetrisCoordinates(-1,0);
 			TetrisCoordinates t13=new TetrisCoordinates(-1,-1);
 			TetrisCoordinates t14=new TetrisCoordinates(-1,1);
 			TetrisCoordinates t15=new TetrisCoordinates(-1,-2);
@@ -247,71 +248,28 @@ public enum TetrominoShape {
 			TetrisCoordinates t17bis=new TetrisCoordinates(-2,0);
 			TetrisCoordinates t17=new TetrisCoordinates(-2,-1);
 			TetrisCoordinates t18=new TetrisCoordinates(-2,1);
-			TetrisCoordinates t19=new TetrisCoordinates(-2,-2);
-			TetrisCoordinates t20=new TetrisCoordinates(-2,2);
+
 			
 			kick_map.put("G01",Arrays.asList(t1,t5,t17bis,t17));
 			kick_map.put("G12",Arrays.asList(t1,t13,t9bis,t9));
 			kick_map.put("G23",Arrays.asList(t2,t6,t17bis,t18));
 			kick_map.put("G30",Arrays.asList(t2,t14,t9bis,t10));
-			/*
-			kick_map.put("G21",(+1, 0) 	(+1,-1) 	( 0,+2) 	(+1,+2));
-			kick_map.put("G32",(-1, 0) 	(-1,+1) 	( 0,-2) 	(-1,-2));
-			kick_map.put("G43",(-1, 0) 	(-1,-1) 	( 0,+2) 	(-1,+2));
-			kick_map.put("G14",(+1, 0) 	(+1,+1) 	( 0,-2) 	(+1,-2));
 			
-			*/
 			kick_map.put("G10",Arrays.asList(t1,t13,t9bis,t9));
 			kick_map.put("G21",Arrays.asList(t1,t5,t17bis,t17));
 			kick_map.put("G32",Arrays.asList(t2,t14,t9bis,t10));
 			kick_map.put("G03",Arrays.asList(t2,t6,t17bis,t18));
 			
-			/*
-			kick_map.put("I12",(-2, 0) 	(+1, 0) 	(-2,-1) 	(+1,+2));
-			kick_map.put("I23",(-1, 0) 	(+2, 0) 	(-1,+2) 	(+2,-1));
-			kick_map.put("I34",(+2, 0) 	(-1, 0) 	(+2,+1) 	(-1,-2));
-			kick_map.put("I41",(+1, 0) 	(-2, 0) 	(+1,-2) 	(-2,+1));
-			*/
-			
 			kick_map.put("I01",Arrays.asList(t2,t3,t10,t15));
 			kick_map.put("I12",Arrays.asList(t3,t2,t7,t18));
 			kick_map.put("I23",Arrays.asList(t1,t4,t17,t8));
 			kick_map.put("I30",Arrays.asList(t4,t1,t16,t9));
-			
-			/*
-			kick_map.put("I21",(+2, 0) 	(-1, 0) 	(+2,+1) 	(-1,-2));
-			kick_map.put("I32",(+1, 0) 	(-2, 0) 	(+1,-2) 	(-2,+1));
-			kick_map.put("I43",(-2, 0) 	(+1, 0) 	(-2,-1) 	(+1,+2));
-			kick_map.put("I14",(-1, 0) 	(+2, 0) 	(-1,+2) 	(+2,-1));*/
-			
+		
 			kick_map.put("I10",Arrays.asList(t2,t3,t10,t15));
 			kick_map.put("I21",Arrays.asList(t3,t2,t7,t18));
 			kick_map.put("I32",Arrays.asList(t1,t4,t17,t8));
 			kick_map.put("I03",Arrays.asList(t4,t1,t16,t9));
-			/*
-			//left kick
 			
-			kick_map.put("G23",(+1, 0) 	(+1,-1) 	( 0,+2) 	(+1,+2));
-			kick_map.put("G34",(+1, 0) 	(+1,+1) 	( 0,-2) 	(+1,-2));
-			kick_map.put("G41",(-1, 0) 	(-1,-1) 	( 0,+2) 	(-1,+2));
-			//rght kick
-			kick_map.put("G21",(+1, 0) 	(+1,-1) 	( 0,+2) 	(+1,+2));
-			kick_map.put("G32",(-1, 0) 	(-1,+1) 	( 0,-2) 	(-1,-2));
-			kick_map.put("G43",(-1, 0) 	(-1,-1) 	( 0,+2) 	(-1,+2));
-			kick_map.put("G14",(+1, 0) 	(+1,+1) 	( 0,-2) 	(+1,-2));
-			
-			//I case
-			
-			//left kick
-			kick_map.put("I12",(-2, 0) 	(+1, 0) 	(-2,-1) 	(+1,+2));
-			kick_map.put("I23",(-1, 0) 	(+2, 0) 	(-1,+2) 	(+2,-1));
-			kick_map.put("I34",(+2, 0) 	(-1, 0) 	(+2,+1) 	(-1,-2));
-			kick_map.put("I41",(+1, 0) 	(-2, 0) 	(+1,-2) 	(-2,+1));
-			//rght kick
-			kick_map.put("I21",(+2, 0) 	(-1, 0) 	(+2,+1) 	(-1,-2));
-			kick_map.put("I32",(+1, 0) 	(-2, 0) 	(+1,-2) 	(-2,+1));
-			kick_map.put("I43",(-2, 0) 	(+1, 0) 	(-2,-1) 	(+1,+2));
-			kick_map.put("I14",(-1, 0) 	(+2, 0) 	(-1,+2) 	(+2,-1));*/
 		}
 		TetrisCell[][] piece;
 		int rotation;
@@ -337,13 +295,13 @@ public enum TetrominoShape {
 		@Override
 		public Tetromino rotateRight() {
 			// TODO Auto-generated method stub
-			return type.getTetromino(rotation+1);
+			return type.getTetromino(rotation+1);//on va recuperer le tetromino a la rotation +1
 		}
 
 		@Override
 		public Tetromino rotateLeft() {
 			// TODO Auto-generated method stub
-			return type.getTetromino(rotation-1);
+			return type.getTetromino(rotation-1);//idem mais pour -1
 		}
 
 		@Override
@@ -360,7 +318,7 @@ public enum TetrominoShape {
 
 		@Override
 		public List<TetrisCoordinates> wallKicksFromRight() {
-			String key="";
+			String key="";//creation de la clee en fonction du tyupe de tetromino et de la rotation actuel
 			switch(type) {
 			case OSHAPE:
 				return new ArrayList<TetrisCoordinates>();
@@ -370,8 +328,8 @@ public enum TetrominoShape {
 			default:
 				key="G";
 			}
-			key=key+String.valueOf(rotation)+String.valueOf((((rotation+1 % 4) + 4) % 4));
-			return kick_map.get(key);	
+			key=key+String.valueOf(rotation)+String.valueOf((((rotation+1 % 4) + 4) % 4));//normalise la rotation+1 entre 0 et 4
+			return kick_map.get(key);//recuperation de la liste d'instruction dpeuis la map	
 		}
 
 		@Override
@@ -387,8 +345,8 @@ public enum TetrominoShape {
 			default:
 				key="G";
 			}
-			key=key+String.valueOf(rotation)+String.valueOf((((rotation-1 % 4) + 4) % 4));
-			return kick_map.get(key);	
+			key=key+String.valueOf(rotation)+String.valueOf((((rotation-1 % 4) + 4) % 4));//normalise la rotation-1 entre 0 et 4
+			return kick_map.get(key);	//recuperation de la liste d'instruction depuis la map
 		}
 		
 	}

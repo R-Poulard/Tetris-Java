@@ -18,5 +18,5 @@ public class SimpleGameManager extends AbstractGameManager{
 		pl=new SimpleGamePlayer(this.player_type);	
 		pl.initialize( gr,scp, provider);
 	}
-
+	// rien de plus a mettre car Simple Game Manager utilise le initialize deja fait auparavant
 }

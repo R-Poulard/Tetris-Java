@@ -21,8 +21,8 @@ public class SimpleGamePlayer implements GamePlayer {
 	PrintStream ps=System.out;
 	boolean active=false;
 	Tetromino held;
-	boolean soft_dropping=false;
-	boolean already_hold=false;
+	boolean soft_dropping=false;//permet de ne pas faire deux start_drop 
+	boolean already_hold=false;//neceassaire pour faire que 1 hold par tour
 	
 	public SimpleGamePlayer(PlayerType p) {
 		this.p=p;
@@ -96,7 +96,7 @@ public class SimpleGamePlayer implements GamePlayer {
 		return grid.getView();
 	}
 
-	public void packing(TetrisGrid grid,ScoreComputer sc) {
+	public void packing(TetrisGrid grid,ScoreComputer sc) {//permet d'etre override par le visual game manager
 		sc.registerMergePack(grid.pack(), grid);
 	}
 	
@@ -109,21 +109,22 @@ public class SimpleGamePlayer implements GamePlayer {
 		// TODO Auto-generated method stub
 		if(!isActive()) {
 			
-			throw new IllegalStateException("Le joueur ne peux pas jouer");
+			throw new IllegalStateException("Le joueur ne peut pas jouer");
 		}
 		try {
 			boolean res=true;
 			TetrisCoordinates new_tr;
-			sc.registerBeforeAction(action, grid);
+			sc.registerBeforeAction(action, grid);//set du score computer avant tout action
 			switch(action) {
 			case DOWN:
 				new_tr= new TetrisCoordinates(1,0);
 				res=grid.tryMove(new_tr);
 				sc.registerAfterAction(grid);
-				if(res==false) {
+				if(res==false) {//si on a pas pue
 					this.already_hold=false;
 					grid.merge();
 					packing(grid,sc);
+					//on regarde s'il faut finir la game
 					if(pr.hasNext()) {
 						next();
 						if(grid.hasConflicts()) {
@@ -140,9 +141,10 @@ public class SimpleGamePlayer implements GamePlayer {
 				soft_dropping=false;
 				break;
 			case HARD_DROP:
-				grid.hardDrop();
+				
+				grid.hardDrop();//hardrop
 				sc.registerAfterAction(grid);
-				this.already_hold=false;
+				this.already_hold=false;//nouveau tetromino, on reautorise le hold
 				grid.merge();
 				packing(grid,sc);
 				if(pr.hasNext()) {
@@ -157,7 +159,7 @@ public class SimpleGamePlayer implements GamePlayer {
 				}
 				break;
 			case HOLD:
-				if(held!=grid.getTetromino() && already_hold!=true) {
+				if(held!=grid.getTetromino() && already_hold!=true) {//si on a deja tenu un tetromino pendant le tour on autorise pas le held
 					Tetromino t=getHeldTetromino();
 					if(t==grid.getTetromino()) {
 						return false;
@@ -165,10 +167,10 @@ public class SimpleGamePlayer implements GamePlayer {
 					held=grid.getTetromino();
 					if(held != null) {
 						already_hold=true;
-						if(t!=null) {
+						if(t!=null) {//on remet le tetromino held au debut
 							grid.setTetromino(t);
 							grid.setAtStartingCoordinates();
-						}else {
+						}else {//regarde si y a un conflit avec la grille
 							if(pr.hasNext()) {
 								next();
 								if(grid.hasConflicts()) {
@@ -190,6 +192,7 @@ public class SimpleGamePlayer implements GamePlayer {
 					res=false;
 				}
 				break;
+			//action 'basique' on essaye de le faire
 			case MOVE_LEFT:
 				new_tr= new TetrisCoordinates(0,-1);
 				res=grid.tryMove(new_tr);
