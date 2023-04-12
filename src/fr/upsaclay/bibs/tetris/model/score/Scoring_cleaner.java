@@ -1,6 +1,5 @@
 package fr.upsaclay.bibs.tetris.model.score;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;

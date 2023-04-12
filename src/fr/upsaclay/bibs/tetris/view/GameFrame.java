@@ -1,11 +1,9 @@
 package fr.upsaclay.bibs.tetris.view;
 
-import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
 import fr.upsaclay.bibs.tetris.control.manager.ManagerAction;
-import fr.upsaclay.bibs.tetris.model.grid.TetrisCell;
 
 /**
  * A suggested interface to describe the main frame of the visual interface

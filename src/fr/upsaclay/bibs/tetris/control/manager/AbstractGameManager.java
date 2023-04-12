@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import fr.upsaclay.bibs.tetris.TetrisMode;
@@ -170,8 +168,7 @@ public abstract class AbstractGameManager implements GameManager {
 			pausePlayer();
 			sc.close();
 		}
-		catch(NoSuchElementException e2) {
-			e2.printStackTrace();
+		catch(Exception e2) {
 			throw new IOException("mauvais formatage");
 		}
 	}

@@ -1,13 +1,11 @@
 package fr.upsaclay.bibs.tetris.control.player;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisCoordinates;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
-import fr.upsaclay.bibs.tetris.model.grid.TetriseGrille;
 import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoProvider;

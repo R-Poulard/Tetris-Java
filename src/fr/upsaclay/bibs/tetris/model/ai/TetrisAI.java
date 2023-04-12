@@ -21,5 +21,5 @@ public interface TetrisAI {
 	
 	public TetrisMode getTetrisMode();
 	
-	public List<TetrisAction> nextActions(TetrisGridView view, Tetromino onhold, List<Tetromino> nexTetrominos);
+	public TetrisAction nextActions(TetrisGridView view, Tetromino onhold, List<Tetromino> nexTetrominos);
 }

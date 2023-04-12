@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;
-import fr.upsaclay.bibs.tetris.model.grid.TetrisCoordinates;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
-import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 
 public class Scoring_marathon implements ScoreComputer{
 	int score;

@@ -29,33 +29,33 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 import fr.upsaclay.bibs.tetris.control.manager.ManagerAction;
 import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager;
-import lol.Client;
 
 public class GameFrameImpl extends JFrame implements GameFrame {
 		
-		boolean black_mode;
+		boolean black_mode;//mode de jeu asteroide
 		
-	 	JPanel filling;
+		
+	 	JPanel filling;//panel d image
 	 	JPanel filling2;
-		JPanel pause;
+	 	
+		JPanel pause;//pause
 		JButton boutton_pause_resume;
 		JButton boutton_pause_quit;
 		JButton boutton_save_file;
 		
-		GamePanelImpl grille;
+		GamePanelImpl grille;//grille de jeu
 
-		JPanel endgame;
+		JPanel endgame;//panneau de fin de jeu
 		JLabel endgame_label2;
 		JLabel endgame_label3;
 		JLabel endgame_label4;
 		JButton end_menu;
 		
-		JPanel menu;
+		JPanel menu;//affichage menu
 		ButtonGroup player_mode;
 		ButtonGroup game_mode;
 		JRadioButton player_mode1,player_mode2;
@@ -66,23 +66,23 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		JButton boutton_menu_quit;
 		JButton chose_file;
 
-		JPanel controls;
+		JPanel controls;//affichage de control
 		JButton open;
-
+		JLabel error_message;
+		
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
-		this.setLayout(null);
+		this.setLayout(null);//set dimension de la fenetre et ses paramettres
 		this.setResizable(false);
 		this.setSize(new Dimension(450, 950));
 		this.setMaximumSize(new Dimension(450, 950));
 		this.setMinimumSize(new Dimension(450, 950));
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//this.setBackground(Color.black);
 		this.createManagerComponents();
 		
-		controls=new JPanel();
+		controls=new JPanel();//Panel des controles
 		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
 		controls.setBounds(this.getWidth()+140,10,350,this.getHeight()*2/7);
 	    controls.setBackground(new Color(39,33,79,255));
@@ -137,7 +137,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    controls.add(ca);
 	    this.add(controls);
 	    
-		pause=new JPanel();
+		pause=new JPanel();//panel de pause (pour le jeu) il n'est pas dans GamePanelImpl car on a des bouttons
 		pause.setBackground(new Color(0,0,0,200));
 		Border blackline = BorderFactory.createLineBorder(Color.cyan);
 		pause.setBorder(blackline);
@@ -162,12 +162,12 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    this.setSize(screenSize.width/2, screenSize.height);  
 	    this.setVisible(true);  
 	    
-	    grille=new GamePanelImpl();
+	    grille=new GamePanelImpl();//grille de jeu
 	    this.add(grille);
 	    grille.setBounds(0,0,grille.getParent().getWidth(),grille.getParent().getHeight());
 	    grille.initialize();
 	    
-	    menu=new JPanel();
+	    menu=new JPanel();//menu
 	    
 	    menu.setLayout(new GridBagLayout());
 	    GridBagConstraints c=new GridBagConstraints();
@@ -188,6 +188,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 				}
 
 			} };
+		//panel de haut et bas du ecran d acceuil, permet d'ajouter les images
 	    filling.setBounds(0,0,this.getWidth(),this.getHeight()/4);
 	    this.add(filling);
 	    filling2=new JPanel(){
@@ -221,6 +222,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 			// TODO Auto-generated catch block
 			tittle =new JLabel("Tetris (lame edition)");
 		}
+		//label du menu
 	    tittle.setHorizontalAlignment(JLabel.CENTER);
 	    JLabel game_mode_label =new JLabel("MODE DE JEU:");
 	    game_mode_label.setFont(new Font("Rockwell", Font.BOLD, 25)); //Creating an Times New Roman Font Style with size 30
@@ -233,7 +235,13 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    player_mode_label.setAlignmentX(CENTER_ALIGNMENT);
 	    player_mode_label.setHorizontalAlignment(JLabel.CENTER);
 	    player_mode_label.setHorizontalAlignment(JLabel.CENTER);
-	   
+	    error_message =new JLabel();
+		error_message.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
+		error_message.setForeground(Color.red);
+	    
+	    
+	    this.repaint();
+	    //permet d'ajouter les differents element au menu aux bon endroit
 	    c.gridx=1;
 	    c.gridy=0;
 	    c.ipadx=100;
@@ -287,7 +295,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipadx=30;
 	    c.ipady=30;
 	    menu.add(chose_file,c);
-	    c.gridx=3;
+	    c.gridx=2;
 	    c.gridy=7;
 	    c.ipadx=10;
 	    c.ipady=10;
@@ -297,6 +305,13 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    c.ipadx=10;
 	    c.ipady=10;
 	    menu.add(open,c);
+	    c.gridx=0;
+	    c.gridy=7;
+	    c.ipadx=10;
+	    c.ipady=10;
+	    menu.add(error_message,c);
+	    
+	   //panel de fin (on l'ajoute car il contient des bouttons)
 	    endgame=new JPanel(new GridLayout(6,1,30,10));
 	    this.add(endgame);
 	    endgame.setBounds(10,endgame.getParent().getHeight()*2/10,endgame.getParent().getWidth()*6/10-10,endgame.getParent().getHeight()*5/10);
@@ -326,12 +341,11 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    endgame.add(endgame_label3);
 	    endgame.add(endgame_label4);
 	    endgame.add(Box.createRigidArea(new Dimension(0, 5)));
-	    endgame.add(end_menu);
-	    
-	    endgame.setBackground(new Color(39,33,79,255));
-	    
+	    endgame.add(end_menu);	    
+	    endgame.setBackground(new Color(39,33,79,255));	
 	    endgame.setOpaque(true);
 	    
+	    //On met tous a faux au debut (cest le game manager qui s'occupe de qui affiche quoi)
 	    this.endgame.setVisible(false);
 	    this.pause.setVisible(false);
 	    this.menu.setVisible(false);
@@ -343,11 +357,13 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	public GamePanelImpl getgrid() {
 		return grille;
 	}
+	
+	//Permet de changer l'affichage en alternant sur quelles panneau on affiche
 	@Override
 	public void drawManagementView() {
 		// TODO Auto-generated method stub
 		pause.setVisible(false);
-		grille.drawManagementView();
+		grille.drawManagementView();//necessaire pour les sous element de la grille
 		menu.setVisible(true);
 		endgame.setVisible(false);
 		grille.setFocusable(false);
@@ -361,7 +377,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		grille.drawGamePlayView();
 		menu.setVisible(false);
 		endgame.setVisible(false);
-		grille.setFocusable(true);
+		grille.setFocusable(true);//necessaire pour le key listener
 		grille.requestFocus();
 		controls.setVisible(false);
 	}
@@ -381,7 +397,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	@Override
 	public void drawEndGameView() {
 		// TODO Auto-generated method stub
-		grille.update_endgame(endgame_label2,endgame_label3,endgame_label4);
+		grille.update_endgame(endgame_label2,endgame_label3,endgame_label4);//permet de changer les étiquettes de l'endgame
 		
 		endgame.setVisible(true);
 		pause.setVisible(false);
@@ -399,7 +415,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	}
 
 	@Override
-	public void createManagerComponents() {
+	public void createManagerComponents() {//creer tout les boutons et les attacher au keylistener
 		// TODO Auto-generated method stub
 
 		boutton_pause_resume=new JButton("Continuer");
@@ -450,7 +466,7 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	    
 	   
 	    open=new JButton("Controls");
-	    ActionListener actionListener = new ActionListener() {
+	    ActionListener actionListener = new ActionListener() {//permet d'afficher et d enlever le pannel (pas besoin du keylistener vu que c'est juste qqchose qui influe la vue)
 	    	boolean displayed=false;
 	         public void actionPerformed(ActionEvent event) {
 	        	 displayed=!displayed;
@@ -462,8 +478,9 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	}
 
 	@Override
-	public void attachManagerActionListener(ActionListener listener) {
-		// TODO Auto-generated method stub
+	public void attachManagerActionListener(ActionListener listener) {//permet d'attacer tt le monde au key listener (et vise versa) 
+		//Listener est en actionlistener pour eviter de trop influencer avec le visual game manager
+
 		boutton_pause_resume.addActionListener(listener);
 		boutton_pause_quit.addActionListener(listener);
 		boutton_save_file.addActionListener(listener);
@@ -503,8 +520,9 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 	@Override
 	public void showErrorMessage(String message) {
 		// TODO Auto-generated method stub
-		
-	}
+		error_message.setText(message);
+		error_message.repaint();
+	    }
 
 	@Override
 	public void setDefaultSetting(ManagerAction action) {

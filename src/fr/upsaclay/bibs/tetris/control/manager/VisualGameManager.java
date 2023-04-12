@@ -1,13 +1,12 @@
 package fr.upsaclay.bibs.tetris.control.manager;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
@@ -16,28 +15,28 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JRadioButton;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import java.awt.event.ActionEvent;
 
 import fr.upsaclay.bibs.tetris.TetrisAction;
 import fr.upsaclay.bibs.tetris.TetrisMode;
 import fr.upsaclay.bibs.tetris.control.player.PlayerType;
 import fr.upsaclay.bibs.tetris.control.player.VisualGamePlayer;
+import fr.upsaclay.bibs.tetris.model.ai.RandomTetrisAI;
 import fr.upsaclay.bibs.tetris.view.GameFrameImpl;
 
 
 public class VisualGameManager extends AbstractGameManager {
 
+	RandomTetrisAI ai;
+	
 	GameFrameImpl game_frame;//vue
 	KeyHandler key;//gere les commandes
 	ActionHandler action;//gere les boutons du visual game manager
 	VisualGamePlayer pl;//player 
 	boolean inpause;//Permet de bloquer le key listener quand la pose est faite
 	Timer timer;//timer de l action descente (gardé en memeoire car la vitesse varie au cours de la partie)
-	
+	Timer ai_timer;//timer permettant de lancer l action de lIA a des intervalles regulier (sans ça on reste bloquer dans une boucle)
 	//Music (charger via le controleur pour plus de controle)
 	
 	Clip clip_boutton;
@@ -64,8 +63,10 @@ public class VisualGameManager extends AbstractGameManager {
 		game_frame.initialize();
 		game_frame.attachManagerActionListener(action);
 		game_frame.bindGameKeyListener(key);
+		ai=new RandomTetrisAI();
 		//affichage du menu
 		menu();
+
 		//chargement des music
 		try {
 			clip_boutton= AudioSystem.getClip();
@@ -117,6 +118,19 @@ public class VisualGameManager extends AbstractGameManager {
 			game_frame.getgrid().set_black_mode(false);
 		}
 		game_frame.drawGamePlayView();//affiche la partie de jeu
+		if(this.player_type==PlayerType.AI) {
+			ActionListener taskPerformer = new ActionListener() {
+	            public void actionPerformed(ActionEvent evt) {
+	            	if(!inpause) {
+	            		if(!pl.performAction(ai.nextActions(null, null, null))) {
+	            			over();
+	            		}
+	            	}
+				}
+	        };
+			ai_timer=new Timer(1100, taskPerformer);
+			ai_timer.start();
+		}
 		game_frame.startGameKeyListener(key);//request focus de la vue
 	}
 	
@@ -135,21 +149,30 @@ public class VisualGameManager extends AbstractGameManager {
 		game_frame.drawGamePlayView();
 		game_frame.startGameKeyListener(key);
 	}
+	
 	public void menu() {
 		done=false;
 		game_frame.drawManagementView();
 		pl=null;//player null car on quitte la partie
+		game_frame.showErrorMessage("");
 	}
 	
 	public void comebacktogame() {//permet de revenir apres une pause (si on reste a jouer)
 		inpause=false;
 		game_frame.drawGamePlayView();
 		pl.unpause();
+		if(this.player_type==PlayerType.AI) {
+			ai_timer.start();
+			
+		}
 	}
 	
 	public void pause() {
 		game_frame.drawGamePauseView();
 		inpause=true;
+		if(this.player_type==PlayerType.AI) {
+			ai_timer.stop();
+		}
 	}
 	
 	
@@ -161,6 +184,10 @@ public class VisualGameManager extends AbstractGameManager {
 		}
 		game_frame.drawEndGameView();
 		game_frame.stopGameKeyListener(key);//on ne request plus le focus
+		if(this.player_type==PlayerType.AI) {
+			ai_timer.stop();
+			ai_timer=null;
+		}
 	}
 	@Override
 	public void createPlayer() {
@@ -185,7 +212,7 @@ public class VisualGameManager extends AbstractGameManager {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			// TODO Auto-generated method stub
-			if(!inpause) {//si on pose alors il n'y a pas d'action qui sont faite
+			if(!inpause ) {//si on pose alors il n'y a pas d'action qui sont faite
 				boolean res=true;
 				switch(e.getKeyCode()){
 				case KeyEvent.VK_ESCAPE:
@@ -197,33 +224,42 @@ public class VisualGameManager extends AbstractGameManager {
 					break;
 				//call le joueur pour faire une action en fonction de la commande
 				case 65://gauche
+					if(player_type!=PlayerType.AI) {
 					res=pl.performAction(TetrisAction.MOVE_LEFT);
+					}
 					break;
 				case 90://held
-
+					if(player_type!=PlayerType.AI) {
 					res=pl.performAction(TetrisAction.HOLD);
+					}
 					break;
 				case 69://droite
-
+					if(player_type!=PlayerType.AI) {
 					res=pl.performAction(TetrisAction.MOVE_RIGHT);
+					}
 					break;
 				case 88://hard drop
+					if(player_type!=PlayerType.AI) {
 					if(!toomuch) {
 						res=pl.performAction(TetrisAction.HARD_DROP);
 						toomuch=true;
 					}
+					}
 					break;
 				case 83://bas
-
+					if(player_type!=PlayerType.AI) {
 					res=pl.performAction(TetrisAction.START_SOFT_DROP);
+					}
 					break;	
 				case 75://rotgauche
-
+					if(player_type!=PlayerType.AI) {
 					res=pl.performAction(TetrisAction.ROTATE_LEFT);
+					}
 					break;
 				case 77://rotdroit
-
+					if(player_type!=PlayerType.AI) {
 					res=pl.performAction(TetrisAction.ROTATE_RIGHT);
+					}
 					break;
 				}
 				if(!res) {//res renvoie false si jamais le joueur detecte une fin de partie
@@ -300,13 +336,13 @@ public class VisualGameManager extends AbstractGameManager {
 
 					menu();
 				}
-				else if(source==player_mode1) {
+				else if(source==player_mode2) {
 					clip_boutton.setMicrosecondPosition(0);
 					clip_boutton.start();
 
 					player_type=PlayerType.HUMAN;
 				}
-				else if(source==player_mode2) {
+				else if(source==player_mode1) {
 					clip_boutton.setMicrosecondPosition(0);
 					clip_boutton.start();
 
@@ -352,8 +388,11 @@ public class VisualGameManager extends AbstractGameManager {
 			        	try {
 							save(chooser.getSelectedFile());
 							menu();
-						} catch (FileNotFoundException e1) {
+							game_frame.showErrorMessage("");
+						} catch (Exception e1) {
 							// TODO Auto-generated catch block
+							menu();
+							game_frame.showErrorMessage("Failed Saving");
 							
 						} 
 			        }
@@ -367,14 +406,11 @@ public class VisualGameManager extends AbstractGameManager {
 			        	try {
 							loadFromFile(chooser.getSelectedFile());
 							start_from_file();
-						} catch (FileNotFoundException e1) {
+							game_frame.showErrorMessage("");
+						} catch (Exception e1) {
 							// TODO Auto-generated catch block
-							
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							game_frame.showErrorMessage("Failed Loading");
 						}
-			            
 			        }
 				}
 			}

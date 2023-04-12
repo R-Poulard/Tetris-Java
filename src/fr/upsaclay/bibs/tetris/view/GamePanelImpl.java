@@ -1,64 +1,57 @@
 package fr.upsaclay.bibs.tetris.view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.border.Border;
 
 import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager.ActionHandler;
-import fr.upsaclay.bibs.tetris.model.grid.SynchronizedView;
-import fr.upsaclay.bibs.tetris.model.grid.TetrisCell;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
-import fr.upsaclay.bibs.tetris.model.score.ScoreComputer;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 
 public class GamePanelImpl extends JPanel implements GamePanel{
 	
-	boolean black_mode;
+	boolean black_mode;//pour le mode de jeu en question
 	
-	int nblines;
+	int nblines;//dimension de la grille
 	int nbcols;
-	TetrisGridView grille_model;
-	int loopdelay;
+	TetrisGridView grille_model;//modele
+
 	
 	int score;
 	int ligne;
 	int level;
 
 	
-	Grille grille_de_jeu;
-	TetroCell holded;
-	TetroCell nexted;
-	JPanel aux;
+	Grille grille_de_jeu;//la vue de la grille
+	TetroCell holded;//le tetromino hold
+	TetroCell nexted;//le tetromino suivant
+	JPanel aux;//le score
 	
+	//jlabel du score
 	JLabel jlscore;
 	JLabel jlligne;
 	JLabel jllevel;
 	JLabel jlinfo1;
 	JLabel jlinfo2;
 	
+	//timer pour down
 	Timer timer;
 	
 	
@@ -67,7 +60,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	public void initialize() {
 		// TODO Auto-generated method stub
 		this.setLayout(null);
-		aux=new JPanel() {
+		aux=new JPanel() {//image de fond
 		  @Override
 		  protected void paintComponent(Graphics g) {
 		    super.paintComponent(g);
@@ -107,7 +100,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 
 		JPanel labels=new JPanel();
 		labels.setLayout(new BoxLayout(labels,BoxLayout.Y_AXIS));
-		
+		//tout les labels du score ligne ect
 		jlscore=new JLabel("Score: 0");
 		jlscore.setFont(new Font("Rockwell", Font.BOLD, 30)); //Creating an Times New Roman Font Style with size 30
 		jlscore.setForeground(Color.red);
@@ -155,7 +148,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	}
 
 	public class Grille extends JPanel{
-		
+		//la grille est une double paneau de JPanel
 		
 		JPanel[][] grille;
 		boolean black_mode=false;
@@ -165,11 +158,11 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			this.setOpaque(false);
 			
 		}
-		public void set_up() {
+		public void set_up() {//initialisation
 			Border backline=BorderFactory.createLineBorder(Color.cyan,5);
 			this.setBorder(backline);
 			this.setLayout(new GridLayout(nblines,nbcols));
-			if(grille!=null) {
+			if(grille!=null) {//reinitialise la grille
 				for(int i=0;i<nblines;i++) {
 					for(int y=0;y<nbcols;y++) {
 						this.remove(grille[i][y]);
@@ -187,13 +180,13 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			this.repaint();
 		}
 		
-		public void update(){
+		public void update(){//update en fonction de la tetris girlle vieww
 			if(!black_mode) {
 				for(int i=0;i<nblines;i++) {
 					for(int y=0;y<nbcols;y++) {
-						Border blackline = BorderFactory.createLineBorder(Color.black);
+						Border blackline = BorderFactory.createLineBorder(Color.black);//bordure noir de chaque cellule
 						grille[i][y].setBorder(blackline);
-						switch(grille_model.visibleCell(i, y)) {
+						switch(grille_model.visibleCell(i, y)) {//valeur de background en fonction de la vue
 						case EMPTY:
 							grille[i][y].setBackground(new Color(39,33,79,160));
 							break;
@@ -232,7 +225,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 				}
 				this.repaint();
 			}
-			else {
+			else {//dans le lblack mode on regarde si  on est dans le cercle de visibilite sinon on met en noir
 				for(int i=0;i<nblines;i++) {
 					for(int y=0;y<nbcols;y++) {
 						Border blackline = BorderFactory.createLineBorder(Color.black);
@@ -281,7 +274,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			}
 		}
 		
-		public boolean inCircle(int x,int y) {
+		public boolean inCircle(int x,int y) {//formuile trouver sur internet pour faire un rond en pixel
 			int m1=grille_model.getCoordinates().getLine()+grille_model.getTetromino().getBoxSize()/2;
 			int m2=grille_model.getCoordinates().getCol()+grille_model.getTetromino().getBoxSize()/2;
 			int dx=x-m1;
@@ -297,7 +290,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		
 
 		
-		JPanel main;
+		JPanel main;//panel contenant la matrice, permet d'orrienter en fonction du type de piece pour rendre plus esthetique
 		JPanel[][] grille;
 		Tetromino tr;
 		boolean black_mode=false;
@@ -312,7 +305,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			this.tr=tr;
 		}
 		
-		void set_black_mode(boolean black_mode) {
+		void set_black_mode(boolean black_mode) {//si on a un black mode alors on garde le tout en noir
 			this.black_mode=black_mode;
 			if(black_mode) {
 				this.setBackground(Color.BLACK);
@@ -327,7 +320,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		void display_tetromino(){
 
 			if(main !=null) {
-				this.removeAll();
+				this.removeAll();//remove le tetromino deja present
 				for(int i=0;i<grille.length;i++) {
 					for(int y=0;y<grille.length;y++) {
 						main.remove(grille[i][y]);
@@ -341,7 +334,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 				this.repaint();
 				return;
 			}
-			main=new JPanel(new GridLayout(tr.getBoxSize(),tr.getBoxSize()));
+			main=new JPanel(new GridLayout(tr.getBoxSize(),tr.getBoxSize()));//creation de la nouvelle matrice
 			
 			if(black_mode) {
 				main.setBackground(Color.BLACK);
@@ -350,7 +343,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 				main.setBackground(new Color(39,33,79,255));
 			}
 			grille = new JPanel[tr.getBoxSize()][tr.getBoxSize()];
-			
+			//remplissage du panneau
 			if(!black_mode) {
 			for(int i=0;i<tr.getBoxSize();i++) {
 				for(int y=0;y<tr.getBoxSize();y++) {
@@ -405,7 +398,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			}
 			this.add(main);
 			
-			this.getParent().getWidth();
+			//on position main dans la tetrocell en fonction de la piece
 			
 			switch(tr.getShape()) {
 			case ISHAPE:
@@ -449,7 +442,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		
 	}
 
-	public void set_black_mode(boolean bl) {
+	public void set_black_mode(boolean bl) {//si on est dans le mode de jeu on change la grille et le tetrocell de maniere adequate
 		this.grille_de_jeu.black_mode=bl;
 		this.nexted.set_black_mode(bl);;
 	}
@@ -466,8 +459,6 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		// TODO Auto-generated method stub
 		this.setVisible(true);
 		this.startActionLoop();
-		System.out.println(timer.isRunning());
-
 	}
 
 	@Override
@@ -481,7 +472,6 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	@Override
 	public void drawEndGameView() {
 		// TODO Auto-generated method stub
-		System.out.println("I CAN T");
 		this.timer=null;
 		if(grille_de_jeu.black_mode) {
 			this.grille_de_jeu.black_mode=false;
@@ -542,14 +532,14 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 	public void launchGamePanelEvent(GamePanelEvent event, Object attach) {
 		// TODO Auto-generated method stub
 		switch(event) {
-		case COMBO:
+		case COMBO://affichage du combo (modification jlabel simple)
 			jlinfo1.setText("Combo x"+ ((Integer)attach).toString());
 			break;
-		case LINES:
+		case LINES://
 			List<Integer> to_break=(List<Integer>)attach;
 			jlinfo2.setText(to_break.size() + " LIGNES DETRUITES");
 			jlinfo2.repaint();
-			ActionListener taskPerformer = new ActionListener() {
+			ActionListener taskPerformer = new ActionListener() {//ceci permet de faire une animation de glitch puis remettre comme avant a la prochaine grille update
 	            public void actionPerformed(ActionEvent evt) {
 	            	for(Integer i: to_break) {
 	            	for(int y=0;y<nbcols;y++) {
@@ -563,7 +553,7 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-	            	jlinfo2.setText(" ");
+	            	jlinfo2.setText(" ");//on fait disparaitre le texte
 	            	jlinfo2.repaint();
 				}
 	            }
@@ -572,12 +562,14 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 			t.setRepeats(false);
 			t.start();
 			break;
-		case END_COMBO:
+		case END_COMBO://si le combo est terminer on enleve le message
 			jlinfo1.setText("");
 			break;		
 		}
 	}
 
+	//update les affichage de scoring ligne et level
+	
 	@Override
 	public void updateScore(int score) {
 		// TODO Auto-generated method stub
@@ -599,6 +591,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		jllevel.setText("Level: "+level);
 	}
 
+	//update les tetrocells
+	
 	@Override
 	public void updateHeldTetromino(Tetromino tetromino) {
 		// TODO Auto-generated method stub
@@ -632,7 +626,8 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		return timer;
 	}
 
-
+	//change les labels de endgame avec les valeurs connus de score level ligne 
+	
 	public void update_endgame(JLabel endgame_label2, JLabel endgame_label3, JLabel endgame_label4) {
 		// TODO Auto-generated method stub
 		endgame_label2.setText("Score: "+score);

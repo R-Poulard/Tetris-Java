@@ -1,6 +1,7 @@
 package fr.upsaclay.bibs.tetris.test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import fr.upsaclay.bibs.tetris.model.grid.TetrisCell;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisCoordinates;
-import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 import fr.upsaclay.bibs.tetris.model.tetromino.TetrominoShape;
 
