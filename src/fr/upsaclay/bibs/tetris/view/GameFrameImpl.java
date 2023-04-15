@@ -32,7 +32,6 @@ import javax.swing.JRadioButton;
 import javax.swing.border.Border;
 
 import fr.upsaclay.bibs.tetris.control.manager.ManagerAction;
-import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager;
 
 public class GameFrameImpl extends JFrame implements GameFrame {
 		
@@ -239,8 +238,6 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		error_message.setFont(new Font("Rockwell", Font.BOLD, 15)); //Creating an Times New Roman Font Style with size 30
 		error_message.setForeground(Color.red);
 	    
-	    
-	    this.repaint();
 	    //permet d'ajouter les differents element au menu aux bon endroit
 	    c.gridx=1;
 	    c.gridy=0;
@@ -493,7 +490,6 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		boutton_menu_start.addActionListener(listener);
 		boutton_menu_quit.addActionListener(listener);
 		chose_file.addActionListener(listener);
-		((VisualGameManager.ActionHandler) listener).setButton(boutton_save_file,chose_file,boutton_pause_resume,boutton_pause_quit, end_menu,player_mode1,player_mode2,game_mode1,game_mode2,game_mode3,boutton_menu_start,boutton_menu_quit);
 	}
 
 	@Override
@@ -529,5 +525,47 @@ public class GameFrameImpl extends JFrame implements GameFrame {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	
+	public ManagerAction which_button(Object source) {
+		
+			if(source==boutton_pause_resume) {
+				return ManagerAction.PAUSE_RESUME;
+			}
+			else if(source==boutton_pause_quit) {
+				return ManagerAction.PAUSE_QUIT;
+			}
+			else if(source==end_menu) {
+				return ManagerAction.END_MENU;
+			}
+			else if(source==player_mode2) {
+				return ManagerAction.PM2;
+			}
+			else if(source==player_mode1) {
+				return ManagerAction.PM1;
+			}
+			else if(source==game_mode1) {
+				return ManagerAction.GM1;
+			}
+			else if(source==game_mode2) {
+				return ManagerAction.GM2;
+			}
+			else if(source==game_mode3) {
+				return ManagerAction.GM3;
+			}
+			else if(source==boutton_menu_start) {
+				return ManagerAction.MENU_START;
+			}
+			else if(source==boutton_menu_quit){
+				return ManagerAction.MENU_QUIT;
+			}
+			else if(source==boutton_save_file){
+				return ManagerAction.SAVE_FILE;
+			}
+			else if(source==chose_file){
+				return ManagerAction.CHOSE_FILE;
+			}
+			return null;
+		}
+		
 }

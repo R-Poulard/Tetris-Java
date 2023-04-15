@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.border.Border;
 
-import fr.upsaclay.bibs.tetris.control.manager.VisualGameManager.ActionHandler;
+
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGridView;
 import fr.upsaclay.bibs.tetris.model.tetromino.Tetromino;
 
@@ -506,7 +506,6 @@ public class GamePanelImpl extends JPanel implements GamePanel{
 		// TODO Auto-generated method stu
 		timer=new Timer(1,null);
 		timer.addActionListener(listener);
-		((ActionHandler) listener).setTimer(timer);
 	}
 
 	@Override

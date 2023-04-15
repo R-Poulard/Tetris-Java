@@ -111,6 +111,7 @@ public class VisualGameManager extends AbstractGameManager {
 		pl.initialize(gr, scp, DEFAULT_PROVIDER);//initialisation du player
 		pl.start();//demarrage
 		game_frame.getgrid().setLoopAction(action);//debut du timer
+		this.action.setTimer(game_frame.getgrid().getTimer());
 		if(this.mode==TetrisMode.CAVERN) {//ceci permet de changer la vue si le mode de jeu est caverne
 			game_frame.getgrid().set_black_mode(true);
 		}
@@ -140,6 +141,7 @@ public class VisualGameManager extends AbstractGameManager {
 		pl.initialize(gr, scp, DEFAULT_PROVIDER);
 		pl.start();
 		game_frame.getgrid().setLoopAction(action);
+		this.action.setTimer(game_frame.getgrid().getTimer());
 		if(this.mode==TetrisMode.CAVERN) {//ceci permet de changer la vue si le mode de jeu est caverne
 			game_frame.getgrid().set_black_mode(true);
 		}
@@ -307,7 +309,8 @@ public class VisualGameManager extends AbstractGameManager {
 		JButton boutton_menu_quit;
 		JButton chose_file;
 		JFileChooser chooser = new JFileChooser();//permet de load une game
-
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(null,"txt");
+       
 		
 		public void actionPerformed(ActionEvent e) {
 			Object source=e.getSource();
@@ -317,7 +320,107 @@ public class VisualGameManager extends AbstractGameManager {
 				}
 			}
 			else {
+				switch(game_frame.which_button(e.getSource())) {
+					case CHOSE_FILE:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+						//lance la game depuis le file
+				        int returnVal = chooser.showOpenDialog(null);
+				        if(returnVal == JFileChooser.APPROVE_OPTION) {
+				        	try {
+								loadFromFile(chooser.getSelectedFile());
+								start_from_file();
+								game_frame.showErrorMessage("");
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								game_frame.showErrorMessage("Failed Loading");
+							}
+				        }
+						break;
+					case END_MENU:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						menu();
+						break;
+					case GM1:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						mode=TetrisMode.MARATHON;
+						break;
+					case GM2:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						mode=TetrisMode.CAVERN;
+						break;
+					case GM3:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						mode=TetrisMode.SPACE_CLEANER;
+						break;
+					case MENU_QUIT:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						System.exit(0);
+						break;
+					case MENU_START:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						start_game();
+						break;
+					case PAUSE_QUIT:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						menu();
+						break;
+					case PAUSE_RESUME:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						comebacktogame();
+						break;
+					case PM1:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						player_type=PlayerType.AI;
+						break;
+					case PM2:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						player_type=PlayerType.HUMAN;
+						break;
+					case SAVE_FILE:
+						clip_boutton.setMicrosecondPosition(0);
+						clip_boutton.start();
+	
+						//permet de choisir le fichier, de save et de reoturne rua menu
+						int returnVal2 = chooser.showOpenDialog(null);
+				        if(returnVal2 == JFileChooser.APPROVE_OPTION) {
+				        	try {
+								save(chooser.getSelectedFile());
+								menu();
+								game_frame.showErrorMessage("");
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								menu();
+								game_frame.showErrorMessage("Failed Saving");
+								
+							} 
+				        }
+						break;
+					default:
+						break;
 				
+				}
+				/*
 				if(source==boutton_pause_resume) {
 					clip_boutton.setMicrosecondPosition(0);
 					clip_boutton.start();
@@ -412,7 +515,7 @@ public class VisualGameManager extends AbstractGameManager {
 							game_frame.showErrorMessage("Failed Loading");
 						}
 			        }
-				}
+				}*/
 			}
 		}
 		
@@ -421,26 +524,6 @@ public class VisualGameManager extends AbstractGameManager {
 			timer=t;
 			timer.setInitialDelay(1500);
 			timer.setDelay(1500);
-		}
-		//permet de link les bouttons aux handler (pour savoir qu'elle boutton a envoyer l'action)
-		
-		public void setButton(JButton sf,JButton cf,JButton bpr,JButton bpq, JButton em,JRadioButton pm1,JRadioButton pm2,JRadioButton gm1,JRadioButton gm2,JRadioButton gm3,JButton bms,JButton bmq) {
-			FileNameExtensionFilter filter = new FileNameExtensionFilter(null,"txt");
-	        chooser.setFileFilter(filter);
-	        chose_file=cf;
-			boutton_save_file=sf;
-			boutton_pause_resume=bpr;
-			boutton_pause_quit=bpq;
-			
-			end_menu=em;
-
-			player_mode1=pm1;
-			player_mode2=pm2;
-			game_mode1=gm1;
-			game_mode2=gm2;
-			game_mode3=gm3;
-			boutton_menu_start=bms;
-			boutton_menu_quit=bmq;
 		}
 	}
 }
