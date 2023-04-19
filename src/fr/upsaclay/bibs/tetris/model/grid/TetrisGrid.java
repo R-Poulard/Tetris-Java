@@ -183,7 +183,7 @@ public interface TetrisGrid extends TetrisGridView {
 	 */
 	public static TetrisGrid getEmptyGrid(int nblines, int nbcols) {
 		if(nblines<=0 || nbcols<=0) {
-			throw new IllegalArgumentException("Diemnsion Invalide");
+			throw new IllegalArgumentException("Dimension Invalide");
 		}
 		return new TetriseGrille(nblines,nbcols);	
 	}

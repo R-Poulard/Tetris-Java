@@ -10,6 +10,7 @@ import java.util.Scanner;
 import fr.upsaclay.bibs.tetris.TetrisMode;
 import fr.upsaclay.bibs.tetris.control.player.GamePlayer;
 import fr.upsaclay.bibs.tetris.control.player.PlayerType;
+import fr.upsaclay.bibs.tetris.model.ai.RandomTetrisAI;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisCell;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisCoordinates;
 import fr.upsaclay.bibs.tetris.model.grid.TetrisGrid;
@@ -24,6 +25,7 @@ public abstract class AbstractGameManager implements GameManager {
 	public  TetrominoProvider provider;
 	public  PlayerType player_type;
 	public int cols,lines;
+	int nb_tours; //nombre de tour pour une partie AI avant de se terminer
 	//Permet de garder un pointeur vers le joueurs pour le pauser ou le start
 	GamePlayer pl=null;
 	//a donner au player
@@ -31,6 +33,7 @@ public abstract class AbstractGameManager implements GameManager {
 	TetrisGrid gr;
 	@Override
 	public void initialize() {
+		this.nb_tours=-1;
 		this.mode=AbstractGameManager.DEFAULT_MODE;
 		this.player_type=AbstractGameManager.DEFAULT_PLAYER_TYPE;
 		this.cols=AbstractGameManager.DEFAULT_COLS;
@@ -44,6 +47,10 @@ public abstract class AbstractGameManager implements GameManager {
 		this.mode=mode;
 	}
 
+
+	public void setNombre_tours(int nb_tours) {
+		this.nb_tours=nb_tours;
+	}
 	@Override
 	public TetrisMode getGameMode() {
 		// TODO Auto-generated method stub
@@ -100,6 +107,47 @@ public abstract class AbstractGameManager implements GameManager {
 		scp=ScoreComputer.getScoreComputer(getGameMode());
 		createPlayer();
 		pausePlayer();//player mis en pause au début du jeu
+		if(this instanceof SimpleGameManager && this.player_type==PlayerType.AI) {
+			this.pl.start();
+			party_computer(nb_tours);
+		}
+	}
+	
+	/*
+	 * Fonction permettant de lancer une partie ordinateur et de l'enregistré lorsqu'elle est fini ou apreès X tours
+	 * si X==-1 alors on ne s'arrête pas tant que la partie n'est pas fini.
+	 */
+	public void party_computer(int tour) {
+
+		RandomTetrisAI ai=new RandomTetrisAI();
+		int compteur=0;
+		while(pl.isActive() && compteur!=tour) {
+			pl.performAction(ai.nextActions(gr, null, null));
+			compteur++;
+		}
+		File saveFile = new File("resources/save_ai.txt");
+		PrintStream m;
+		try {
+			m = new PrintStream(saveFile);
+			m.println(this.getGameMode());
+			m.println(scp.getScore());
+			m.println(scp.getLevel());
+			m.println(scp.getLines());
+			if(pl.isActive()) {
+				m.println(gr.getTetromino().getShape());
+				m.println(gr.getTetromino().getRotationNumber());
+				m.println(gr.getCoordinates().getLine());
+				m.println(gr.getCoordinates().getCol());
+			}
+			else {
+				m.println("Partie Termine");
+			}
+			gr.printGrid(m);
+			m.println();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Erreur d'enregistrement");
+		}
 	}
 
 	@Override

@@ -53,9 +53,11 @@ class SimpleGameManagerPlayerTest {
 	@Test
 	void testCreateAIPlayer() {
 		GameManager simpleManager = GameManager.getGameManager(GameType.SIMPLE);
+		simpleManager.initialize();
 		simpleManager.setPlayerType(PlayerType.AI);
-		/** If you implement an AI simple player, you can change this test and add specific ai tests */
-		assertThrows(UnsupportedOperationException.class, () -> simpleManager.createPlayer());
+		simpleManager.setNombre_tours(-1);
+		simpleManager.createPlayer();
+		simpleManager.loadNewGame();
 	}
 	
 	@Test

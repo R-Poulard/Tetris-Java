@@ -53,8 +53,15 @@ public interface GameManager {
 	 */
 	public TetrisMode getGameMode();
 	
+	
 	/**
-	 * Sets the tetromino provider
+	 * Sets the number of tours before AI game ends if set at negative the value end when the game is over
+	 * @param nb_tours the number of tours
+	 */
+	public void setNombre_tours(int nb_tours);
+	
+	/**
+	 * Sets the tetromino provider 
 	 * @param provider a TetrominoProvider
 	 */
 	public void setTetrominoProvider(TetrominoProvider provider);

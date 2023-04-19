@@ -227,5 +227,6 @@ public class SimpleGamePlayer implements GamePlayer {
 		// TODO Auto-generated method stub
 		return held;
 	}
-
+	
+	
 }
