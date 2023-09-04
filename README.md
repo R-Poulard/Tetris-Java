@@ -1,5 +1,8 @@
 # Projet Programmation Orientée Objet : Tétris
 
+
+***This project is based on the framework of Viviane Pons and given as educational material for a course of a Master at Paris-Saclay***
+
 Ce repo contient l'ensemble des fichiers nécessaires à la réalisation de votre projet de programmation.
 
 ## Membres du groupes :
